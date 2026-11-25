@@ -169,17 +169,23 @@ export function startDemoPage(env) {
   for (const [button, id] of [['demo-open', 'demos-dialog'], ['sound-open', 'sound-dialog']]) {
     byId(button ?? '').addEventListener('click', () => /** @type {HTMLDialogElement} */ (byId(id ?? '')).showModal());
   }
-  // The log, the shell and the keys are not popups: they share one drawer under the console, in three tabs, so the board and the demos stay in view and in use.
-  const drawer = byId('console-drawer');
+  // The log, the shell and the keys are not popups: as in the Java app they take the place of the talk, in three tabs, and the buttons of the toolbar toggle between them and the talk.
+  const panels = byId('view-panels');
+  const talkView = byId('view-talk');
+  const frameTitle = byId('c-talk-title');
+  /** @type {Record<string, string>} */
+  const TITLES = { log: 'What is happening', shell: 'The shell of the board', keys: 'Keys the tiles would send' };
   const TABS = /** @type {const} */ (['log', 'shell', 'keys']);
   /** @type {Record<string, string>} */
   const opener = { log: 'log-open', shell: 'shell-open', keys: 'keys-open' };
   /** @type {string | null} */
   let openTab = null;
-  /** Shows a tab, or closes the drawer (null). @param {string | null} tab @param {boolean} [focus] */
+  /** Shows a tab in the place of the talk, or gives the talk back (null). @param {string | null} tab @param {boolean} [focus] */
   const showTab = (tab, focus = true) => {
     openTab = tab;
-    drawer.hidden = tab === null;
+    panels.hidden = tab === null;
+    talkView.hidden = tab !== null;
+    frameTitle.textContent = tab === null ? 'The talk' : (TITLES[tab] ?? '');
     for (const name of TABS) {
       const selected = name === tab;
       const button = byId(`tab-${name}`);
@@ -191,14 +197,13 @@ export function startDemoPage(env) {
       toolbar.setAttribute('aria-expanded', String(selected));
     }
     if (tab === null) return;
-    drawer.scrollIntoView?.({ block: 'nearest', behavior: 'smooth' });
     if (focus && tab === 'shell') /** @type {HTMLInputElement} */ (byId('shell-in')).focus();
     const log = byId(tab === 'log' ? 'demolog' : tab === 'keys' ? 'keylog' : 'shell-out');
     log.scrollTop = log.scrollHeight;
   };
   for (const name of TABS) {
     const toolbar = byId(opener[name] ?? '');
-    toolbar.setAttribute('aria-controls', 'console-drawer');
+    toolbar.setAttribute('aria-controls', 'view-panels');
     toolbar.addEventListener('click', () => showTab(openTab === name ? null : name));
     byId(`tab-${name}`).addEventListener('click', () => showTab(name));
     byId(`tab-${name}`).addEventListener('keydown', (e) => {

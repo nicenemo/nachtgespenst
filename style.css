@@ -319,25 +319,20 @@ nav.sitenav .panel li a[aria-current="page"] { background: var(--accent); color:
   .c-lcd { flex: none; }
 }
 
-/* The shell as a drawer under the console: it opens downwards and does not block the page. */
+/* The log, the shell and the keys take the place of the talk, as in the Java app. */
 .pill.active { --c: var(--amber); }
-.c-drawer { --amber: #f90; --peach: #fc9; --lavender: #99f; margin: 0 0 22px; padding: 10px 14px 14px; border-radius: 0 0 18px 18px; background: #000; color: #ecedf6; }
-.console:has(+ .c-drawer:not([hidden])) { margin-bottom: 0; border-radius: 18px 18px 0 0; }
-.c-drawer[hidden] { display: none; }
-.c-drawer .shell { margin: 0; border: 0; background: transparent; }
-.c-drawer .keylog-head h2 { color: #b8b8ff; font-family: Geist, system-ui, sans-serif; }
+.c-view { display: flex; flex-direction: column; gap: 8px; height: 100%; min-height: 0; }
+.c-view[hidden], .c-slide[hidden] { display: none; }
+.c-view [role="tabpanel"] { display: flex; flex: 1; flex-direction: column; min-height: 0; }
+.c-view [role="tabpanel"][hidden] { display: none; }
+.c-view .keylog-body, .c-view .shell-out { flex: 1; height: auto; min-height: 0; border-radius: 10px; }
+.c-view .shell { display: flex; flex: 1; flex-direction: column; min-height: 0; margin: 0; border: 0; background: transparent; }
+.c-view .shell-form { border-radius: 0 0 10px 10px; }
+.c-view .caption-note { margin: 6px 4px 0; color: #8d8da4; font-size: .8em; }
 .keylog-buttons { display: flex; gap: 6px; }
-.c-drawer .keylog-head button { border: 0; border-radius: 12px; background: var(--lavender); color: #000; font: 700 13px Geist, system-ui, sans-serif; padding: 4px 14px; cursor: pointer; }
-.c-drawer .shell-out { height: min(40vh, 20em); border-radius: 10px; }
-.c-drawer .shell-form { border-radius: 0 0 10px 10px; }
-.c-drawer .caption-note { color: #8d8da4; }
-
 .c-tabs { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
 .c-tab { padding: 6px 16px 5px; border: 0; border-radius: 999px; background: color-mix(in srgb, var(--lavender) 22%, #000); color: var(--lavender); font: 700 13px Geist, system-ui, sans-serif; cursor: pointer; }
 .c-tab[aria-selected="true"] { background: var(--lavender); color: #000; }
 .c-tab:focus-visible { outline: 2px solid var(--peach); outline-offset: 2px; }
-.c-drawer [role="tabpanel"][hidden] { display: none; }
-.c-drawer .keylog-body { height: min(40vh, 20em); border-radius: 10px; }
-.c-drawer #keylog, .c-drawer #demolog { border-radius: 10px; }
 .c-tabs .keylog-buttons button { padding: 4px 14px; border: 0; border-radius: 12px; background: var(--lavender); color: #000; font: 700 13px Geist, system-ui, sans-serif; cursor: pointer; }
 .c-tabs .keylog-buttons button:hover { filter: brightness(1.15); }
