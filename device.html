@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Try it · Nachtgespenst</title>
-<meta name="description" content="The CoreS3 in your browser: page through screenshots of the real board, open the Locks page and switch Caps, Num and Scroll Lock.">
+<title>Nachtgespenst · Try it</title>
+<meta name="description" content="Nachtgespenst in your browser: page through the pages, open the Locks page and switch Caps, Num and Scroll Lock.">
 <link rel="canonical" href="https://hanskruse.eu/nachtgespenst/camera.html">
 <meta name="theme-color" content="#0b0e14" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f6f7fb" media="(prefers-color-scheme: light)">
@@ -18,8 +18,8 @@
 <meta name="msapplication-TileColor" content="#0b0e14">
 <!-- link previews -->
 <meta property="og:type" content="website">
-<meta property="og:title" content="Camera tests · Nachtgespenst">
-<meta property="og:description" content="How a laptop webcam and a small JBang tool find the LED bar pin and check the colour of every layer.">
+<meta property="og:title" content="Nachtgespenst · Try it">
+<meta property="og:description" content="Nachtgespenst in your browser: page through the pages, open the Locks page and switch Caps, Num and Scroll Lock.">
 <meta property="og:url" content="https://hanskruse.eu/nachtgespenst/camera.html">
 <meta property="og:image" content="https://hanskruse.eu/nachtgespenst/og-image.png">
 <meta property="og:image:width" content="1200">
@@ -34,10 +34,10 @@
 <script src="mock.js" defer></script>
 </head>
 <body>
-<nav class="sitenav" aria-label="Site"><div class="wrap"><a class="brand" href="index.html"><img src="favicon.svg" width="28" height="28" alt="">Nachtgespenst</a><a class="key" href="pages.html">Pages</a><a class="key" href="setup.html">Set-up</a><details class="menu"><summary aria-label="Menu"><span class="burger" aria-hidden="true"></span><span class="label">Menu</span></summary><div class="panel"><div class="col"><h2>Pages</h2><ul><li><a href="pages.html">Overview</a></li><li><a href="pages-work.html">Work and editing</a></li><li><a href="pages-function.html">Function keys</a></li><li><a href="pages-typing.html">Typing and layout</a></li><li><a href="pages-media.html">Media and applications</a></li></ul></div><div class="col"><h2>Interfaces</h2><ul><li><a href="interfaces.html">LVGL or classic</a></li><li><a href="classic.html">Classic overview</a></li><li><a href="classic-work.html">Classic: Work and editing</a></li><li><a href="classic-function.html">Classic: Function keys</a></li><li><a href="classic-typing.html">Classic: Typing and layout</a></li><li><a href="classic-media.html">Classic: Media and applications</a></li></ul></div><div class="col"><h2>Project</h2><ul><li><a href="index.html">Home</a></li><li><a href="device.html" aria-current="page">Try it</a></li><li><a href="clicker.html">Clicker</a></li><li><a href="shell.html">Shell manual</a></li><li><a href="setup.html">Set it up</a></li><li><a href="story.html">The story</a></li><li><a href="repositories.html">Repositories</a></li></ul></div><div class="col"><h2>Demos</h2><ul><li><a href="demos.html">About the demos</a></li><li><a href="lamps.html">LampArray bench</a></li><li><a href="camera.html">Camera tests</a></li></ul></div></div></details></div></nav>
+<nav class="sitenav" aria-label="Site"><div class="wrap"><a class="brand" href="index.html"><img src="favicon.svg" width="28" height="28" alt="">Nachtgespenst</a><a class="key active" href="device.html" aria-current="page">Try it</a><a class="key" href="setup.html">Set-up</a><details class="menu"><summary aria-label="Menu"><span class="burger" aria-hidden="true"></span><span class="label">Menu</span></summary><div class="panel"><div class="col"><h2>Project</h2><ul><li><a href="index.html">Home</a></li><li><a href="device.html" aria-current="page">Try it</a></li><li><a href="clicker.html">Clicker</a></li><li><a href="shell.html">Shell manual</a></li><li><a href="setup.html">Set it up</a></li><li><a href="story.html">The story</a></li><li><a href="repositories.html">Repositories</a></li></ul></div><div class="col"><h2>Demos</h2><ul><li><a href="demos.html">About the demos</a></li><li><a href="lamps.html">LampArray bench</a></li><li><a href="camera.html">Camera tests</a></li></ul></div><div class="col"><h2>History</h2><ul><li><a href="interfaces.html">Two interfaces</a></li><li><a href="classic.html">The classic interface</a></li><li><a href="classic-work.html">Classic: Work and editing</a></li><li><a href="classic-function.html">Classic: Function keys</a></li><li><a href="classic-typing.html">Classic: Typing and layout</a></li><li><a href="classic-media.html">Classic: Media and applications</a></li></ul></div></div></details></div></nav>
 <header class="hero compact"><div class="wrap">
-<h1><img class="logo" src="favicon.svg" width="56" height="56" alt="">Try it</h1>
-<p class="tag">The CoreS3 in your browser: page through it and open the Locks page.</p>
+<h1><img class="logo" src="favicon.svg" width="56" height="56" alt="">Nachtgespenst</h1>
+<p class="tag">Try it: page through the pages and open the Locks page.</p>
 </div></header>
 <main class="wrap">
 <section id="device">
@@ -59,7 +59,7 @@
 <div class="controls"><button type="button" data-act="prev">&larr; Previous</button><button type="button" data-act="title">Locks</button><button type="button" data-act="next">Next &rarr;</button></div>
 </div>
 <p class="mock-status" id="mockstatus" role="status" aria-live="polite"></p>
-<noscript><p class="notice">This page needs JavaScript. The screenshots of every page are on the <a href="pages.html">Pages</a> page.</p></noscript>
+<noscript><p class="notice">This page needs JavaScript. Without it you see the first screen only.</p></noscript>
 <h2>What is real</h2>
 <p>Every picture is a screenshot of a real CoreS3 running the current firmware: one for each key layer, and eight of the Locks page, one for each combination of Caps, Num and Scroll Lock that a host can report. They were taken from the board with its test tool, which presses the lock tiles and reads back the state, so what you see is what the screen draws. The page only replays them: nothing is simulated, and tapping a key tile sends nothing.</p>
 <ul>
@@ -69,7 +69,7 @@
 <li>A page can be opened directly with its number, for example <code>device.html#12</code>.</li>
 </ul>
 </section>
-<nav class="pager" aria-label="Previous and next page"><a class="prev" href="pages.html"><small>&larr; Previous</small><br>Pages</a><a class="next" href="clicker.html"><small>Next &rarr;</small><br>Clicker</a></nav>
+<nav class="pager" aria-label="Previous and next page"><a class="prev" href="index.html"><small>&larr; Previous</small><br>Home</a><a class="next" href="clicker.html"><small>Next &rarr;</small><br>Clicker</a></nav>
 
 </main>
 <footer><div class="wrap">
