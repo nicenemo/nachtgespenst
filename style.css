@@ -131,3 +131,10 @@ nav.sitenav .panel li a[aria-current="page"] { background: var(--accent); color:
 .mock .controls button:active { background: var(--code); }
 .mock-status { min-height: 3.2em; margin: 10px auto 0; max-width: 640px; text-align: center; color: var(--muted); }
 @media (prefers-reduced-motion: reduce) { .mock .bar .led { transition: none; } }
+
+/* The start page: the Locks page as a link to the web demo */
+.hero-demo { max-width: 480px; margin: 18px auto 0; }
+.hero-demo a { display: block; text-align: center; text-decoration: none; color: inherit; }
+.hero-demo img { display: block; width: 100%; height: auto; border: 6px solid #0b0e14; border-radius: 14px; background: #000; }
+.hero-demo a:hover img, .hero-demo a:focus-visible img { border-color: var(--accent); }
+.hero-demo span { display: inline-block; margin-top: 8px; color: var(--accent); font-weight: 600; }

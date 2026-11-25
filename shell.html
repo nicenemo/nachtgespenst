@@ -33,7 +33,7 @@
 <script src="menu.js" defer></script>
 </head>
 <body>
-<nav class="sitenav" aria-label="Site"><div class="wrap"><a class="brand" href="index.html"><img src="favicon.svg" width="28" height="28" alt="">Nachtgespenst</a><a class="key" href="pages.html">Pages</a><a class="key" href="setup.html">Set-up</a><details class="menu"><summary aria-label="Menu"><span class="burger" aria-hidden="true"></span><span class="label">Menu</span></summary><div class="panel"><div class="col"><h2>Pages</h2><ul><li><a href="pages.html">Overview</a></li><li><a href="pages-work.html">Work and editing</a></li><li><a href="pages-function.html">Function keys</a></li><li><a href="pages-typing.html">Typing and layout</a></li><li><a href="pages-media.html">Media and applications</a></li></ul></div><div class="col"><h2>Interfaces</h2><ul><li><a href="interfaces.html">LVGL or classic</a></li><li><a href="classic.html">Classic overview</a></li><li><a href="classic-work.html">Classic: Work and editing</a></li><li><a href="classic-function.html">Classic: Function keys</a></li><li><a href="classic-typing.html">Classic: Typing and layout</a></li><li><a href="classic-media.html">Classic: Media and applications</a></li></ul></div><div class="col"><h2>Project</h2><ul><li><a href="index.html">Home</a></li><li><a href="device.html">Try it</a></li><li><a href="clicker.html">Clicker</a></li><li><a href="shell.html" aria-current="page">Shell manual</a></li><li><a href="setup.html">Set it up</a></li><li><a href="story.html">The story</a></li><li><a href="repositories.html">Repositories</a></li></ul></div><div class="col"><h2>Demos</h2><ul><li><a href="demos.html">About the demos</a></li><li><a href="lamps.html">LampArray bench</a></li><li><a href="camera.html">Camera tests</a></li></ul></div></div></details></div></nav>
+<nav class="sitenav" aria-label="Site"><div class="wrap"><a class="brand" href="index.html"><img src="favicon.svg" width="28" height="28" alt="">Nachtgespenst</a><a class="key" href="device.html">Try it</a><a class="key" href="setup.html">Set-up</a><details class="menu"><summary aria-label="Menu"><span class="burger" aria-hidden="true"></span><span class="label">Menu</span></summary><div class="panel"><div class="col"><h2>Project</h2><ul><li><a href="index.html">Home</a></li><li><a href="device.html">Try it</a></li><li><a href="clicker.html">Clicker</a></li><li><a href="shell.html" aria-current="page">Shell manual</a></li><li><a href="setup.html">Set it up</a></li><li><a href="story.html">The story</a></li><li><a href="repositories.html">Repositories</a></li></ul></div><div class="col"><h2>Demos</h2><ul><li><a href="demos.html">About the demos</a></li><li><a href="lamps.html">LampArray bench</a></li><li><a href="camera.html">Camera tests</a></li></ul></div><div class="col"><h2>History</h2><ul><li><a href="interfaces.html">Two interfaces</a></li><li><a href="classic.html">The classic interface</a></li><li><a href="classic-work.html">Classic: Work and editing</a></li><li><a href="classic-function.html">Classic: Function keys</a></li><li><a href="classic-typing.html">Classic: Typing and layout</a></li><li><a href="classic-media.html">Classic: Media and applications</a></li></ul></div></div></details></div></nav>
 <header class="hero compact"><div class="wrap">
 <h1><img class="logo" src="favicon.svg" width="56" height="56" alt="">Shell manual</h1>
 <p class="tag">The commands of the boards, lower case, with help for every command.</p>
@@ -50,7 +50,8 @@
 <tr><td><a href="#cmd-state"><code>state</code></a></td><td><code>state</code></td><td>The current page, the host lock LEDs, the last key, the connections.</td></tr>
 <tr><td><a href="#cmd-layer"><code>layer</code></a></td><td><code>layer &lt;n&gt;</code></td><td>Show page n (0 is the first key layer).</td></tr>
 <tr><td><a href="#cmd-key"><code>key</code></a></td><td><code>key &lt;layer&gt; &lt;tile&gt;</code></td><td>Press a tile as if it was touched. It really types on the host!</td></tr>
-<tr><td><a href="#cmd-tap"><code>tap</code></a></td><td><code>tap &lt;x&gt; &lt;y&gt;</code></td><td>Touch the screen at x, y (Locks page only).</td></tr>
+<tr><td><a href="#cmd-tap"><code>tap</code></a></td><td><code>tap &lt;x&gt; &lt;y&gt;</code></td><td>Touch the screen at x, y (a key page or the Locks page).</td></tr>
+<tr><td><a href="#cmd-tapok"><code>tapok</code></a></td><td><code>tapok &lt;x&gt; &lt;y&gt;</code></td><td>Say whether tap would accept the point; nothing is touched.</td></tr>
 <tr><td><a href="#cmd-down"><code>down</code></a></td><td><code>down &lt;x&gt; &lt;y&gt;</code></td><td>Hold a touch at x, y until up (Locks page or the header bar only).</td></tr>
 <tr><td><a href="#cmd-up"><code>up</code></a></td><td><code>up</code></td><td>Release the touch that down is holding.</td></tr>
 <tr><td><a href="#cmd-btn"><code>btn</code></a></td><td><code>btn &lt;a|b|c&gt; &lt;down|up&gt;</code></td><td>Press or release a button of the Core2 (A previous page, B Locks, C next page).</td></tr>
@@ -120,10 +121,16 @@
 <pre>key 26 2</pre>
 <h2 id="cmd-tap">tap</h2>
 <p><code>tap &lt;x&gt; &lt;y&gt;</code></p>
-<p>Touch the screen at x, y (Locks page only).</p>
-<p>Refused outside the Locks page (ERR tap), so that a stray coordinate cannot press a key on another page.</p>
+<p>Touch the screen at x, y (a key page or the Locks page).</p>
+<p>The tile at that point is pressed, so the key really types on the host: grab the keyboard device of the board first if a test must not reach the desktop. Refused (ERR tap) when the point is on, or within 2 pixels of, a Power Down or Sleep tile (they power down or suspend the computer), and on the pages after the Locks page. Use tapok to ask without touching.</p>
 <p>Reply:</p><ul><li><code>OK TAP | ERR tap</code></li></ul>
 <pre>tap 160 120</pre>
+<h2 id="cmd-tapok">tapok</h2>
+<p><code>tapok &lt;x&gt; &lt;y&gt;</code></p>
+<p>Say whether tap would accept the point; nothing is touched.</p>
+<p>OK TAPOK allowed or OK TAPOK refused. The same rule as tap, so a test can check that the Power Down and Sleep tiles are refused without ever tapping them.</p>
+<p>Reply:</p><ul><li><code>OK TAPOK allowed | OK TAPOK refused</code></li></ul>
+<pre>tapok 160 120</pre>
 <h2 id="cmd-down">down</h2>
 <p><code>down &lt;x&gt; &lt;y&gt;</code></p>
 <p>Hold a touch at x, y until up (Locks page or the header bar only).</p>
