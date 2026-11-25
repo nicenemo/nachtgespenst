@@ -318,3 +318,16 @@ nav.sitenav .panel li a[aria-current="page"] { background: var(--accent); color:
   .c-bar { flex-direction: column; align-items: stretch; }
   .c-lcd { flex: none; }
 }
+
+/* The shell as a drawer under the console: it opens downwards and does not block the page. */
+.pill.active { --c: var(--amber); }
+.c-drawer { --amber: #f90; --peach: #fc9; --lavender: #99f; margin: 0 0 22px; padding: 10px 14px 14px; border-radius: 0 0 18px 18px; background: #000; color: #ecedf6; }
+.console:has(+ .c-drawer:not([hidden])) { margin-bottom: 0; border-radius: 18px 18px 0 0; }
+.c-drawer[hidden] { display: none; }
+.c-drawer .shell { margin: 0; border: 0; background: transparent; }
+.c-drawer .keylog-head h2 { color: #b8b8ff; font-family: Geist, system-ui, sans-serif; }
+.keylog-buttons { display: flex; gap: 6px; }
+.c-drawer .keylog-head button { border: 0; border-radius: 12px; background: var(--lavender); color: #000; font: 700 13px Geist, system-ui, sans-serif; padding: 4px 14px; cursor: pointer; }
+.c-drawer .shell-out { height: min(40vh, 20em); border-radius: 10px; }
+.c-drawer .shell-form { border-radius: 0 0 10px 10px; }
+.c-drawer .caption-note { color: #8d8da4; }

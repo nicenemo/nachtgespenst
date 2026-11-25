@@ -13,7 +13,8 @@ const link = decodeURIComponent(window.location.hash);
 const lamps = createLamps();
 const onDemoPage = document.getElementById('demo-page') !== null;
 const audio = onDemoPage ? createAudioRig(window) : null;
-const optional = createOptional(lamps, () => audio?.wave() ?? new Array(512).fill(0));
+let boardBar = () => lamps.snapshot().bar;
+const optional = createOptional(lamps, () => audio?.wave() ?? new Array(512).fill(0), () => boardBar());
 const device = start({
   document,
   window,
@@ -24,4 +25,5 @@ const device = start({
   extra: onDemoPage ? optional : undefined,
 });
 startClicker({ document, window, help: globalThis.NG_SHELLHELP ?? [] });
-if (device) startDemoPage({ document, window, slides: globalThis.NG_SLIDES ?? [], device, lamps, audio, link });
+if (device) boardBar = () => device.currentBar();
+if (device) startDemoPage({ document, window, slides: globalThis.NG_SLIDES ?? [], device, lamps, audio, link, optional });

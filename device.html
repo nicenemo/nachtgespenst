@@ -92,7 +92,7 @@
 <button type="button" id="keys-open" class="pill lavender" title="The keys that the tiles would send" aria-label="The keys that the tiles would send"><svg viewBox="-12 -12 24 24" width="22" height="22" aria-hidden="true" focusable="false" ><rect x="-10" y="-6" width="20" height="12" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M-6-2h2M-1-2h2M4-2h2M-5 2h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
 <button type="button" id="sound-open" class="pill lavender" title="Sound: the microphone and the speakers" aria-label="Sound: the microphone and the speakers"><svg viewBox="-12 -12 24 24" width="22" height="22" aria-hidden="true" focusable="false" ><path d="M-9-3h4l5-5v16l-5-5h-4z" fill="currentColor"/><path d="M4-4q3 4 0 8M7-7q6 7 0 14" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg></button>
 <button type="button" id="log-open" class="pill lavender" title="What is happening: the log" aria-label="What is happening: the log"><svg viewBox="-12 -12 24 24" width="22" height="22" aria-hidden="true" focusable="false" ><path d="M-9-7h2M-9 0h2M-9 7h2M-4-7h12M-4 0h12M-4 7h12" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
-<button type="button" id="shell-open" class="pill lavender" title="The shell of the board: commands, history and Tab completion" aria-label="The shell of the board: commands, history and Tab completion"><svg viewBox="-12 -12 24 24" width="22" height="22" aria-hidden="true" focusable="false" ><path d="M-8-6 -2 0-8 6" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M1 6h8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
+<button type="button" id="shell-open" class="pill lavender" aria-expanded="false" aria-controls="shell-drawer" title="The shell of the board: commands, history and Tab completion" aria-label="The shell of the board: commands, history and Tab completion"><svg viewBox="-12 -12 24 24" width="22" height="22" aria-hidden="true" focusable="false" ><path d="M-8-6 -2 0-8 6" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M1 6h8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
 </div>
 <div class="c-lcd" id="lcd" role="group" aria-label="Readouts">
 <div class="lcd-cell lcd-talk"><span class="lcd-label" id="lcd-talk-label">talk</span><span class="lcd-digits lavender" id="lcd-talk-text" data-ghost="0:00 / 0:00">0:00 / 0:00</span><span class="meter peach" id="slide-progress" style="--f:0"></span><span class="meter lavender" id="talk-progress" style="--f:0"></span></div>
@@ -129,15 +129,15 @@
 </aside>
 <form method="dialog"><button type="submit" class="blockbtn peach">Close</button></form>
 </dialog>
-<dialog id="shell-dialog" class="c-dialog wide" aria-labelledby="shell-title">
+
+</section>
+<section id="shell-drawer" class="c-drawer" aria-label="The shell of the board" hidden>
 <div class="shell" role="group" aria-labelledby="shell-title">
-<div class="keylog-head"><h2 id="shell-title">The shell of the CoreS3, with the lamp commands</h2><button type="button" id="shell-clear">Clear</button></div>
+<div class="keylog-head"><h2 id="shell-title">The shell of the CoreS3</h2><span class="keylog-buttons"><button type="button" id="shell-clear">Clear</button><button type="button" id="shell-close">Close</button></span></div>
 <div class="shell-out" id="shell-out" role="log" aria-live="polite" tabindex="0"></div>
 <form id="shell-form" class="shell-form" autocomplete="off"><label for="shell-in" id="shell-prompt">NG&gt; </label><input id="shell-in" type="text" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Shell command"><button type="submit">Run</button></form>
 <p class="caption-note">The commands of the serial shell (<a href="shell.html">manual</a>), answered by this page: <code>help</code>, <code>state</code>, <code>layer 26</code>, <code>tiles</code>, <code>tap 160 120</code>, <code>key 26 2</code>, <code>prefer ble</code>, <code>set effect rainbow</code>, <code>lamps</code>, <code>bar</code>, <code>wave</code>. Values that need a real board (memory, SD card) are made up. Nothing is sent to a computer.</p>
 </div>
-<form method="dialog"><button type="submit" class="blockbtn peach">Close</button></form>
-</dialog>
 </section>
 <section id="about">
 <noscript><p class="notice">This page needs JavaScript.</p></noscript>

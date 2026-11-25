@@ -7,13 +7,16 @@ import { level } from './audio.js';
  * Makes the handler for these commands.
  * @param {ReturnType<typeof import('./lamps.js').createLamps>} lamps
  * @param {() => number[]} wave the last waveform: 512 samples
- * @returns {(command: string, args: string[]) => string[] | null} null when the command is not one of these
+ * @param {() => number[]} [bar] the colours of the ten LEDs of the board now; without it the lamps that a demo painted
+ * @returns {((command: string, args: string[]) => string[] | null) & {recordDisk: (result: import('./disk.js').DiskResult) => void}} the handler: null for a command that is not one of these; recordDisk tells it what the last file transfer did
  */
-export function createOptional(lamps, wave) {
+export function createOptional(lamps, wave, bar = () => lamps.snapshot().bar) {
   let mic = false;
   let telem = 'OFF';
-  let disk = 'idle';
-  return (command, args) => {
+  let sound = false;
+  /** @type {import('./disk.js').DiskResult | null} */
+  let last = null;
+  const handler = (/** @type {string} */ command, /** @type {string[]} */ args) => {
     const [a, b, c] = args;
     switch (command) {
       case 'lamps': {
@@ -39,7 +42,7 @@ export function createOptional(lamps, wave) {
         return ['ERR lamps'];
       }
       case 'bar':
-        return args.length === 0 ? [`OK BAR ${lamps.snapshot().bar.map((rgb) => rgb.toString(16).padStart(6, '0')).join(' ')}`] : ['ERR unknown'];
+        return args.length === 0 ? [`OK BAR ${bar().map((rgb) => rgb.toString(16).padStart(6, '0')).join(' ')}`] : ['ERR unknown'];
       case 'wave':
         return args.length === 0 ? [`OK WAVE ${wave().map((s) => (s & 0xffff).toString(16).padStart(4, '0')).join('')}`] : ['ERR unknown'];
       case 'mic': {
@@ -60,15 +63,26 @@ export function createOptional(lamps, wave) {
           return [`OK TELEM ${telem}`];
         }
         return ['ERR telem'];
-      case 'disk':
-        if (a === undefined) return [`OK DISK state=${disk} ok=0 speaker=0 mic=${mic ? 1 : 0}`];
+      case 'disk': {
+        if (a === undefined) {
+          const kbps10 = last ? Math.round(last.packed / 1000 / last.saveSeconds * 10) : 0;
+          const tx10 = last ? Math.round(last.size / 1000 / last.loadSeconds * 10) : 0;
+          return [`OK DISK state=${last ? 'done' : 'idle'} ok=${last ? 1 : 0} errors=${last?.errors ?? 0} kbps10=${kbps10} txkbps10=${tx10} match=${last?.match ? 1 : 0} speaker=${sound ? 1 : 0} mic=${mic ? 1 : 0}`];
+        }
         if (a === 'reset' && b === undefined) {
-          disk = 'idle';
+          last = null;
           return ['OK DISK RESET'];
         }
+        if (a === 'dir' && b === undefined) return last ? ['OK DIR', `book.txt ${last.size}`] : ['OK DIR'];
+        if (a === 'sound' && (b === 'on' || b === 'off') && c === undefined) {
+          sound = b === 'on';
+          return [`OK DISK SOUND ${b.toUpperCase()}`];
+        }
         return ['ERR unknown'];
+      }
       default:
         return null;
     }
   };
+  return Object.assign(handler, { recordDisk: (/** @type {import('./disk.js').DiskResult} */ result) => { last = result; } });
 }

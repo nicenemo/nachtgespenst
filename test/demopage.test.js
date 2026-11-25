@@ -21,10 +21,12 @@ function page(/** @type {import('node:test').TestContext} */ t) {
   dialog.close = () => undefined;
   dialog.showModal = () => undefined;
   const lamps = createLamps();
-  const optional = createOptional(lamps, () => new Array(512).fill(0));
-  const device = start({ document, window, keymap: data.NG_KEYMAP, lockKeys: data.NG_LOCKKEYS, lockColors: [[255, 80, 0], [0, 220, 60], [40, 80, 255]], help: data.NG_SHELLHELP_FULL, extra: optional });
+  const optional = createOptional(lamps, () => new Array(512).fill(0), () => device?.currentBar() ?? []);
+  /** @type {ReturnType<typeof start>} */
+  let device = null;
+  device = start({ document, window, keymap: data.NG_KEYMAP, lockKeys: data.NG_LOCKKEYS, lockColors: [[255, 80, 0], [0, 220, 60], [40, 80, 255]], help: data.NG_SHELLHELP_FULL, extra: optional });
   assert.ok(device);
-  const app = startDemoPage({ document, window, slides: data.NG_SLIDES, device, lamps, audio: null, link: '' });
+  const app = startDemoPage({ document, window, slides: data.NG_SLIDES, device, lamps, audio: null, link: '', optional });
   assert.ok(app);
   t.after(() => { app.dispose(); window.close(); });
   return { document, window, lamps, device, app };
@@ -109,4 +111,65 @@ test('the bar on the PC is the LED bar of the board: the colour of the page, the
   /** @type {HTMLElement} */ (document.querySelector('[data-demo="bar:rainbow"]')).click();
   await wait(200);
   assert.ok(new Set(device.currentBar()).size > 1, 'a demo paints different colours');
+});
+
+test('the shell is a drawer under the console, not a popup', (t) => {
+  const { document } = page(t);
+  const drawer = /** @type {HTMLElement} */ (document.getElementById('shell-drawer'));
+  const button = /** @type {HTMLElement} */ (document.getElementById('shell-open'));
+  assert.equal(drawer.hidden, true);
+  assert.equal(drawer.closest('dialog'), null, 'the shell is not inside a dialog');
+  button.click();
+  assert.equal(drawer.hidden, false);
+  assert.equal(button.getAttribute('aria-expanded'), 'true');
+  assert.ok(button.classList.contains('active'));
+  /** @type {HTMLElement} */ (document.getElementById('shell-close')).click();
+  assert.equal(drawer.hidden, true);
+  assert.equal(button.getAttribute('aria-expanded'), 'false');
+});
+
+test('every command of the manual answers on the page, as on the board', (t) => {
+  const { document, window } = page(t);
+  const input = /** @type {HTMLInputElement} */ (document.getElementById('shell-in'));
+  const out = /** @type {HTMLElement} */ (document.getElementById('shell-out'));
+  const run = (/** @type {string} */ line) => {
+    const before = out.children.length;
+    input.value = line;
+    /** @type {HTMLFormElement} */ (document.getElementById('shell-form')).dispatchEvent(new window.Event('submit', { cancelable: true }));
+    return [...out.children].slice(before + 1).map((e) => e.textContent ?? '');
+  };
+  // the commands of the Core2 build only: the CoreS3 answers them with ERR unknown (or ERR btn)
+  const presenterOnly = new Set(['clicker', 'pointer', 'imu', 'mod', 'btn']);
+  const refused = [];
+  for (const h of data.NG_SHELLHELP_FULL) {
+    for (const example of h.examples) {
+      if (/^(tap|key|down) /u.test(example)) continue;     // these type on a host: they have their own tests
+      const reply = run(example)[0] ?? '';
+      if (presenterOnly.has(h.name)) assert.match(reply, /^ERR /u, example);
+      else if (!reply.startsWith('OK')) refused.push(`${example} -> ${reply}`);
+    }
+  }
+  assert.deepEqual(refused, []);
+});
+
+test('bar and disk answer from the state of the board and of the last transfer', async (t) => {
+  const { document, window, device } = page(t);
+  const input = /** @type {HTMLInputElement} */ (document.getElementById('shell-in'));
+  const out = /** @type {HTMLElement} */ (document.getElementById('shell-out'));
+  const run = (/** @type {string} */ line) => {
+    const before = out.children.length;
+    input.value = line;
+    /** @type {HTMLFormElement} */ (document.getElementById('shell-form')).dispatchEvent(new window.Event('submit', { cancelable: true }));
+    return [...out.children].slice(before + 1).map((e) => e.textContent ?? '');
+  };
+  device.go(3);
+  assert.match(run('bar')[0] ?? '', /^OK BAR ([0-9a-f]{6} ?){10}$/u);
+  assert.notEqual(run('bar')[0], `OK BAR ${new Array(10).fill('000000').join(' ')}`, 'a key page lights the LEDs');
+  assert.match(run('disk')[0] ?? '', /state=idle/u);
+  /** @type {HTMLElement} */ (document.querySelector('[data-demo="diskfast"]')).click();
+  for (let i = 0; i < 40 && !/state=done/u.test(run('disk')[0] ?? ''); i++) await wait(100);
+  assert.match(run('disk')[0] ?? '', /state=done .*match=1/u);
+  assert.deepEqual(run('disk dir'), ['OK DIR', 'book.txt 620000']);
+  assert.deepEqual(run('disk sound off'), ['OK DISK SOUND OFF']);
+  assert.deepEqual(run('disk reset'), ['OK DISK RESET']);
 });

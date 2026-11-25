@@ -16,6 +16,7 @@ import { createTalk } from './talk.js';
  * @property {ReturnType<typeof import('./lamps.js').createLamps>} lamps
  * @property {ReturnType<typeof import('./audioweb.js').createAudioRig>} audio the sound rig, or null without Web Audio
  * @property {string} link the address fragment, for example #demo=bar:comet
+ * @property {{recordDisk: (result: import('./disk.js').DiskResult) => void} | undefined} [optional] the commands of the optional components, which show the last file transfer
  */
 
 const GROUPS = /** @type {const} */ ([
@@ -117,6 +118,7 @@ export function startDemoPage(env) {
     device: { go: device.go, pages: device.pages },
     audio: audio ?? undefined,
     photos: (cols, rows) => loadPhotos(document, window, cols, rows),
+    recordDisk: (result) => env.optional?.recordDisk(result),
     progress: (text) => showStatus(`Running: ${text}`),
   }), {
     onStart: (label) => {
@@ -164,9 +166,24 @@ export function startDemoPage(env) {
     dialog.close();
     if (!runner.startCycle({ fast: option('opt-fast').checked, mic: option('opt-mic').checked })) say('a demo is running: stop it first');
   });
-  for (const [button, id] of [['demo-open', 'demos-dialog'], ['keys-open', 'keys-dialog'], ['sound-open', 'sound-dialog'], ['log-open', 'log-dialog'], ['shell-open', 'shell-dialog']]) {
+  for (const [button, id] of [['demo-open', 'demos-dialog'], ['keys-open', 'keys-dialog'], ['sound-open', 'sound-dialog'], ['log-open', 'log-dialog']]) {
     byId(button ?? '').addEventListener('click', () => /** @type {HTMLDialogElement} */ (byId(id ?? '')).showModal());
   }
+  // The shell is not a popup: it opens as a drawer under the console, so the board and the demos stay in view and in use.
+  const drawer = byId('shell-drawer');
+  const shellButton = byId('shell-open');
+  const setShell = (/** @type {boolean} */ open) => {
+    drawer.hidden = !open;
+    shellButton.setAttribute('aria-expanded', String(open));
+    shellButton.classList.toggle('active', open);
+    if (open) {
+      drawer.scrollIntoView?.({ block: 'nearest', behavior: 'smooth' });
+      /** @type {HTMLInputElement} */ (byId('shell-in')).focus();
+    }
+  };
+  shellButton.addEventListener('click', () => setShell(drawer.hidden === true));
+  byId('shell-close').addEventListener('click', () => { setShell(false); shellButton.focus(); });
+  byId('shell-in').addEventListener('keydown', (e) => { if (/** @type {KeyboardEvent} */ (e).key === 'Escape') { setShell(false); shellButton.focus(); } });
   byId('demo-stop').addEventListener('click', () => runner.stop());
   byId('demolog-clear').addEventListener('click', () => logEl.replaceChildren());
   if (audio) {

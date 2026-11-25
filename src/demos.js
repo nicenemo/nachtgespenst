@@ -17,6 +17,7 @@ import { BAR_EFFECTS, C64, dissolveOrder, nearestPrime, nextPrime, rasterBars, s
  * @property {{go: (page: number) => void, pages: number}} device the pages of the fake board
  * @property {{tones: (list: number[], seconds: number) => Promise<void>, wave: () => number[], stop: () => void, source: () => string} | undefined} [audio] the sound, when the page has it
  * @property {(text: string) => void} [progress] a short status for the page
+ * @property {((result: import('./disk.js').DiskResult) => void) | undefined} [recordDisk] tells the shell what the last file transfer did
  * @property {((cols: number, rows: number) => Promise<number[][] | null>) | undefined} [photos] the five photographs as grids of lamps; without them the demo draws its own scenes
  */
 
@@ -158,6 +159,7 @@ async function disk(ctx, fast) {
   ctx.progress?.(result.match ? 'SHA-256 MATCH' : 'SHA-256 DIFFERENT');
   ctx.log(`SHA-256 ${result.match ? 'MATCH' : 'DIFFERENT'}; ${result.packed} of ${result.size} bytes after deflate`);
   ctx.log(`${(result.packed / 1000 / result.saveSeconds).toFixed(1)} kB/s to the board (${result.saveSeconds.toFixed(1)} s) and ${(result.size / 1000 / result.loadSeconds).toFixed(1)} kB/s back (${result.loadSeconds.toFixed(1)} s) at the speed of the real board; shown at twice that speed${fast ? ', or as fast as the browser goes' : ''}`);
+  ctx.recordDisk?.(result);
   if (!result.match) throw new Error('the hashes differ');
   return `SHA-256 match, ${result.errors} errors`;
 }
