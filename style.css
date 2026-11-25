@@ -186,3 +186,6 @@ nav.sitenav .panel li a[aria-current="page"] { background: var(--accent); color:
 .hero-real { flex: 1 1 240px; max-width: 360px; margin: 0; text-align: center; }
 .hero-real img { display: block; width: 100%; height: auto; border-radius: 14px; }
 .hero-real figcaption { margin-top: 8px; color: var(--muted); font-size: .9em; }
+.photo { max-width: 420px; margin: 16px auto; text-align: center; }
+.photo img { display: block; width: 100%; height: auto; border-radius: 14px; }
+.photo figcaption { margin-top: 8px; color: var(--muted); font-size: .9em; }
