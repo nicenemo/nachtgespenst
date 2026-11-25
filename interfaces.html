@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Two interfaces · Nachtgespenst</title>
+<meta name="description" content="LVGL or the classic direct-drawing interface: what they look like, what they cost and how fast they are.">
+<link rel="canonical" href="https://hanskruse.eu/nachtgespenst/interfaces.html">
+<meta name="theme-color" content="#0b0e14" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f6f7fb" media="(prefers-color-scheme: light)">
+<!-- icons: the ICO for old browsers and tools, the SVG for modern ones, PNGs for iOS, Android and Windows tiles -->
+<link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" href="favicon.svg" type="image/svg+xml" sizes="any">
+<link rel="apple-touch-icon" href="apple-touch-icon.png" sizes="180x180">
+<link rel="mask-icon" href="safari-pinned-tab.svg" color="#8ea2ff">
+<link rel="manifest" href="site.webmanifest">
+<meta name="msapplication-config" content="browserconfig.xml">
+<meta name="msapplication-TileColor" content="#0b0e14">
+<!-- link previews -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Two interfaces · Nachtgespenst">
+<meta property="og:description" content="LVGL or the classic direct-drawing interface: what they look like, what they cost and how fast they are.">
+<meta property="og:url" content="https://hanskruse.eu/nachtgespenst/interfaces.html">
+<meta property="og:image" content="https://hanskruse.eu/nachtgespenst/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="A ghost with its hands on its cheeks, screaming under a crescent moon">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="style.css">
+<link rel="prev" href="pages.html">
+<link rel="next" href="camera.html">
+<link rel="index" href="index.html">
+<script src="menu.js" defer></script>
+</head>
+<body>
+<nav class="sitenav" aria-label="Site"><div class="wrap"><a class="brand" href="index.html"><img src="favicon.svg" width="28" height="28" alt="">Nachtgespenst</a><a class="key" href="pages.html">Pages</a><a class="key" href="setup.html">Set-up</a><details class="menu"><summary aria-label="Menu"><span class="burger" aria-hidden="true"></span><span class="label">Menu</span></summary><div class="panel"><div class="col"><h2>Pages</h2><ul><li><a href="pages.html">Overview</a></li><li><a href="pages-work.html">Work and editing</a></li><li><a href="pages-function.html">Function keys</a></li><li><a href="pages-typing.html">Typing and layout</a></li><li><a href="pages-media.html">Media and applications</a></li></ul></div><div class="col"><h2>Interfaces</h2><ul><li><a href="interfaces.html" aria-current="page">LVGL or classic</a></li><li><a href="classic.html">Classic overview</a></li><li><a href="classic-work.html">Classic: Work and editing</a></li><li><a href="classic-function.html">Classic: Function keys</a></li><li><a href="classic-typing.html">Classic: Typing and layout</a></li><li><a href="classic-media.html">Classic: Media and applications</a></li></ul></div><div class="col"><h2>Project</h2><ul><li><a href="index.html">Home</a></li><li><a href="shell.html">Shell manual</a></li><li><a href="setup.html">Set it up</a></li><li><a href="story.html">The story</a></li><li><a href="repositories.html">Repositories</a></li></ul></div><div class="col"><h2>Demos</h2><ul><li><a href="demos.html">About the demos</a></li><li><a href="lamps.html">LampArray bench</a></li><li><a href="camera.html">Camera tests</a></li></ul></div></div></details></div></nav>
+<header class="hero compact"><div class="wrap">
+<h1><img class="logo" src="favicon.svg" width="56" height="56" alt="">Two interfaces</h1>
+<p class="tag">LVGL or the classic direct-drawing interface: the same keymap, two ways to draw it.</p>
+</div></header>
+<main class="wrap">
+<section id="ui"><div class="cols">
+<div class="card"><h3>LVGL (the main branches)</h3>
+<p>The interface introduced on 12 November 2026: LVGL 9 with a Material icon subset, rounded tiles, captions under icons, modifier badges (<code>Ctrl+Shift</code>, <code>Hyper</code>) and a themed header. It redraws only what changes.</p></div>
+<div class="card"><h3>Classic (branch <code>feature/classic-ui</code>)</h3>
+<p><a href="classic.html"><b>All classic screenshots, page by page &rarr;</b></a></p>
+<p>The current firmware with LVGL removed: every feature of both boards is kept (BLE, USB, LED bars, serial protocol, tests), but the screen is drawn straight onto the display with plain tiles, text labels and arrow shapes, in the spirit of the very first version of the project (a Core2-only flat grid, May 2026). Because the CoreS3 has no hardware buttons, it gets a bottom bar for previous, Locks and next.</p></div>
+</div>
+<h3>How they compare</h3>
+<p>Both interfaces were built from the same keymap and tested with the same serial test suite, then measured on the boards. A page is "drawn" when it is on the display: LVGL answers <code>LAYER</code> before it renders, so the time is <code>LAYER</code> plus <code>SHOT</code> minus the plain <code>SHOT</code> read-out.</p>
+<table>
+<tr><th></th><th>LVGL</th><th>Classic</th></tr>
+<tr><th>Flash used (CoreS3)</th><td>2.33 MB (35.5 %)</td><td>1.65 MB (25.2 %)</td></tr>
+<tr><th>RAM used (CoreS3)</th><td>105 kB (32.0 %)</td><td>73 kB (22.4 %)</td></tr>
+<tr><th>Time to draw a page, CoreS3</th><td>about 360 ms (260 to 480 ms)</td><td>about 92 ms</td></tr>
+<tr><th>Time to draw a page, Core2</th><td>about 450 to 630 ms</td><td>about 100 ms</td></tr>
+<tr><th>Source</th><td>429-line <code>ui.cpp</code>, icon table, 40 kB icon font, LVGL configuration</td><td>378-line <code>ui.cpp</code>, no icon font</td></tr>
+<tr><th>Look</th><td>Icons, anti-aliased text, rounded tiles, pressed-state animation</td><td>Text labels, arrow shapes, flat tiles</td></tr>
+<tr><th>Tests</th><td colspan="2">Both pass the serial test suite on both boards; the classic interface needed no change to the protocol or the tests.</td></tr>
+</table>
+<p>The classic interface is clearly faster to switch pages and uses about a third less memory; LVGL looks richer and leaves room for more widgets. The slow part of LVGL is building a page (creating up to 24 buttons and rasterising icon glyphs at run time), which can be improved with pre-rendered bitmap fonts and reusable tile widgets; that work is on the to-do list.</p>
+</section>
+<nav class="pager" aria-label="Previous and next page"><a class="prev" href="pages.html"><small>&larr; Previous</small><br>Pages</a><a class="next" href="demos.html"><small>Next &rarr;</small><br>Demos</a></nav>
+
+</main>
+<footer><div class="wrap">
+<p>MIT licence. Third-party components are listed in the <a href="https://github.com/nicenemo/nachtgespenst/blob/main/THIRD-PARTY-NOTICES.md">third-party notices</a>.</p>
+<p class="copyright">&copy; 2026 <a href="https://hanskruse.eu">Hans Kruse</a></p>
+</div></footer>
+</body>
+</html>

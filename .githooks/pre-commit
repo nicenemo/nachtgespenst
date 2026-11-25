@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# Pre-commit hook: scan the staged files for secrets with trufflehog (no network: verification is skipped here).
+# Enable with: git config core.hooksPath .githooks  
+set -euo pipefail
+
+command -v trufflehog >/dev/null 2>&1 || { echo "pre-commit: trufflehog is not installed; refusing to commit unscanned." >&2; exit 1; }
+
+files="$(git diff --cached --name-only --diff-filter=ACM)"
+[ -n "$files" ] || exit 0
+
+tmp="$(mktemp -d)"
+trap 'rm -rf "$tmp"' EXIT
+# Scan the staged content, not the working copy.
+printf '%s\n' "$files" | xargs git checkout-index --prefix="$tmp/" --
+out="$(trufflehog filesystem "$tmp" --no-verification --results=unverified,unknown,verified --fail --no-color 2>&1)" \
+    || { echo "pre-commit: trufflehog found possible secrets in the staged files:" >&2; echo "$out" >&2; exit 1; }
+
+# Site gate: the private repository must not be named in the site.
+"$(git rev-parse --show-toplevel)/scripts/check-private-names.sh"

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <title>Nachtgespenst: a crescent moon and a screaming ghost</title>
+  <defs>
+    <mask id="bite"><rect width="128" height="128" fill="#fff"/><circle cx="106" cy="25" r="13" fill="#000"/></mask>
+  </defs>
+  <rect width="128" height="128" rx="24" fill="#0b0e1c"/>
+  <!-- crescent moon -->
+  <circle cx="98" cy="30" r="17" fill="#f6e7a6" mask="url(#bite)"/>
+  <!-- ghost: pale hooded body with a wavy hem -->
+  <path d="M60 20 C80 20 90 38 88 60 C87 74 92 90 95 108 Q88 100 82 109 Q76 118 70 109 Q64 100 58 109 Q52 118 46 109 Q40 100 33 108 C36 90 40 74 36 60 C34 38 42 20 60 20 Z" fill="#ece8f6" stroke="#1a1626" stroke-width="2.2" stroke-linejoin="round"/>
+  <!-- the scream: hollow eyes, slit nose, long open mouth -->
+  <ellipse cx="51" cy="49" rx="5.4" ry="10" fill="#1a1626"/>
+  <ellipse cx="69" cy="49" rx="5.4" ry="10" fill="#1a1626"/>
+  <path d="M59 63 q1 3.5 2 0 M63 63 q1 3.5 2 0" stroke="#1a1626" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+  <ellipse cx="60" cy="81" rx="6" ry="15" fill="#1a1626"/>
+  <!-- hands pressed to the cheeks -->
+  <g fill="#d9d3ee" stroke="#1a1626" stroke-width="2">
+    <ellipse cx="38" cy="66" rx="7.5" ry="12" transform="rotate(12 38 66)"/>
+    <ellipse cx="82" cy="66" rx="7.5" ry="12" transform="rotate(-12 82 66)"/>
+  </g>
+</svg>

@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Pre-push hook: scan the commits that are about to be pushed with trufflehog, including verification.
+# Enable with: git config core.hooksPath .githooks  
+set -euo pipefail
+
+command -v trufflehog >/dev/null 2>&1 || { echo "pre-push: trufflehog is not installed; refusing to push unscanned." >&2; exit 1; }
+
+args=(--results=verified,unknown,unverified --fail --no-color)
+if git rev-parse --verify --quiet "@{upstream}" >/dev/null; then
+    args+=(--since-commit "$(git rev-parse "@{upstream}")" --branch HEAD)
+fi
+out="$(trufflehog git "file://$PWD" "${args[@]}" 2>&1)" \
+    || { echo "pre-push: trufflehog found possible secrets in the commits to push:" >&2; echo "$out" >&2; exit 1; }
+
+
+# Site gate: the private repository must not be named in the site.
+./scripts/check-private-names.sh
