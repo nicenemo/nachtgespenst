@@ -4,6 +4,7 @@
 import { DEMOS, createRunner, demoById } from './demos.js';
 import { drawBoard, drawPc } from './lampviews.js';
 import { loadPhotos } from './photos.js';
+import { readouts } from './readouts.js';
 import { createTalk } from './talk.js';
 
 /**
@@ -40,6 +41,7 @@ export function startDemoPage(env) {
     if (!el) throw new Error(`the page has no element #${id}`);
     return el;
   };
+  const READY = 'Connected: NG-S3 (pretend), 27 pages';
   const logEl = byId('demolog');
   const status = byId('demo-status');
   const boardCanvas = /** @type {HTMLCanvasElement} */ (byId('board-lamps'));
@@ -48,6 +50,12 @@ export function startDemoPage(env) {
   let message = '';
 
   const say = (/** @type {string} */ line) => {
+    for (const r of readouts(line)) {
+      lcd.delete(r.label);
+      lcd.set(r.label, r);
+      while (lcd.size > 3) lcd.delete(lcd.keys().next().value ?? '');
+    }
+    if (lcd.size) drawLcd();
     const t = new Date();
     const stamp = [t.getHours(), t.getMinutes(), t.getSeconds()].map((n) => String(n).padStart(2, '0')).join(':');
     const el = document.createElement('div');
@@ -59,7 +67,24 @@ export function startDemoPage(env) {
   };
   const showStatus = (/** @type {string} */ text) => {
     message = text;
-    status.textContent = text;
+    status.textContent = text === 'Ready' ? READY : text;
+    status.classList.toggle('busy', text.startsWith('Running'));
+  };
+  /** The readouts of the bottom bar: the three most recent numbers of the log, oldest first. @type {Map<string, import('./readouts.js').Readout>} */
+  const lcd = new Map();
+  const drawLcd = () => {
+    const cells = [...lcd.values()].map((r) => {
+      const cell = document.createElement('div');
+      cell.className = 'lcd-cell';
+      const label = Object.assign(document.createElement('span'), { className: 'lcd-label', textContent: r.label });
+      const digits = Object.assign(document.createElement('span'), { className: `lcd-digits ${r.tint === 'amber' ? '' : r.tint}`, textContent: r.text });
+      digits.setAttribute('data-ghost', r.text.replace(/[0-9A-Za-z]/gu, '8'));
+      const meter = Object.assign(document.createElement('span'), { className: `meter ${r.tint === 'amber' ? '' : r.tint}` });
+      meter.style.setProperty('--f', String(Math.max(0, Math.min(1, r.value / r.max))));
+      cell.append(label, digits, meter);
+      return cell;
+    });
+    byId('lcd-readouts').replaceChildren(...cells);
   };
 
   // The lamps: the fake board and the PC panel draw the same state.
@@ -70,13 +95,14 @@ export function startDemoPage(env) {
     drawPc(pcCanvas, snap, document);
   });
   const sizePc = () => {
-    const width = pcCanvas.clientWidth || 480;
-    pcCanvas.width = Math.round(width * Math.min(2, window.devicePixelRatio || 1));
-    pcCanvas.height = Math.round(pcCanvas.width * 0.62);
+    const ratio = Math.min(2, window.devicePixelRatio || 1);
+    pcCanvas.width = Math.round((pcCanvas.clientWidth || 480) * ratio);
+    pcCanvas.height = Math.round((pcCanvas.clientHeight || 300) * ratio);
     drawPc(pcCanvas, lamps.snapshot(), document);
   };
   sizePc();
   window.addEventListener('resize', sizePc);
+  if (typeof window.ResizeObserver === 'function') new window.ResizeObserver(sizePc).observe(pcCanvas);
 
   const seconds = /** @type {HTMLInputElement} */ (byId('opt-seconds'));
   const option = (/** @type {string} */ id) => /** @type {HTMLInputElement} */ (byId(id));
@@ -135,7 +161,9 @@ export function startDemoPage(env) {
     dialog.close();
     if (!runner.startCycle({ fast: option('opt-fast').checked, mic: option('opt-mic').checked })) say('a demo is running: stop it first');
   });
-  byId('demo-open').addEventListener('click', () => dialog.showModal());
+  for (const [button, id] of [['demo-open', 'demos-dialog'], ['keys-open', 'keys-dialog'], ['sound-open', 'sound-dialog'], ['log-open', 'log-dialog'], ['shell-open', 'shell-dialog']]) {
+    byId(button ?? '').addEventListener('click', () => /** @type {HTMLDialogElement} */ (byId(id ?? '')).showModal());
+  }
   byId('demo-stop').addEventListener('click', () => runner.stop());
   byId('demolog-clear').addEventListener('click', () => logEl.replaceChildren());
   if (audio) {
@@ -156,31 +184,36 @@ export function startDemoPage(env) {
   const title = byId('slide-title');
   const bullets = byId('slide-bullets');
   const image = /** @type {HTMLImageElement} */ (byId('slide-image'));
-  const counter = byId('slide-count');
-  const total = /** @type {HTMLProgressElement} */ (byId('talk-progress'));
-  const perSlide = /** @type {HTMLProgressElement} */ (byId('slide-progress'));
-  const showSlide = (/** @type {import('./talk.js').Slide} */ s, /** @type {number} */ i) => {
+  const total = byId('talk-progress');
+  const perSlide = byId('slide-progress');
+  const talkText = byId('lcd-talk-text');
+  const talkLabel = byId('lcd-talk-label');
+  const showSlide = (/** @type {import("./talk.js").Slide} */ s) => {
     title.textContent = s.title;
     bullets.replaceChildren(...s.bullets.map((b) => Object.assign(document.createElement('li'), { textContent: b })));
     image.hidden = s.image === null;
     if (s.image) image.src = s.image;
-    counter.textContent = `${i + 1} / ${slides.length}`;
     const id = s.demo;
     if (runner.running()) runner.stop();
     if (id && demoById(id)) window.setTimeout(() => { if (!runner.start(id)) say(`could not start ${id}`); }, 120);
   };
+  /** @type {ReturnType<typeof createTalk>} */
   const talk = createTalk(slides, {
     onSlide: showSlide,
-    onTick: () => {
-      const p = talk.progress();
-      total.value = p.fraction;
-      perSlide.value = p.slideFraction;
-      if (talk.running()) counter.title = `${p.text}  ${p.label}`;
-    },
+    onTick: () => showProgress(),
     demoRunning: () => runner.running(),
   });
+  function showProgress() {
+    const p = talk.progress();
+    total.style.setProperty('--f', String(p.fraction));
+    perSlide.style.setProperty('--f', String(p.slideFraction));
+    talkText.textContent = p.text;
+    talkText.setAttribute('data-ghost', p.text.replace(/[0-9]/gu, '8'));
+    talkLabel.textContent = talk.running() ? p.label : 'talk';
+  }
+  showProgress();
   const first = slides[0];
-  if (first) showSlide({ ...first, demo: null }, 0);
+  if (first) showSlide({ ...first, demo: null });
   byId('talk-start').addEventListener('click', () => { say(`=== the talk starts, ${slides.length} slides, about ${Math.round(talk.total() / 60000)} minutes`); talk.start(); });
   byId('talk-pause').addEventListener('click', () => talk.pause());
   byId('talk-prev').addEventListener('click', () => (talk.running() ? talk.prev() : undefined));

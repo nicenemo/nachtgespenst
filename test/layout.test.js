@@ -43,3 +43,12 @@ test('every page keeps the status text short enough for its box (two lines of th
     }
   }
 });
+
+test('the console of the demo window has a fixed height, so no slide can change the size of the page', () => {
+  assert.match(rule('.console'), /(^|[\s;])height:\s*clamp\(/u);
+  assert.doesNotMatch(rule('.console'), /min-height|max-height:\s*none/u);
+  assert.match(rule('.c-slide'), /overflow:\s*hidden/u);
+  assert.match(rule('.c-frame'), /min-height:\s*0/u);
+  assert.match(rule('.c-info'), /white-space:\s*nowrap/u);
+  assert.match(rule('.c-slide ul'), /font:[^;]*cqw/u);
+});

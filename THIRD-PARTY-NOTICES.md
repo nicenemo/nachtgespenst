@@ -42,3 +42,7 @@ From Wikimedia Commons, shown at a reduced size and as a grid of lamps in the de
 - *Matterhorn sunset 2016* by Sam Ferrara, CC0 1.0: https://commons.wikimedia.org/wiki/File:Matterhorn_sunset_2016_(Unsplash).jpg
 - *Deventer aan de IJssel 2024* by Smiley.toerist, CC BY-SA 4.0: https://commons.wikimedia.org/wiki/File:Deventer_aan_de_IJssel_2024.jpg
 
+
+## Fonts on the Try it page
+
+Geist Sans and Geist Mono (SIL Open Font License 1.1, https://github.com/vercel/geist-font) are served unmodified from `fonts/` for the console look of the demo window; the licence text is `fonts/OFL.txt`.
