@@ -115,21 +115,24 @@ nav.sitenav .panel li a[aria-current="page"] { background: var(--accent); color:
 
 .notice { background: var(--code); border: 1px solid var(--line); border-left: 4px solid var(--accent); border-radius: 8px; padding: 10px 14px; margin: 18px 0; }
 
-/* The device in the browser (mock.js) */
-.mock { max-width: 640px; margin: 16px auto; }
-.mock .screen { position: relative; border: 6px solid #0b0e14; border-radius: 14px; background: #000; line-height: 0; touch-action: pan-y; }
-.mock .screen img { display: block; width: 100%; height: auto; border-radius: 6px; user-select: none; -webkit-user-drag: none; }
-.mock .hit { position: absolute; margin: 0; padding: 0; border: 0; border-radius: 10px; background: transparent; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+/* The device in the browser (mock.js): the screen between the two vertical LED bars of the M5GO base. Its size follows the height of the window,
+   so that the whole demo fits on one screen. */
+.mock { --screen-w: clamp(240px, calc((100vh - 330px) * 4 / 3), 440px); max-width: calc(var(--screen-w) + 84px); margin: 12px auto; }
+.mock .stage { display: grid; grid-template-columns: 26px minmax(0, 1fr) 26px; gap: 10px; align-items: stretch; }
+.mock .screen { position: relative; border: 5px solid #0b0e14; border-radius: 12px; background: #000; line-height: 0; touch-action: pan-y; }
+.mock .screen img { display: block; width: 100%; height: auto; border-radius: 5px; user-select: none; -webkit-user-drag: none; }
+.mock .hit { position: absolute; margin: 0; padding: 0; border: 0; border-radius: 8px; background: transparent; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 @media (hover: hover) { .mock .hit:hover { background: rgba(255, 255, 255, .12); } }
 .mock .hit:focus-visible { outline: 3px solid var(--accent); outline-offset: -3px; background: rgba(255, 255, 255, .12); }
 .mock .hit[hidden] { display: none; }
-.mock .bar { display: flex; gap: 6px; margin-top: 8px; padding: 10px 12px; border-radius: 10px; background: #0b0e14; }
-.mock .bar .led { flex: 1; height: 18px; border-radius: 9px; background: #1b1d26; transition: background .15s, box-shadow .15s; }
-.mock .caption { margin: 4px 0 0; font-size: .85em; color: var(--muted); text-align: center; }
-.mock .controls { display: flex; gap: 8px; margin-top: 10px; }
-.mock .controls button { flex: 1; min-height: 48px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); color: var(--text); font: inherit; cursor: pointer; }
+.mock .bar { display: flex; flex-direction: column; gap: 6px; padding: 6px 4px; border-radius: 8px; background: #0b0e14; }
+.mock .bar .led { flex: 1; border-radius: 6px; background: #1b1d26; transition: background .15s, box-shadow .15s; }
+.mock .controls { display: flex; gap: 8px; margin: 10px 36px 0; }
+.mock .controls button { flex: 1; min-height: 40px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); color: var(--text); font: inherit; cursor: pointer; }
 .mock .controls button:active { background: var(--code); }
-.mock-status { min-height: 3.2em; margin: 10px auto 0; max-width: 640px; text-align: center; color: var(--muted); }
+.mock-status { min-height: 2.8em; margin: 8px auto 0; max-width: 560px; text-align: center; color: var(--muted); font-size: .95em; }
+.caption-note { color: var(--muted); font-size: .9em; }
+@media (max-width: 700px) { .mock .controls button { min-height: 48px; } .mock .controls { margin: 10px 0 0; } .mock { max-width: 100%; } .mock .stage { grid-template-columns: 22px minmax(0, 1fr) 22px; gap: 6px; } }
 @media (prefers-reduced-motion: reduce) { .mock .bar .led { transition: none; } }
 
 /* The start page: the Locks page as a link to the web demo */
