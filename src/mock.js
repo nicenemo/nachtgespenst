@@ -4,7 +4,7 @@
 // the device would send into a log. Nothing is sent and nothing here simulates the firmware: the reports come from the keymap it is built from.
 import { attachShell } from './shellui.js';
 import { createShell } from './shell.js';
-import { LAMP_PAGES, LOCKS, LOCK_NAMES, PAGES, SCREEN_H, SCREEN_W, barColours, bytes, describe, hex, lockText, pageImage, tileRects } from './keylog.js';
+import { LAMP_PAGES, LAMP_STATE_TITLES, LOCKS, LOCK_NAMES, PAGES, SCREEN_H, SCREEN_W, barColours, bytes, describe, hex, lockText, pageImage, tileRects } from './keylog.js';
 
 /**
  * @typedef {import('./keylog.js').Binding} Binding
@@ -32,7 +32,7 @@ const SWIPE_PX = 50;
 /**
  * Puts the demo on the page.
  * @param {Environment} env
- * @returns {{go: (page: number) => void, state: () => {page: number, mask: number}, bar: (rgb: number[] | null) => void, pages: number, currentBar: () => number[], onBar: (listener: (rgb: number[]) => void) => void, onPage: (listener: (page: number) => void) => void} | null} null when the page has no demo
+ * @returns {{go: (page: number) => void, state: () => {page: number, mask: number}, bar: (rgb: number[] | null) => void, pages: number, currentBar: () => number[], onBar: (listener: (rgb: number[]) => void) => void, onPage: (listener: (page: number) => void) => void, onSmooth: (listener: (on: boolean) => void) => void} | null} null when the page has no demo
  */
 export function start(env) {
   const { document, window, keymap, lockKeys, lockColors } = env;
@@ -101,6 +101,8 @@ export function start(env) {
   const barListeners = [];
   /** @type {Array<(page: number) => void>} */
   const pageListeners = [];
+  /** @type {Array<(on: boolean) => void>} */
+  const smoothListeners = [];
   /** @type {number[]} what the ten LEDs show now, as 0xRRGGBB */
   let barNow = new Array(10).fill(0);
 
@@ -348,7 +350,7 @@ export function start(env) {
       api: {
         pages: PAGES,
         page: () => page,
-        title: () => pageTitle(),
+        title: () => (page > LOCKS ? LAMP_STATE_TITLES[page - LOCKS - 1] ?? '' : pageTitle()),
         go,
         mask: () => mask,
         stats: () => ({ presses, last }),
@@ -356,6 +358,7 @@ export function start(env) {
         tap: tapAt,
         press: pressTile,
         leds: (mode) => { ledMode = mode; drawBar(); },
+        smooth: (on) => smoothListeners.forEach((listener) => listener(on)),
         extra: env.extra,
       },
     });
@@ -377,5 +380,7 @@ export function start(env) {
     onBar: (/** @type {(rgb: number[]) => void} */ listener) => { barListeners.push(listener); },
     /** Tells the listener whenever another page is shown. */
     onPage: (/** @type {(page: number) => void} */ listener) => { pageListeners.push(listener); },
+    /** Tells the listener when `set smooth on|off` is typed in the shell. */
+    onSmooth: (/** @type {(on: boolean) => void} */ listener) => { smoothListeners.push(listener); },
   };
 }

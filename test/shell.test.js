@@ -53,12 +53,12 @@ test('S3: layer, state and tiles follow the page', () => {
   const { type, demo } = page('device');
   assert.deepEqual(type('layer 3'), ['OK LAYER 3']);
   assert.equal(demo.state().page, 3);
-  assert.match(type('state')[0] ?? '', /^OK STATE page=3\/30 title=\S+ caps=0 num=0 scroll=0 .* presses=0 /u);
+  assert.match(type('state')[0] ?? '', /^OK STATE page=3\/30 title=.+ caps=0 num=0 scroll=0 .* presses=0 /u);
   const tiles = type('tiles');
   assert.match(tiles[0] ?? '', /^OK TILES page=3 count=\d+$/u);
   assert.equal(tiles.length, Number(/count=(\d+)/u.exec(tiles[0] ?? '')?.[1]) + 1);
   assert.deepEqual(type('layer 29'), ['OK LAYER 29']);
-  assert.match(type('state')[0] ?? '', /page=29\/30 title=Lamps:_bar /u);
+  assert.match(type('state')[0] ?? '', /page=29\/30 title=Lamps-bar /u);
   assert.deepEqual(type('tiles'), ['OK TILES page=29 count=0']);
   assert.deepEqual(type('layer 30'), ['ERR range']);
   assert.deepEqual(type('layer x'), ['ERR unknown']);
@@ -94,8 +94,11 @@ test('S3: Power Down and Sleep are refused by key, tap and tapok', () => {
 
 test('S3: set, leds, prefer, only', () => {
   const { type } = page('device');
-  assert.match(type('set')[0] ?? '', /^OK SET led=on bright=40 ledidle=0 bl=128 dim=60 off=300 prefer=usb effect=none$/u);
-  assert.match(type('set effect rainbow')[0] ?? '', /effect=rainbow$/u);
+  assert.match(type('set')[0] ?? '', /^OK SET led=on bright=40 ledidle=0 bl=128 dim=60 off=300 prefer=usb effect=none smooth=off$/u);
+  assert.match(type('set smooth on')[0] ?? '', /smooth=on$/u);
+  assert.deepEqual(type('set smooth maybe'), ['ERR set']);
+  assert.match(type('set defaults 1')[0] ?? '', /smooth=off$/u);
+  assert.match(type('set effect rainbow')[0] ?? '', /effect=rainbow smooth=off$/u);
   assert.deepEqual(type('set effect nonsense'), ['ERR set']);
   assert.deepEqual(type('set bright 500'), ['ERR set']);
   assert.deepEqual(type('leds off'), ['OK LEDS OFF']);

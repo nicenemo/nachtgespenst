@@ -13,7 +13,7 @@ import { createTalk } from './talk.js';
  * @property {Document} document
  * @property {Window & typeof globalThis} window
  * @property {import('./talk.js').Slide[]} slides
- * @property {{go: (page: number) => void, bar: (rgb: number[] | null) => void, pages: number, currentBar: () => number[], onBar: (listener: (rgb: number[]) => void) => void, onPage: (listener: (page: number) => void) => void}} device the fake board of mock.js
+ * @property {{go: (page: number) => void, bar: (rgb: number[] | null) => void, pages: number, currentBar: () => number[], onBar: (listener: (rgb: number[]) => void) => void, onPage: (listener: (page: number) => void) => void, onSmooth: (listener: (on: boolean) => void) => void}} device the fake board of mock.js
  * @property {ReturnType<typeof import('./lamps.js').createLamps>} lamps
  * @property {ReturnType<typeof import('./audioweb.js').createAudioRig>} audio the sound rig, or null without Web Audio
  * @property {string} link the address fragment, for example #demo=bar:comet
@@ -94,14 +94,19 @@ export function startDemoPage(env) {
   const pcSnapshot = () => ({ ...lamps.snapshot(), bar: device.currentBar() });
   /** The page of the board when it is one of the three pages of the lamps. @type {{page: number, title: string, pages: number} | null} */
   let lampPage = null;
+  let smooth = false;
   device.onPage((page) => {
     lampPage = page > LOCKS ? { page, title: LAMP_PAGES[page - LOCKS - 1] ?? '', pages: PAGES } : null;
-    drawBoard(boardCanvas, lamps.snapshot(), document, lampPage);
+    drawBoard(boardCanvas, lamps.snapshot(), document, lampPage, smooth, lamps.counters());
+  });
+  device.onSmooth((on) => {
+    smooth = on;
+    drawBoard(boardCanvas, lamps.snapshot(), document, lampPage, smooth, lamps.counters());
   });
   lamps.subscribe((snap) => {
     const active = snap.grid !== null || snap.barPage || snap.bar.some((c) => c !== 0);
     device.bar(active ? snap.bar : null);
-    drawBoard(boardCanvas, snap, document, lampPage);
+    drawBoard(boardCanvas, snap, document, lampPage, smooth, lamps.counters());
     drawPc(pcCanvas, pcSnapshot(), document);
   });
   device.onBar(() => drawPc(pcCanvas, pcSnapshot(), document));

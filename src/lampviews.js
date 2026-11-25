@@ -28,8 +28,8 @@ function gridCanvas(document, grid) {
 }
 
 /**
- * What the LCD of the device draws on its bar lamp page (Lamps.cpp, drawBarPage): ten swatches in the lamp colours with the intensity (the effects always use 255) and
- * the lamp number under each, on the lamp area of 320 x 190. The same drawing serves the screen of the board (scale 1) and the lamps on the PC (scaled up).
+ * What the LCD of the device draws on its bar lamp page (Lamps.cpp, drawBarPage): ten swatches in the lamp colours with the intensity under each (the effects always
+ * use 255), on the lamp area of 320 x 190. The lamp numbers that the firmware draws below the intensity are hidden by its status strip, so they are left out here too. The same drawing serves the screen of the board (scale 1) and the lamps on the PC (scaled up).
  * @param {CanvasRenderingContext2D} g
  * @param {number} x left of the area
  * @param {number} y top of the area
@@ -52,8 +52,6 @@ function paintBarPage(g, x, y, k, bar) {
     g.strokeRect(sx - 0.5, sy - 0.5, sw * k + 1, (sh - 6) * k + 1);
     g.fillStyle = '#fff';
     g.fillText('255', sx + 2, sy + (sh - 6) * k + 14 * k);
-    g.fillStyle = '#888';
-    g.fillText(String(i), sx + (sw * k) / 2 - 3, sy + (sh - 6) * k + 26 * k);
   });
 }
 
@@ -64,17 +62,20 @@ function paintBarPage(g, x, y, k, bar) {
  * @param {import('./lamps.js').LampSnapshot} snap
  * @param {Document} document
  * @param {{page: number, title: string, pages: number} | null} [lampPage] the page of the board when it is a page of the lamps
+ * @param {boolean} [smooth] the board draws the grid with a bilinear blend (`set smooth on`) instead of flat blocks
+ * @param {{frames: number, lamps: number}} [counters] the frames and lamps that the PC has sent, for the status line of the device
  */
-export function drawBoard(canvas, snap, document, lampPage = null) {
+export function drawBoard(canvas, snap, document, lampPage = null, smooth = false, counters = { frames: 0, lamps: 0 }) {
   const show = lampPage !== null || snap.grid !== null || snap.barPage;
   canvas.hidden = !show;
   const g = canvas.getContext('2d');
   if (!g || !show) return;
   g.fillStyle = '#000';
   g.fillRect(0, 0, canvas.width, canvas.height);
-  const barPage = snap.barPage || (snap.grid === null && lampPage?.title === 'Lamps: bar');
+  const barPage = snap.barPage || (snap.grid === null && lampPage?.title === 'Lamp bar');
   if (snap.grid) {
-    g.imageSmoothingEnabled = false;
+    g.imageSmoothingEnabled = smooth;
+    g.imageSmoothingQuality = 'low';                   // bilinear: what the device does between the lamps
     const fit = fitPicture(AREA_W, AREA_H, snap.grid);
     g.drawImage(gridCanvas(document, snap.grid), fit.x, fit.y, fit.w, fit.h);
   } else if (barPage) {
@@ -89,6 +90,16 @@ export function drawBoard(canvas, snap, document, lampPage = null) {
   // the bottom bar of the device: the arrows and the title with the page number
   g.fillStyle = '#1b1d26';
   g.fillRect(0, AREA_H, canvas.width, canvas.height - AREA_H);
+  if (lampPage) {
+    // the status line of the device under the lamp area (Lamps.cpp, drawStrip)
+    g.fillStyle = '#000';
+    g.fillRect(0, AREA_H, AREA_W, 12);
+    g.fillStyle = '#fff';
+    g.font = '8px monospace';
+    const cols = snap.grid?.cols ?? 32;
+    const rows = snap.grid?.rows ?? 32;
+    g.fillText(`${cols}x${rows} n=${10 + cols * rows} rx=${Math.round(counters.lamps / 8)} fr=${counters.frames} host`, 2, AREA_H + 9);
+  }
   const pill = (/** @type {number} */ x, /** @type {number} */ w, /** @type {string} */ fill) => {
     g.fillStyle = fill;
     g.beginPath();

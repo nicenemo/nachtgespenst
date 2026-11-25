@@ -51,7 +51,7 @@ test('the three pages of the lamps exist, with their titles, and show no screens
   demo.go(27);
   demo.go(29);
   assert.deepEqual(seen, [27, 29]);
-  assert.match(document.getElementById('mockstatus')?.textContent ?? '', /Page 30 of 30: Lamps: bar/u);
+  assert.match(document.getElementById('mockstatus')?.textContent ?? '', /Page 30 of 30: Lamp bar/u);
   assert.equal(/** @type {HTMLImageElement} */ (document.getElementById('mockimg')).style.visibility, 'hidden');
   assert.ok(demo.currentBar().every((c) => c === 0), 'the board shows no LED colour of its own there');
 });

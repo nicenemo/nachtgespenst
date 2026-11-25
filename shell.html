@@ -230,8 +230,8 @@
 <h2 id="cmd-set">set</h2>
 <p><code>set [&lt;key&gt; &lt;value&gt;]</code></p>
 <p>Show or change the stored settings.</p>
-<p>Keys: led (off|locks|on), effect (none|nightrider|breath|rainbow|comet|sparkle|vu), bright 1..120, ledidle minutes, bl 16..255, dim seconds, off seconds, prefer (usb|ble|both), defaults (any value restores everything). A valid value is stored at once.</p>
-<p>Reply:</p><ul><li><code>OK SET led=on bright=40 ledidle=0 bl=128 dim=60 off=300 prefer=usb effect=none | ERR set</code></li></ul>
+<p>Keys: led (off|locks|on), effect (none|nightrider|breath|rainbow|comet|sparkle|vu), bright 1..120, ledidle minutes, bl 16..255, dim seconds, off seconds, prefer (usb|ble|both), smooth (on|off: draw the lamp grid of the Lamps: screen page with a smooth, bilinear blend between the lamps instead of flat blocks; off by default, because it costs drawing time on big pictures), defaults (any value restores everything). A valid value is stored at once.</p>
+<p>Reply:</p><ul><li><code>OK SET led=on bright=40 ledidle=0 bl=128 dim=60 off=300 prefer=usb effect=none smooth=off | ERR set</code></li></ul>
 <pre>set effect nightrider</pre>
 <h2 id="cmd-prefer">prefer</h2>
 <p><code>prefer [usb|ble|both]</code></p>

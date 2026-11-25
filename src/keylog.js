@@ -41,7 +41,9 @@ export const LOCKS = 26;
 /** The pages of the board: the 26 key layers, the Locks page and the three pages of the lamps (the Disk page, the lamp screen and the bar lamps). */
 export const PAGES = 30;
 /** The titles of the pages after the Locks page: pages 27 to 29. */
-export const LAMP_PAGES = ['Disk', 'Lamps: screen', 'Lamps: bar'];
+export const LAMP_PAGES = ['Disk', 'Lamp grid', 'Lamp bar'];
+/** The same pages as the shell calls them in `state` (src/ui.cpp). */
+export const LAMP_STATE_TITLES = ['Disk', 'Lamps-screen', 'Lamps-bar'];
 
 /**
  * Whether a page is one of the three pages of the lamps, which have no screenshot: the screen is drawn from the state of the lamps.

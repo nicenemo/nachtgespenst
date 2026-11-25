@@ -15,6 +15,7 @@
  * @property {(x: number, y: number, touch: boolean) => 'ok' | 'refused' | 'none'} tap what a touch at the point does; with touch false nothing is touched
  * @property {(layer: number, tile: number) => boolean} press presses a tile as if it was touched
  * @property {(leds: string) => void} leds the mode of the LED bar: off, locks or on
+ * @property {((on: boolean) => void) | undefined} [smooth] switches the smooth drawing of the lamp grid
  * @property {(button: number, down: boolean) => boolean} [button] a physical button (A, B, C) of the presenter
  * @property {(name: string) => boolean} [clicker] a clicker action: prev, next, start, blank, end, laser
  * @property {(on: boolean) => void} [pointer] switches the air mouse page
@@ -59,7 +60,7 @@ function decimal(text) {
  */
 export function createShell({ board, help, api }) {
   const presenter = board === 'C2';
-  const settings = { led: 'on', bright: 40, ledidle: 0, bl: 128, dim: 60, off: 300, prefer: 'usb', effect: 'none' };
+  const settings = { led: 'on', bright: 40, ledidle: 0, bl: 128, dim: 60, off: 300, prefer: 'usb', effect: 'none', smooth: 'off' };
   const pointer = { gain: 20, idle: 2, upright: 0, flipx: 0, flipy: 0, reports: 0, clicks: 0, scrolls: 0, mods: 0, state: 'still' };
   let preferred = 0;
   let touching = false;
@@ -86,7 +87,7 @@ export function createShell({ board, help, api }) {
     const { presses, last } = api.stats();
     const mask = api.mask();
     const ptr = presenter ? (api.pointerOn?.() ? pointer.state : 'off') : '-';
-    return `OK STATE page=${api.page()}/${api.pages} title=${api.title().replace(/ /gu, '_')} caps=${mask & 1 ? 1 : 0} num=${mask & 2 ? 1 : 0} scroll=${mask & 4 ? 1 : 0} compose=0 kana=0 last=${last || '-'} presses=${presses} conn=1 usb=${usb} ble=1 touch=${flag(touching ? 1 : 0)} btn=0 ptr=${ptr} clicks=${pointer.clicks}`;
+    return `OK STATE page=${api.page()}/${api.pages} title=${api.title()} caps=${mask & 1 ? 1 : 0} num=${mask & 2 ? 1 : 0} scroll=${mask & 4 ? 1 : 0} compose=0 kana=0 last=${last || '-'} presses=${presses} conn=1 usb=${usb} ble=1 touch=${flag(touching ? 1 : 0)} btn=0 ptr=${ptr} clicks=${pointer.clicks}`;
   }
 
   const pointerStatus = () => `OK PRESENTER pointer=${api.pointerOn?.() ? pointer.state : 'off'} gain=${pointer.gain} idle=${pointer.idle.toFixed(1)} upright=${pointer.upright} flipx=${pointer.flipx} flipy=${pointer.flipy} reports=${pointer.reports} clicks=${pointer.clicks} scrolls=${pointer.scrolls} mods=${pointer.mods} ble=1`;
@@ -109,6 +110,11 @@ export function createShell({ board, help, api }) {
         if (!EFFECTS.includes(value)) return ['ERR set'];
         settings.effect = value;
         break;
+      case 'smooth':
+        if (value !== 'on' && value !== 'off') return ['ERR set'];
+        settings.smooth = value;
+        api.smooth?.(value === 'on');
+        break;
       case 'prefer':
         if (!['usb', 'ble', 'both'].includes(value)) return ['ERR set'];
         settings.prefer = value;
@@ -124,9 +130,10 @@ export function createShell({ board, help, api }) {
         break;
       case 'off': if (!within(15, 86400) || n === null || n <= settings.dim) return ['ERR set']; settings.off = n; break;
       case 'defaults':
-        Object.assign(settings, { led: 'on', bright: 40, ledidle: 0, bl: 128, dim: 60, off: 300, prefer: 'usb', effect: 'none' });
+        Object.assign(settings, { led: 'on', bright: 40, ledidle: 0, bl: 128, dim: 60, off: 300, prefer: 'usb', effect: 'none', smooth: 'off' });
         preferred = 0;
         api.leds('on');
+        api.smooth?.(false);
         break;
       default: return ['ERR set'];
     }

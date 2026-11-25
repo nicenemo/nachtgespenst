@@ -156,7 +156,7 @@
 <li>On the device the Locks page shows what the host reports; here you set the state yourself. The LED bars follow the rule of the firmware: on a key page it shows the colour of that layer, on the Locks page one active lock fills its own two LEDs, several active locks add up over the whole bar, and with none the bar is dark.</li>
 <li>Tapping a tile on a key page does not type anything: the log beside the screen shows the HID report that the device would send for it (the modifier byte and the key of a keyboard report, the 16-bit usage of a media key, or the bit of a system control key), taken from the same headers that the firmware is built from. Power Down and Sleep are shown but are never sent, here or anywhere on this page.</li>
 <li>Compose and Kana are shown, but they cannot be switched: on Linux the desktop never lights those two LEDs.</li>
-<li>The device has 30 pages: 26 key layers, the Locks page and three pages of the lamps (Disk, Lamps: screen and Lamps: bar). Page numbers in the shell start at 0, as on the board, and the screen counts from 1: <code>layer 0</code> shows &ldquo;1/30&rdquo;. The three pages of the lamps have no screenshot: their screen is drawn from the lamps, which the demos fill.</li>
+<li>The device has 30 pages: 26 key layers, the Locks page and three pages of the lamps (Disk, Lamp grid and Lamp bar). Page numbers in the shell start at 0, as on the board, and the screen counts from 1: <code>layer 0</code> shows &ldquo;1/30&rdquo;. The three pages of the lamps have no screenshot: their screen is drawn from the lamps, which the demos fill.</li>
 <li>A page can be opened directly with its number, for example <code>device.html#12</code>.</li>
 </ul>
 <h2>The demos</h2>
