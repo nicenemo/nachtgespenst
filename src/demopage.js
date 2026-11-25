@@ -3,6 +3,7 @@
 
 import { DEMOS, createRunner, demoById } from './demos.js';
 import { drawBoard, drawPc } from './lampviews.js';
+import { LAMP_PAGES, LOCKS, PAGES } from './keylog.js';
 import { loadPhotos } from './photos.js';
 import { readouts } from './readouts.js';
 import { createTalk } from './talk.js';
@@ -12,7 +13,7 @@ import { createTalk } from './talk.js';
  * @property {Document} document
  * @property {Window & typeof globalThis} window
  * @property {import('./talk.js').Slide[]} slides
- * @property {{go: (page: number) => void, bar: (rgb: number[] | null) => void, pages: number, currentBar: () => number[], onBar: (listener: (rgb: number[]) => void) => void}} device the fake board of mock.js
+ * @property {{go: (page: number) => void, bar: (rgb: number[] | null) => void, pages: number, currentBar: () => number[], onBar: (listener: (rgb: number[]) => void) => void, onPage: (listener: (page: number) => void) => void}} device the fake board of mock.js
  * @property {ReturnType<typeof import('./lamps.js').createLamps>} lamps
  * @property {ReturnType<typeof import('./audioweb.js').createAudioRig>} audio the sound rig, or null without Web Audio
  * @property {string} link the address fragment, for example #demo=bar:comet
@@ -42,7 +43,7 @@ export function startDemoPage(env) {
     if (!el) throw new Error(`the page has no element #${id}`);
     return el;
   };
-  const READY = 'Connected: NG-S3 (pretend), 27 pages';
+  const READY = 'Connected: NG-S3 (pretend), 30 pages';
   const logEl = byId('demolog');
   const status = byId('demo-status');
   const boardCanvas = /** @type {HTMLCanvasElement} */ (byId('board-lamps'));
@@ -91,10 +92,16 @@ export function startDemoPage(env) {
   // The lamps: the fake board and the PC panel draw the same state.
   // The ten lamps of the bar on the PC are the LEDs of the board: the colour of the page, the locks, an effect of the board and what the PC paints.
   const pcSnapshot = () => ({ ...lamps.snapshot(), bar: device.currentBar() });
+  /** The page of the board when it is one of the three pages of the lamps. @type {{page: number, title: string, pages: number} | null} */
+  let lampPage = null;
+  device.onPage((page) => {
+    lampPage = page > LOCKS ? { page, title: LAMP_PAGES[page - LOCKS - 1] ?? '', pages: PAGES } : null;
+    drawBoard(boardCanvas, lamps.snapshot(), document, lampPage);
+  });
   lamps.subscribe((snap) => {
     const active = snap.grid !== null || snap.barPage || snap.bar.some((c) => c !== 0);
     device.bar(active ? snap.bar : null);
-    drawBoard(boardCanvas, snap, document);
+    drawBoard(boardCanvas, snap, document, lampPage);
     drawPc(pcCanvas, pcSnapshot(), document);
   });
   device.onBar(() => drawPc(pcCanvas, pcSnapshot(), document));
@@ -131,7 +138,8 @@ export function startDemoPage(env) {
       say(`→ ${note}`);
       showStatus('Ready');
       setBusy(false);
-      window.setTimeout(() => { if (!runner.running()) lamps.clear(); }, 1500);
+      // the lamps go back to the board and the board to its first page, as the desktop app does
+      window.setTimeout(() => { if (!runner.running()) { lamps.clear(); device.go(0); } }, 1500);
     },
   });
 

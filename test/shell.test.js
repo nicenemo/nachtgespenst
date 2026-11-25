@@ -41,7 +41,7 @@ test('the help covers the standard commands only', () => {
 test('S3: ping, info, help', () => {
   const { type } = page('device');
   assert.deepEqual(type('ping'), ['OK PONG']);
-  assert.match(type('info')[0] ?? '', /^OK INFO board=S3 name=NG-S3 fw=\S+ w=320 h=240 pages=27 locks=26 presenter=0$/u);
+  assert.match(type('info')[0] ?? '', /^OK INFO board=S3 name=NG-S3 fw=\S+ w=320 h=240 pages=30 locks=26 presenter=0$/u);
   assert.equal(type('help')[0], 'OK HELP');
   assert.match(type('help layer').join('\n'), /usage: layer <n>/u);
   assert.deepEqual(type('help nonsense'), ['ERR help unknown']);
@@ -53,11 +53,14 @@ test('S3: layer, state and tiles follow the page', () => {
   const { type, demo } = page('device');
   assert.deepEqual(type('layer 3'), ['OK LAYER 3']);
   assert.equal(demo.state().page, 3);
-  assert.match(type('state')[0] ?? '', /^OK STATE page=3\/27 title=\S+ caps=0 num=0 scroll=0 .* presses=0 /u);
+  assert.match(type('state')[0] ?? '', /^OK STATE page=3\/30 title=\S+ caps=0 num=0 scroll=0 .* presses=0 /u);
   const tiles = type('tiles');
   assert.match(tiles[0] ?? '', /^OK TILES page=3 count=\d+$/u);
   assert.equal(tiles.length, Number(/count=(\d+)/u.exec(tiles[0] ?? '')?.[1]) + 1);
-  assert.deepEqual(type('layer 27'), ['ERR range']);
+  assert.deepEqual(type('layer 29'), ['OK LAYER 29']);
+  assert.match(type('state')[0] ?? '', /page=29\/30 title=Lamps:_bar /u);
+  assert.deepEqual(type('tiles'), ['OK TILES page=29 count=0']);
+  assert.deepEqual(type('layer 30'), ['ERR range']);
   assert.deepEqual(type('layer x'), ['ERR unknown']);
 });
 

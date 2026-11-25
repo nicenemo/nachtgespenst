@@ -52,6 +52,7 @@ async function frames(ctx, seconds, frameMs, paint) {
 
 /** @param {Context} ctx @param {string} name */
 async function barEffect(ctx, name) {
+  ctx.device.go(ctx.device.pages - 1);
   ctx.lamps.barPage();
   ctx.log(`bar: ${name}`);
   const frame = BAR_EFFECTS[name]?.();
@@ -73,6 +74,7 @@ async function boardEffect(ctx, name) {
 
 /** @param {Context} ctx @param {'raster bars' | 'sine scroller'} which */
 async function gridEffect(ctx, which) {
+  ctx.device.go(ctx.device.pages - 2);
   const cols = 40;
   const rows = 25;
   ctx.lamps.setGrid(new Array(cols * rows).fill(C64[0]), cols, rows);
@@ -105,6 +107,7 @@ export function scenes(cols, rows) {
 
 /** @param {Context} ctx @param {number} cols @param {number} rows */
 async function photos(ctx, cols, rows) {
+  ctx.device.go(ctx.device.pages - 2);
   const real = await ctx.photos?.(cols, rows);
   const pics = real ?? scenes(cols, rows);
   if (real) PHOTOS.forEach((p, i) => ctx.log(`photo ${i + 1}: ${p.title}, ${p.author}, ${p.licence}`));
@@ -139,6 +142,7 @@ async function photos(ctx, cols, rows) {
 
 /** @param {Context} ctx @param {boolean} fast */
 async function disk(ctx, fast) {
+  ctx.device.go(ctx.device.pages - 3);
   const cols = 32;
   const rows = 32;
   const px = new Array(cols * rows).fill(0);
@@ -170,6 +174,7 @@ const TONES = [440, 1000, 2000];
 async function scope(ctx) {
   const audio = ctx.audio;
   if (!audio) throw new Error('this page has no sound');
+  ctx.device.go(ctx.device.pages - 2);
   const cols = 80;
   const rows = 47;
   const sc = new Scope(cols, rows);

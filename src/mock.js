@@ -4,7 +4,7 @@
 // the device would send into a log. Nothing is sent and nothing here simulates the firmware: the reports come from the keymap it is built from.
 import { attachShell } from './shellui.js';
 import { createShell } from './shell.js';
-import { LOCKS, LOCK_NAMES, PAGES, SCREEN_H, SCREEN_W, barColours, bytes, describe, hex, lockText, pageImage, tileRects } from './keylog.js';
+import { LAMP_PAGES, LOCKS, LOCK_NAMES, PAGES, SCREEN_H, SCREEN_W, barColours, bytes, describe, hex, lockText, pageImage, tileRects } from './keylog.js';
 
 /**
  * @typedef {import('./keylog.js').Binding} Binding
@@ -32,7 +32,7 @@ const SWIPE_PX = 50;
 /**
  * Puts the demo on the page.
  * @param {Environment} env
- * @returns {{go: (page: number) => void, state: () => {page: number, mask: number}, bar: (rgb: number[] | null) => void, pages: number, currentBar: () => number[], onBar: (listener: (rgb: number[]) => void) => void} | null} null when the page has no demo
+ * @returns {{go: (page: number) => void, state: () => {page: number, mask: number}, bar: (rgb: number[] | null) => void, pages: number, currentBar: () => number[], onBar: (listener: (rgb: number[]) => void) => void, onPage: (listener: (page: number) => void) => void} | null} null when the page has no demo
  */
 export function start(env) {
   const { document, window, keymap, lockKeys, lockColors } = env;
@@ -99,8 +99,15 @@ export function start(env) {
 
   /** @type {Array<(rgb: number[]) => void>} */
   const barListeners = [];
+  /** @type {Array<(page: number) => void>} */
+  const pageListeners = [];
   /** @type {number[]} what the ten LEDs show now, as 0xRRGGBB */
   let barNow = new Array(10).fill(0);
+
+  /** The title of the current page: a key layer, the Locks page or one of the three pages of the lamps. */
+  function pageTitle() {
+    return page < LOCKS ? keymap[page]?.title ?? '' : page === LOCKS ? 'Locks' : LAMP_PAGES[page - LOCKS - 1] ?? '';
+  }
 
   function drawBar() {
     const dark = ledMode === 'off' || (ledMode === 'locks' && page < LOCKS);
@@ -189,7 +196,7 @@ export function start(env) {
     const want = [pageImage((page + 1) % PAGES, mask), pageImage((page + PAGES - 1) % PAGES, mask), pageImage(LOCKS, 0)];
     if (page === LOCKS) for (let m = 0; m < 8; m++) want.push(pageImage(LOCKS, m));
     for (const src of want) {
-      if (preloaded[src]) continue;
+      if (!src || preloaded[src]) continue;
       const image = new window.Image();
       image.src = src;
       preloaded[src] = image;
@@ -197,15 +204,18 @@ export function start(env) {
   }
 
   function render() {
-    const title = keymap[page]?.title ?? '';
-    img.src = pageImage(page, mask);
-    img.alt = page < LOCKS ? `CoreS3 screenshot of the page ${title}` : 'CoreS3 screenshot of the Locks page';
+    const title = pageTitle();
+    if (page <= LOCKS) img.src = pageImage(page, mask);
+    img.alt = page < LOCKS ? `CoreS3 screenshot of the page ${title}` : page === LOCKS ? 'CoreS3 screenshot of the Locks page' : `The ${title} page of the CoreS3`;
+    img.style.visibility = page > LOCKS ? 'hidden' : '';
     lockTiles.forEach((tile) => { tile.hidden = page !== LOCKS; });
     status.textContent = page < LOCKS
       ? `Page ${page + 1} of ${PAGES}: ${title}. The LED bars show its colour, ${keymap[page]?.color ?? ''}.`
-      : `Locks page: ${lockText(mask)}. Tap a tile to switch it, tap the title to go back.`;
+      : page === LOCKS ? `Locks page: ${lockText(mask)}. Tap a tile to switch it, tap the title to go back.`
+        : `Page ${page + 1} of ${PAGES}: ${title}. The lamps are drawn by the PC: start a demo to see them.`;
     drawBar();
     buildTiles();
+    pageListeners.forEach((listener) => listener(page));
     try {
       window.history.replaceState(null, '', `#${page}`);
     } catch {
@@ -338,7 +348,7 @@ export function start(env) {
       api: {
         pages: PAGES,
         page: () => page,
-        title: () => (page < LOCKS ? keymap[page]?.title ?? '' : 'Locks'),
+        title: () => pageTitle(),
         go,
         mask: () => mask,
         stats: () => ({ presses, last }),
@@ -365,5 +375,7 @@ export function start(env) {
     currentBar: () => [...barNow],
     /** Tells the listener whenever the LEDs change. */
     onBar: (/** @type {(rgb: number[]) => void} */ listener) => { barListeners.push(listener); },
+    /** Tells the listener whenever another page is shown. */
+    onPage: (/** @type {(page: number) => void} */ listener) => { pageListeners.push(listener); },
   };
 }

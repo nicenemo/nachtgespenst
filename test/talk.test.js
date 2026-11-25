@@ -61,7 +61,7 @@ function context() {
   const lamps = createLamps();
   /** @type {string[]} */
   const log = [];
-  return { lamps, log, base: { lamps, log: (/** @type {string} */ l) => log.push(l), seconds: 0.12, device: { go: () => undefined, pages: 27 } } };
+  return { lamps, log, base: { lamps, log: (/** @type {string} */ l) => log.push(l), seconds: 0.12, device: { go: () => undefined, pages: 30 } } };
 }
 
 test('the runner runs a demo, refuses a second one and stops on request', async () => {

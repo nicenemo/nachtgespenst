@@ -34,7 +34,7 @@ test('every page keeps the status text short enough for its box (two lines of th
   const demo = start({ document, window: /** @type {any} */ (dom.window), keymap: data.NG_KEYMAP, lockKeys: data.NG_LOCKKEYS, lockColors: [[255, 80, 0], [0, 220, 60], [40, 80, 255]] });
   assert.ok(demo);
   const status = /** @type {HTMLElement} */ (document.getElementById('mockstatus'));
-  for (let page = 0; page < 27; page++) {
+  for (let page = 0; page < 30; page++) {
     demo.go(page);
     assert.ok((status.textContent ?? '').length <= 110, `page ${page}: ${status.textContent}`);
     for (const tile of document.querySelectorAll('.ktile')) {

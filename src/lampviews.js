@@ -28,24 +28,26 @@ function gridCanvas(document, grid) {
 }
 
 /**
- * The screen of the fake board while it shows lamps: the grid in the lamp area of 320 x 190 with hard pixel edges, or the ten swatches of the bar lamp page.
- * Nothing is drawn (and the canvas is hidden) when the lamps are not shown.
+ * The screen of the fake board while it shows lamps: on one of the three pages of the lamps (a page number from 27 on, with the title) the whole screen is drawn here,
+ * with the bottom bar of the device; on any other page the canvas is only shown while the PC paints a grid or the bar lamp page over it.
  * @param {HTMLCanvasElement} canvas 320 x 240
  * @param {import('./lamps.js').LampSnapshot} snap
  * @param {Document} document
+ * @param {{page: number, title: string, pages: number} | null} [lampPage] the page of the board when it is a page of the lamps
  */
-export function drawBoard(canvas, snap, document) {
-  const show = snap.grid !== null || snap.barPage;
+export function drawBoard(canvas, snap, document, lampPage = null) {
+  const show = lampPage !== null || snap.grid !== null || snap.barPage;
   canvas.hidden = !show;
   const g = canvas.getContext('2d');
   if (!g || !show) return;
   g.fillStyle = '#000';
   g.fillRect(0, 0, canvas.width, canvas.height);
+  const barPage = snap.barPage || (snap.grid === null && lampPage?.title === 'Lamps: bar');
   if (snap.grid) {
     g.imageSmoothingEnabled = false;
     const fit = fitPicture(AREA_W, AREA_H, snap.grid);
     g.drawImage(gridCanvas(document, snap.grid), fit.x, fit.y, fit.w, fit.h);
-  } else {
+  } else if (barPage) {
     const gap = 3;
     const sw = Math.trunc((AREA_W - 11 * gap) / 10);
     g.fillStyle = '#080808';
@@ -62,12 +64,33 @@ export function drawBoard(canvas, snap, document) {
       g.fillStyle = '#888';
       g.fillText(String(i), x + sw / 2 - 3, AREA_H - 22 + 18);
     });
+  } else {
+    g.fillStyle = '#080808';
+    g.fillRect(0, 0, AREA_W, AREA_H);
+    g.fillStyle = '#5a5f78';
+    g.font = '14px sans-serif';
+    g.fillText(lampPage?.title === 'Disk' ? 'Disk: nothing sent yet' : 'The PC paints the lamps here', 16, AREA_H / 2);
   }
+  // the bottom bar of the device: the arrows and the title with the page number
   g.fillStyle = '#1b1d26';
   g.fillRect(0, AREA_H, canvas.width, canvas.height - AREA_H);
-  g.fillStyle = '#9aa4c8';
-  g.font = '12px sans-serif';
-  g.fillText(snap.grid ? `Lamps ${snap.grid.cols} x ${snap.grid.rows}` : 'LED bar lamps', 10, AREA_H + 28);
+  const pill = (/** @type {number} */ x, /** @type {number} */ w, /** @type {string} */ fill) => {
+    g.fillStyle = fill;
+    g.beginPath();
+    g.roundRect(x, 202, w, 34, 10);
+    g.fill();
+  };
+  pill(2, 47, '#99f');
+  pill(53, 214, '#fc9');
+  pill(271, 47, '#99f');
+  g.fillStyle = '#000';
+  g.font = 'bold 16px sans-serif';
+  g.textAlign = 'center';
+  g.fillText('\u2190', 25, 225);
+  g.fillText('\u2192', 294, 225);
+  const label = lampPage ? `${lampPage.title} ${lampPage.page + 1}/${lampPage.pages}` : snap.grid ? `Lamps ${snap.grid.cols} x ${snap.grid.rows}` : 'LED bar lamps';
+  g.fillText(label, 160, 225);
+  g.textAlign = 'start';
 }
 
 /**

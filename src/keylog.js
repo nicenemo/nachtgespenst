@@ -38,8 +38,19 @@ export const GAP = 3;
 export const BODY_H = 202;
 /** The index of the Locks page: pages 0 to 25 are the key layers. */
 export const LOCKS = 26;
-/** The pages of the demo; the three pages after the Locks page belong to demos that are not shown. */
-export const PAGES = 27;
+/** The pages of the board: the 26 key layers, the Locks page and the three pages of the lamps (the Disk page, the lamp screen and the bar lamps). */
+export const PAGES = 30;
+/** The titles of the pages after the Locks page: pages 27 to 29. */
+export const LAMP_PAGES = ['Disk', 'Lamps: screen', 'Lamps: bar'];
+
+/**
+ * Whether a page is one of the three pages of the lamps, which have no screenshot: the screen is drawn from the state of the lamps.
+ * @param {number} page
+ * @returns {boolean}
+ */
+export function isLampPage(page) {
+  return page > LOCKS;
+}
 export const LOCK_NAMES = ['Caps', 'Num', 'Scroll'];
 
 const MODIFIERS = /** @type {const} */ ([[1, 'Ctrl'], [2, 'Shift'], [4, 'Alt'], [8, 'Win'], [16, 'RCtrl'], [32, 'RShift'], [64, 'RAlt'], [128, 'RWin']]);
@@ -193,6 +204,7 @@ export function parseColor(color) {
  */
 export function barColours(page, mask, layerColor, lockColors) {
   if (page < LOCKS) return Array.from({ length: 10 }, () => parseColor(layerColor));
+  if (page > LOCKS) return Array.from({ length: 10 }, () => [0, 0, 0]);          // the pages of the lamps: the PC has the lamps, the board shows none of its own
   const active = [0, 1, 2].filter((k) => (mask & (1 << k)) !== 0);
   const dark = () => [0, 0, 0];
   const out = Array.from({ length: 10 }, dark);
@@ -215,6 +227,7 @@ export function barColours(page, mask, layerColor, lockColors) {
  */
 export function pageImage(page, mask) {
   if (page < LOCKS) return `img/lvgl/s3-${String(page).padStart(2, '0')}.png`;
+  if (page > LOCKS) return '';                                                    // no screenshot: the screen is drawn from the lamps
   return `img/lvgl/s3-26-${mask & 1 ? 1 : 0}${mask & 2 ? 1 : 0}${mask & 4 ? 1 : 0}.png`;
 }
 
