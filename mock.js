@@ -78,11 +78,32 @@
   var dynTiles = [];
 
   function hex(n, w) { var h = n.toString(16).toUpperCase(); while (h.length < w) h = '0' + h; return h; }
-  function pretty(name) {
-    if (name.length <= 3) return name;
-    return name.replace(/^SYS_/, '').toLowerCase().split('_').map(function (w) { return w.charAt(0).toUpperCase() + w.slice(1); }).join(' ');
+  // A usage name of the firmware's headers as text: KP_NUM_LOCK_AND_CLEAR is "Keypad Num Lock / Clear", ID_7_AND_AMPERSAND is "7 / &".
+  var SYMBOLS = { BANG: '!', AT: '@', HASH: '#', DOLLAR: '$', PERCENT: '%', CARET: '^', AMPERSAND: '&', STAR: '*', LEFT_BRACKET: '(', RIGHT_BRACKET: ')',
+    LESSTHAN: '<', GREATERTHAN: '>', UNDERSCORE: '_', PLUS: '+' };
+  function words(s) {
+    if (s.length <= 3) return s;
+    return s.toLowerCase().split('_').map(function (w) { return w.charAt(0).toUpperCase() + w.slice(1); }).join(' ');
   }
+  function pretty(name) {
+    name = name.replace(/^SYS_/, '').replace(/^ID_/, '');
+    var keypad = /^KP_/.test(name);
+    if (keypad) name = name.slice(3);
+    var parts = name.split('_AND_');
+    var text = words(parts[0]);
+    if (parts.length > 1) text += ' / ' + (SYMBOLS[parts[1]] || words(parts[1]));
+    return (keypad ? 'Keypad ' : '') + text;
+  }
+
+  // The modifier byte as a name: Meh (Ctrl+Shift+Alt) and Hyper (Ctrl+Shift+Alt+Win), on the left or on the right, otherwise the single modifiers.
   function modText(m) {
+    if (m === 0x0F) return 'Hyper';
+    if (m === 0x07) return 'Meh';
+    if (m === 0xF0) return 'RHyper';
+    if (m === 0x70) return 'RMeh';
+    return modParts(m);
+  }
+  function modParts(m) {
     var out = [];
     for (var i = 0; i < MODS.length; i++) if (m & MODS[i][0]) out.push(MODS[i][1]);
     return out.join('+');
@@ -97,7 +118,7 @@
       if (id >= 0xE0 && id <= 0xE7) m |= 1 << (id - 0xE0); else if (id <= 0xDD) key = id;
       var mt = modText(mod), kt = pretty(name);
       var text = (mt ? mt + '+' : '') + kt;
-      return { text: text, kind: 'keyboard', down: [1, [m, 0, key, 0, 0, 0, 0, 0]], up: [1, [0, 0, 0, 0, 0, 0, 0, 0]], detail: 'modifiers 0x' + hex(m, 2) + ', key 0x' + hex(key, 2), label: label };
+      return { text: text, kind: 'keyboard', down: [1, [m, 0, key, 0, 0, 0, 0, 0]], up: [1, [0, 0, 0, 0, 0, 0, 0, 0]], detail: 'modifiers 0x' + hex(m, 2) + (modText(mod) !== modParts(mod) ? ' = ' + modParts(mod) : '') + ', key 0x' + hex(key, 2), label: label };
     }
     if (page === 12) {
       return { text: pretty(name), kind: 'consumer', down: [2, [id & 255, id >> 8]], up: [2, [0, 0]], detail: 'usage 0x' + hex(id, 4) + ' (page 0x0C)', label: label };
