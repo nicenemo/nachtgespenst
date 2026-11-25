@@ -28,6 +28,36 @@ function gridCanvas(document, grid) {
 }
 
 /**
+ * What the LCD of the device draws on its bar lamp page (Lamps.cpp, drawBarPage): ten swatches in the lamp colours with the intensity (the effects always use 255) and
+ * the lamp number under each, on the lamp area of 320 x 190. The same drawing serves the screen of the board (scale 1) and the lamps on the PC (scaled up).
+ * @param {CanvasRenderingContext2D} g
+ * @param {number} x left of the area
+ * @param {number} y top of the area
+ * @param {number} k the scale: 1 is 320 pixels wide
+ * @param {number[]} bar the ten lamps
+ */
+function paintBarPage(g, x, y, k, bar) {
+  const gap = 3;
+  const sw = Math.trunc((AREA_W - 11 * gap) / 10);
+  const sh = AREA_H - 22;
+  g.fillStyle = '#080808';
+  g.fillRect(x, y, AREA_W * k, AREA_H * k);
+  g.font = `${Math.max(9, 10 * k)}px monospace`;
+  bar.forEach((rgb, i) => {
+    const sx = x + (gap + i * (sw + gap)) * k;
+    const sy = y + 6 * k;
+    g.fillStyle = css(rgb);
+    g.fillRect(sx, sy, sw * k, (sh - 6) * k);
+    g.strokeStyle = '#404040';
+    g.strokeRect(sx - 0.5, sy - 0.5, sw * k + 1, (sh - 6) * k + 1);
+    g.fillStyle = '#fff';
+    g.fillText('255', sx + 2, sy + (sh - 6) * k + 14 * k);
+    g.fillStyle = '#888';
+    g.fillText(String(i), sx + (sw * k) / 2 - 3, sy + (sh - 6) * k + 26 * k);
+  });
+}
+
+/**
  * The screen of the fake board while it shows lamps: on one of the three pages of the lamps (a page number from 27 on, with the title) the whole screen is drawn here,
  * with the bottom bar of the device; on any other page the canvas is only shown while the PC paints a grid or the bar lamp page over it.
  * @param {HTMLCanvasElement} canvas 320 x 240
@@ -48,22 +78,7 @@ export function drawBoard(canvas, snap, document, lampPage = null) {
     const fit = fitPicture(AREA_W, AREA_H, snap.grid);
     g.drawImage(gridCanvas(document, snap.grid), fit.x, fit.y, fit.w, fit.h);
   } else if (barPage) {
-    const gap = 3;
-    const sw = Math.trunc((AREA_W - 11 * gap) / 10);
-    g.fillStyle = '#080808';
-    g.fillRect(0, 0, AREA_W, AREA_H);
-    g.font = '10px monospace';
-    snap.bar.forEach((rgb, i) => {
-      const x = gap + i * (sw + gap);
-      g.fillStyle = css(rgb);
-      g.fillRect(x, 6, sw, AREA_H - 22 - 6);
-      g.strokeStyle = '#404040';
-      g.strokeRect(x - 0.5, 5.5, sw + 1, AREA_H - 22 - 5);
-      g.fillStyle = '#fff';
-      g.fillText('255', x + 2, AREA_H - 22 + 6);
-      g.fillStyle = '#888';
-      g.fillText(String(i), x + sw / 2 - 3, AREA_H - 22 + 18);
-    });
+    paintBarPage(g, 0, 0, 1, snap.bar);
   } else {
     g.fillStyle = '#080808';
     g.fillRect(0, 0, AREA_W, AREA_H);
@@ -136,6 +151,11 @@ export function drawPc(canvas, snap, document) {
     g.fillStyle = '#8a8a8a';
     g.font = '11px monospace';
     g.fillText(`${snap.grid.cols} x ${snap.grid.rows} lamps`, 8, Math.min(h - 6, py + fit.h + 18));
+  } else if (snap.barPage) {
+    paintBarPage(g, px, py, fit.w / AREA_W, snap.bar);
+    g.fillStyle = '#8a8a8a';
+    g.font = '11px monospace';
+    g.fillText('bar: lamps 0-4 down the right, 5-9 up the left', 8, Math.min(h - 6, py + fit.h + 18));
   } else {
     g.fillStyle = '#101010';
     g.fillRect(px, py, fit.w, fit.h);
@@ -143,6 +163,6 @@ export function drawPc(canvas, snap, document) {
     g.strokeRect(px + 0.5, py + 0.5, fit.w - 1, fit.h - 1);
     g.fillStyle = '#808080';
     g.font = '12px monospace';
-    g.fillText(snap.barPage ? 'the lamps of the bar' : 'the lamp grid appears here', px + 12, py + fit.h / 2);
+    g.fillText('the lamp grid appears here', px + 12, py + fit.h / 2);
   }
 }
