@@ -114,3 +114,20 @@ nav.sitenav .panel li a[aria-current="page"] { background: var(--accent); color:
 @media (max-width: 560px) { nav.sitenav a.key { display: none; } nav.sitenav a.brand { margin-right: 0; } }
 
 .notice { background: var(--code); border: 1px solid var(--line); border-left: 4px solid var(--accent); border-radius: 8px; padding: 10px 14px; margin: 18px 0; }
+
+/* The device in the browser (mock.js) */
+.mock { max-width: 640px; margin: 16px auto; }
+.mock .screen { position: relative; border: 6px solid #0b0e14; border-radius: 14px; background: #000; line-height: 0; touch-action: pan-y; }
+.mock .screen img { display: block; width: 100%; height: auto; border-radius: 6px; user-select: none; -webkit-user-drag: none; }
+.mock .hit { position: absolute; margin: 0; padding: 0; border: 0; border-radius: 10px; background: transparent; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+@media (hover: hover) { .mock .hit:hover { background: rgba(255, 255, 255, .12); } }
+.mock .hit:focus-visible { outline: 3px solid var(--accent); outline-offset: -3px; background: rgba(255, 255, 255, .12); }
+.mock .hit[hidden] { display: none; }
+.mock .bar { display: flex; gap: 6px; margin-top: 8px; padding: 10px 12px; border-radius: 10px; background: #0b0e14; }
+.mock .bar .led { flex: 1; height: 18px; border-radius: 9px; background: #1b1d26; transition: background .15s, box-shadow .15s; }
+.mock .caption { margin: 4px 0 0; font-size: .85em; color: var(--muted); text-align: center; }
+.mock .controls { display: flex; gap: 8px; margin-top: 10px; }
+.mock .controls button { flex: 1; min-height: 48px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); color: var(--text); font: inherit; cursor: pointer; }
+.mock .controls button:active { background: var(--code); }
+.mock-status { min-height: 3.2em; margin: 10px auto 0; max-width: 640px; text-align: center; color: var(--muted); }
+@media (prefers-reduced-motion: reduce) { .mock .bar .led { transition: none; } }
