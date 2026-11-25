@@ -1,15 +1,1 @@
-// Closes the hamburger menu on Escape, on a click outside it and when a link in it is followed.
-// Without JavaScript the <details> element still opens and closes by itself.
-(function () {
-  var menu = document.querySelector('nav.sitenav details.menu');
-  if (!menu) return;
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && menu.open) { menu.open = false; menu.querySelector('summary').focus(); }
-  });
-  document.addEventListener('click', function (e) {
-    if (menu.open && !menu.contains(e.target)) menu.open = false;
-  });
-  menu.addEventListener('click', function (e) {
-    if (e.target.closest('a')) menu.open = false;
-  });
-})();
+(()=>{const e=document.querySelector("nav.sitenav details.menu");e&&(document.addEventListener("keydown",n=>{n.key==="Escape"&&e.open&&(e.open=!1,e.querySelector("summary")?.focus())}),document.addEventListener("click",n=>{e.open&&n.target instanceof Node&&!e.contains(n.target)&&(e.open=!1)}),e.addEventListener("click",n=>{n.target instanceof Element&&n.target.closest("a")&&(e.open=!1)}))})();
