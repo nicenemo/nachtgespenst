@@ -93,3 +93,20 @@ test('the shell answers the commands of the lamps', async (t) => {
   assert.match(type('help').join('\n'), /^OK HELP[\s\S]*\nlamps /u);
   await wait(10);
 });
+
+test('the bar on the PC is the LED bar of the board: the colour of the page, the locks and what a demo paints', async (t) => {
+  const { document, device } = page(t);
+  const seen = /** @type {number[][]} */ ([]);
+  device.onBar((rgb) => seen.push(rgb));
+  device.go(3);
+  const layerColour = device.currentBar();
+  assert.ok(layerColour.every((c) => c === layerColour[0]) && (layerColour[0] ?? 0) > 0, 'a key page lights all ten LEDs in the colour of the layer');
+  assert.ok(seen.length >= 1);
+  device.go(26);
+  /** @type {HTMLElement} */ (document.querySelector('[data-lock="0"]')).click();
+  assert.deepEqual(device.currentBar().slice(0, 2), [0xff5000, 0xff5000]);          // Caps fills lamps 0 and 1
+  assert.deepEqual(device.currentBar().slice(2), new Array(8).fill(0));
+  /** @type {HTMLElement} */ (document.querySelector('[data-demo="bar:rainbow"]')).click();
+  await wait(200);
+  assert.ok(new Set(device.currentBar()).size > 1, 'a demo paints different colours');
+});

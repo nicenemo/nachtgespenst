@@ -32,7 +32,7 @@ const SWIPE_PX = 50;
 /**
  * Puts the demo on the page.
  * @param {Environment} env
- * @returns {{go: (page: number) => void, state: () => {page: number, mask: number}, bar: (rgb: number[] | null) => void, pages: number} | null} null when the page has no demo
+ * @returns {{go: (page: number) => void, state: () => {page: number, mask: number}, bar: (rgb: number[] | null) => void, pages: number, currentBar: () => number[], onBar: (listener: (rgb: number[]) => void) => void} | null} null when the page has no demo
  */
 export function start(env) {
   const { document, window, keymap, lockKeys, lockColors } = env;
@@ -97,6 +97,11 @@ export function start(env) {
   }
   mock.querySelectorAll('.hit').forEach((el) => place(/** @type {HTMLElement} */ (el)));
 
+  /** @type {Array<(rgb: number[]) => void>} */
+  const barListeners = [];
+  /** @type {number[]} what the ten LEDs show now, as 0xRRGGBB */
+  let barNow = new Array(10).fill(0);
+
   function drawBar() {
     const dark = ledMode === 'off' || (ledMode === 'locks' && page < LOCKS);
     const colours = barOverride ? barOverride.map((rgb) => [(rgb >> 16) & 255, (rgb >> 8) & 255, rgb & 255]) : dark ? Array.from({ length: 10 }, () => [0, 0, 0]) : barColours(page, mask, keymap[page]?.color ?? '#000000', lockColors);
@@ -107,6 +112,8 @@ export function start(env) {
       led.style.background = lit ? `rgb(${c.join(',')})` : '';
       led.style.boxShadow = lit ? `0 0 10px 2px rgba(${c.join(',')},.55)` : '';
     });
+    barNow = colours.map((c) => ((c[0] ?? 0) << 16) | ((c[1] ?? 0) << 8) | (c[2] ?? 0));
+    barListeners.forEach((listener) => listener(barNow));
   }
 
   /**
@@ -354,5 +361,9 @@ export function start(env) {
     /** A demo sets the ten lamps of the bar; null gives the bar back to the page. */
     bar: (/** @type {number[] | null} */ rgb) => { barOverride = rgb; drawBar(); },
     pages: PAGES,
+    /** What the ten LEDs of the fake board show now: the colour of the page, the locks, a demo or an effect. */
+    currentBar: () => [...barNow],
+    /** Tells the listener whenever the LEDs change. */
+    onBar: (/** @type {(rgb: number[]) => void} */ listener) => { barListeners.push(listener); },
   };
 }
