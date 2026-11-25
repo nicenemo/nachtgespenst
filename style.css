@@ -1,30 +1,36 @@
 :root {
   color-scheme: light dark;
-  --bg: #f6f7fb; --panel: #ffffff; --text: #1b2030; --muted: #5a6478; --line: #d9deea;
-  --accent: #3a56d4; --accent-text: #ffffff; --code: #eef1f8;
+
+  --bg: #f6f7fb; --panel: #fff; --text: #1b2030; --muted: #5a6478; --line: #d9deea;
+  --accent: #3a56d4; --accent-text: #fff; --code: #eef1f8;
 }
+
 @media (prefers-color-scheme: dark) {
   :root { --bg: #0b0e14; --panel: #151a26; --text: #e6e9f0; --muted: #9aa4ba; --line: #2a3142;
           --accent: #8ea2ff; --accent-text: #0b0e14; --code: #1d2434; }
 }
 * { box-sizing: border-box; }
+
 body { margin: 0; background: var(--bg); color: var(--text);
        font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
 a { color: var(--accent); }
 .wrap { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
+
 /* the hero is a night banner that runs the full width, in both colour schemes (the sky of the picture the ghost comes from) */
-header.hero { padding: 56px 0 36px; color: #e6e9f0; background: #0b0e1c url(hero-bg.svg) center / cover no-repeat; border-bottom: 1px solid #2a3142; }
+header.hero { padding: 56px 0 36px; color: #e6e9f0; background: #0b0e1c url("hero-bg.svg") center / cover no-repeat; border-bottom: 1px solid #2a3142; }
 header.hero.compact { padding: 28px 0 20px; }
-.hero h1 { color: #f4f5fb; text-shadow: 0 2px 14px rgba(0, 0, 0, .65); }
-.hero .tag { color: #cfd6ea; text-shadow: 0 1px 10px rgba(0, 0, 0, .7); }
-.hero code { background: rgba(255, 255, 255, .14); color: #f0f2fb; border-radius: 4px; padding: 1px 5px; }
+.hero h1 { color: #f4f5fb; text-shadow: 0 2px 14px rgb(0 0 0 / 65%); }
+.hero .tag { color: #cfd6ea; text-shadow: 0 1px 10px rgb(0 0 0 / 70%); }
+.hero code { background: rgb(255 255 255 / 14%); color: #f0f2fb; border-radius: 4px; padding: 1px 5px; }
 .hero a:not([class]) { color: #d3dbff; }
 .hero .btns a { background: #8ea2ff; color: #0b0e14; }
-.hero .btns a.alt { background: rgba(11, 14, 28, .55); color: #d3dbff; border: 1px solid #8ea2ff; }
+.hero .btns a.alt { background: rgb(11 14 28 / 55%); color: #d3dbff; border: 1px solid #8ea2ff; }
 h1 { font-size: clamp(2rem, 5vw, 3.2rem); margin: 0 0 8px; letter-spacing: -0.02em; display: flex; align-items: center; gap: .4em; }
+
 /* the logo must override ".hero img" (full-width banner with margin and border) below */
 .hero h1 .logo { width: 2em; height: 2em; max-height: none; margin: 0; border: 0; border-radius: 22%; object-fit: contain; display: block; flex: none; }
 .tag { font-size: 1.2rem; color: var(--muted); max-width: 46rem; margin: 0 0 20px; }
+
 .btns a { display: inline-block; margin: 0 8px 8px 0; padding: 8px 16px; border-radius: 8px; text-decoration: none;
           background: var(--accent); color: var(--accent-text); font-weight: 600; }
 .btns a.alt { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
@@ -58,6 +64,7 @@ ul.timeline li { margin: 0 0 14px; padding-left: 16px; }
 ul.timeline b { display: block; }
 footer { margin-top: 48px; padding: 24px 0 40px; border-top: 1px solid var(--line); color: var(--muted); font-size: .95rem; }
 footer .copyright { margin: 14px 0 0; }
+
 /* site navigation: a bar with the key links and a hamburger menu on every page, a pager at the end of the page, a jump list on the long page */
 nav.pager { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin: 36px 0 0; }
 nav.pager a { display: block; padding: 10px 16px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); text-decoration: none; font-weight: 600; }
@@ -71,6 +78,7 @@ nav.jump a { min-width: 2.3em; padding: 3px 8px; text-align: center; border: 1px
 .explore a.card h3 { color: var(--accent); }
 .explore a.card img { width: 100%; height: auto; display: block; margin-top: 8px; border-radius: 6px; border: 1px solid var(--line); background: #000; }
 :target { scroll-margin-top: 64px; }
+
 /* groups of pages: a tab bar under the banner and thumbnail grids on the overview pages */
 nav.tabs { background: var(--panel); border-bottom: 1px solid var(--line); }
 nav.tabs .wrap { display: flex; flex-wrap: wrap; gap: 6px; padding-top: 10px; padding-bottom: 10px; }
@@ -82,6 +90,7 @@ nav.tabs a.ext { margin-left: auto; border-style: dashed; }
 .thumbs img { width: 100%; height: auto; display: block; border-radius: 6px; border: 1px solid var(--line); background: #000; }
 .thumbs span { display: block; margin-top: 3px; }
 section h2 a { text-decoration: none; color: inherit; }
+
 /* the bar: brand, two key links, a hamburger menu with everything */
 nav.sitenav { position: sticky; top: 0; z-index: 20; background: var(--panel); border-bottom: 1px solid var(--line); }
 nav.sitenav .wrap { position: relative; display: flex; align-items: center; gap: 4px 6px; padding-top: 6px; padding-bottom: 6px; }
@@ -95,23 +104,25 @@ nav.sitenav summary { display: flex; align-items: center; gap: 10px; padding: 7p
 nav.sitenav summary::-webkit-details-marker { display: none; }
 nav.sitenav summary:hover, nav.sitenav details[open] > summary { background: var(--code); }
 nav.sitenav summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.burger { position: relative; width: 18px; height: 2px; border-radius: 2px; background: currentColor; transition: background .15s; }
-.burger::before, .burger::after { content: ""; position: absolute; left: 0; width: 18px; height: 2px; border-radius: 2px; background: currentColor; transition: transform .15s, top .15s; }
+.burger { position: relative; width: 18px; height: 2px; border-radius: 2px; background: currentcolor; transition: background .15s; }
+.burger::before, .burger::after { content: ""; position: absolute; left: 0; width: 18px; height: 2px; border-radius: 2px; background: currentcolor; transition: transform .15s, top .15s; }
 .burger::before { top: -6px; }
 .burger::after { top: 6px; }
 details[open] .burger { background: transparent; }
 details[open] .burger::before { top: 0; transform: rotate(45deg); }
 details[open] .burger::after { top: 0; transform: rotate(-45deg); }
+
 nav.sitenav .panel { position: absolute; right: 16px; top: calc(100% + 6px); width: min(740px, calc(100vw - 32px)); max-height: calc(100vh - 80px); overflow: auto;
   display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px 22px; padding: 16px 18px;
-  background: var(--panel); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 14px 34px rgba(0, 0, 0, .3); }
+  background: var(--panel); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 14px 34px rgb(0 0 0 / 30%); }
 nav.sitenav .panel h2 { margin: 0 0 6px; font-size: .78rem; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); }
 nav.sitenav .panel ul { margin: 0; padding: 0; list-style: none; }
 nav.sitenav .panel li { max-width: none; }
 nav.sitenav .panel li a { display: block; padding: 6px 8px; border-radius: 6px; color: var(--text); text-decoration: none; }
 nav.sitenav .panel li a:hover { background: var(--code); }
 nav.sitenav .panel li a[aria-current="page"] { background: var(--accent); color: var(--accent-text); font-weight: 600; }
-@media (max-width: 560px) { nav.sitenav a.key { display: none; } nav.sitenav a.brand { margin-right: 0; } }
+
+@media (width <= 560px) { nav.sitenav a.key { display: none; } nav.sitenav a.brand { margin-right: 0; } }
 
 .notice { background: var(--code); border: 1px solid var(--line); border-left: 4px solid var(--accent); border-radius: 8px; padding: 10px 14px; margin: 18px 0; }
 
@@ -122,29 +133,33 @@ nav.sitenav .panel li a[aria-current="page"] { background: var(--accent); color:
 .mock .screen { position: relative; border: 5px solid #0b0e14; border-radius: 12px; background: #000; line-height: 0; touch-action: pan-y; }
 .mock .screen img { display: block; width: 100%; height: auto; border-radius: 5px; user-select: none; -webkit-user-drag: none; }
 .mock .hit { position: absolute; margin: 0; padding: 0; border: 0; border-radius: 8px; background: transparent; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-@media (hover: hover) { .mock .hit:hover { background: rgba(255, 255, 255, .12); } }
-.mock .hit:focus-visible { outline: 3px solid var(--accent); outline-offset: -3px; background: rgba(255, 255, 255, .12); }
+
+@media (hover: hover) { .mock .hit:hover { background: rgb(255 255 255 / 12%); } }
+.mock .hit:focus-visible { outline: 3px solid var(--accent); outline-offset: -3px; background: rgb(255 255 255 / 12%); }
 .mock .hit[hidden] { display: none; }
 .mock .bar { display: flex; flex-direction: column; gap: 6px; padding: 6px 4px; border-radius: 8px; background: #0b0e14; }
 .mock .bar .led { flex: 1; border-radius: 6px; background: #1b1d26; transition: background .15s, box-shadow .15s; }
-.mock .controls { display: flex; gap: 8px; margin: 10px 36px 0; }
-.mock .controls button { flex: 1; min-height: 40px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); color: var(--text); font: inherit; cursor: pointer; }
-.mock .controls button:active { background: var(--code); }
 .mock-status { min-height: 2.8em; margin: 8px auto 0; max-width: 560px; text-align: center; color: var(--muted); font-size: .95em; }
 .caption-note { color: var(--muted); font-size: .9em; }
-@media (max-width: 700px) { .mock .controls button { min-height: 48px; } .mock .controls { margin: 10px 0 0; } .mock { max-width: 100%; } .mock .stage { grid-template-columns: 22px minmax(0, 1fr) 22px; gap: 6px; } }
+
+@media (width <= 700px) { .mock { max-width: 100%; } .mock .stage { grid-template-columns: 22px minmax(0, 1fr) 22px; gap: 6px; } }
+
 @media (prefers-reduced-motion: reduce) { .mock .bar .led { transition: none; } }
 
 /* The start page: the Locks page as a link to the web demo */
-.hero-demo { max-width: 480px; margin: 18px auto 0; }
-.hero-demo a { display: block; text-align: center; text-decoration: none; color: inherit; }
-.hero-demo img { display: block; width: 100%; height: auto; border: 6px solid #0b0e14; border-radius: 14px; background: #000; }
-.hero-demo a:hover img, .hero-demo a:focus-visible img { border-color: var(--accent); }
-.hero-demo span { display: inline-block; margin-top: 8px; color: var(--accent); font-weight: 600; }
+.hero-demos { display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start; gap: 24px; margin: 18px auto 0; }
+.hero-demos a { display: block; flex: 1 1 320px; max-width: 480px; text-align: center; text-decoration: none; color: inherit; }
+.hero-demos .stage { display: flex; gap: 8px; align-items: stretch; }
+.hero-demos .bar { display: flex; flex-direction: column; flex: 0 0 22px; gap: 5px; padding: 5px 3px; border-radius: 8px; background: #0b0e14; }
+.hero-demos .led { flex: 1; border-radius: 5px; background: #1b1d26; }
+.hero-demos img { display: block; flex: 1; min-width: 0; height: auto; border: 6px solid #0b0e14; border-radius: 14px; background: #000; }
+.hero-demos a:hover img, .hero-demos a:focus-visible img { border-color: var(--accent); }
+.hero-demos .go { display: inline-block; margin-top: 8px; color: var(--accent); font-weight: 600; }
 
 /* The web demo: the screen and the key log side by side on a wide window */
 .demo-grid { display: block; }
-@media (min-width: 1000px) {
+
+@media (width >= 1000px) {
   .demo-grid { display: grid; grid-template-columns: auto minmax(300px, 460px); gap: 28px; justify-content: center; align-items: start; }
   .demo-grid .mock { margin: 12px 0; }
   .demo-grid .mock-status { text-align: center; }
@@ -153,11 +168,21 @@ nav.sitenav .panel li a[aria-current="page"] { background: var(--accent); color:
 .keylog-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 12px; border-bottom: 1px solid var(--line); }
 .keylog-head h2 { margin: 0; font-size: 1em; }
 .keylog-head button { border: 1px solid var(--line); border-radius: 8px; background: var(--code); color: var(--text); font: inherit; padding: 2px 10px; cursor: pointer; }
-.keylog-body { height: 15em; overflow-y: auto; padding: 8px 12px; font: 12px/1.45 ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; background: #0b0e14; color: #c9d1e8; }
-@media (min-width: 1000px) { .keylog-body { height: 22em; } }
-.keylog-body .kl { white-space: pre-wrap; word-break: break-word; }
+.keylog-body { height: 15em; overflow-y: auto; padding: 8px 12px; font: 12px/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; background: #0b0e14; color: #c9d1e8; }
+
+@media (width >= 1000px) { .keylog-body { height: 22em; } }
+.keylog-body .kl { white-space: pre-wrap; overflow-wrap: anywhere; }
 .keylog-body .kl.down { color: #ffd479; }
 .keylog-body .kl.up { color: #8da0c8; }
 .keylog-body .kl.blocked { color: #ff8a8a; }
 .keylog-empty { margin: 0; color: #8da0c8; font: inherit; }
-.mock .hit.ktile.pressed, .mock .hit.tile.pressed { background: rgba(255, 255, 255, .35); }
+.mock .hit.ktile.pressed, .mock .hit.tile.pressed { background: rgb(255 255 255 / 35%); }
+
+/* The clicker demo (clicker.js): one screen without LED bars, and the three buttons of the Core2 under it. */
+.mock .stage.single { grid-template-columns: minmax(0, 1fr); }
+.abc { display: flex; justify-content: space-around; max-width: var(--screen-w); margin: 10px auto 0; }
+.abc button { min-width: 3.2em; border: 1px solid var(--line); border-radius: 50%; background: var(--panel); color: var(--text); font: inherit; padding: .6em 0; cursor: pointer; }
+.abc button:active { background: var(--accent); color: #0b0e14; }
+.hero-real { flex: 1 1 240px; max-width: 360px; margin: 0; text-align: center; }
+.hero-real img { display: block; width: 100%; height: auto; border-radius: 14px; }
+.hero-real figcaption { margin-top: 8px; color: var(--muted); font-size: .9em; }

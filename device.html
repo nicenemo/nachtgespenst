@@ -50,9 +50,9 @@
 <div class="bar" aria-hidden="true"><span class="led" data-lamp="9"></span><span class="led" data-lamp="8"></span><span class="led" data-lamp="7"></span><span class="led" data-lamp="6"></span><span class="led" data-lamp="5"></span></div>
 <div class="screen">
 <img id="mockimg" src="img/lvgl/s3-00.png" width="320" height="240" alt="CoreS3 screenshot of the page Maven Tools">
-<button type="button" class="hit" data-act="prev" data-x="2" data-y="204" data-w="48" data-h="34" aria-label="Previous page"></button>
-<button type="button" class="hit" data-act="title" data-x="52" data-y="204" data-w="216" data-h="34" aria-label="Open or close the Locks page"></button>
-<button type="button" class="hit" data-act="next" data-x="270" data-y="204" data-w="48" data-h="34" aria-label="Next page"></button>
+<button type="button" class="hit" data-act="prev" data-x="0" data-y="202" data-w="51" data-h="38" aria-label="Previous page"></button>
+<button type="button" class="hit" data-act="title" data-x="51" data-y="202" data-w="218" data-h="38" aria-label="Open or close the Locks page"></button>
+<button type="button" class="hit" data-act="next" data-x="269" data-y="202" data-w="51" data-h="38" aria-label="Next page"></button>
 <button type="button" class="hit tile" hidden data-lock="0" data-x="3" data-y="3" data-w="102" data-h="96" aria-label="Caps Lock"></button>
 <button type="button" class="hit tile" hidden data-lock="1" data-x="108" data-y="3" data-w="102" data-h="96" aria-label="Num Lock"></button>
 <button type="button" class="hit tile" hidden data-lock="2" data-x="213" data-y="3" data-w="102" data-h="96" aria-label="Scroll Lock"></button>
@@ -61,7 +61,6 @@
 </div>
 <div class="bar" aria-hidden="true"><span class="led" data-lamp="0"></span><span class="led" data-lamp="1"></span><span class="led" data-lamp="2"></span><span class="led" data-lamp="3"></span><span class="led" data-lamp="4"></span></div>
 </div>
-<div class="controls"><button type="button" data-act="prev">&larr; Previous</button><button type="button" data-act="title">Locks</button><button type="button" data-act="next">Next &rarr;</button></div>
 </div>
 <p class="mock-status" id="mockstatus" role="status" aria-live="polite"></p>
 </div>
@@ -72,7 +71,7 @@
 </div>
 <noscript><p class="notice">This page needs JavaScript. Without it you see the first screen only.</p></noscript>
 <h2>How it works</h2>
-<p>Tap the arrows at the bottom of the screen to page through the pages. Tap the title in the middle to open the Locks page, and tap it again to go back. On the Locks page, tap Caps, Num or Scroll to switch that lock on or off and watch the LED bars beside the screen. On a phone you can also swipe the screen, or use the buttons under it.</p>
+<p>Tap the arrows at the bottom of the screen to page through the pages. Tap the title in the middle to open the Locks page, and tap it again to go back. On the Locks page, tap Caps, Num or Scroll to switch that lock on or off and watch the LED bars beside the screen. On a phone you can also swipe the screen.</p>
 <p class="caption-note">The two bars beside the screen are the ten LEDs of the M5GO base (five on each side), in the colours the firmware sets (the real LEDs are dimmer): lamps 0 to 4 run down the right side, lamps 5 to 9 run up the left side.</p>
 <h2>What is real</h2>
 <p>Every picture is a screenshot of a real CoreS3 running the current firmware: one for each key layer, and eight of the Locks page, one for each combination of Caps, Num and Scroll Lock that a host can report. They were taken from the board with its test tool, which presses the lock tiles and reads back the state, so what you see is what the screen draws. The page only replays them: nothing is simulated.</p>

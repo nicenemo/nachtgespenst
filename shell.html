@@ -43,7 +43,8 @@
 <p>The serial port of both boards (USB, 115200 baud) is a small shell. Commands and arguments are lower case, <code>help</code> lists them and <code>help &lt;command&gt;</code> explains one. Every reply starts with <code>OK</code> or <code>ERR</code>; some commands print more lines after it. On the CoreS3 the long texts come from <code>help.txt</code> on the SD card; without the card (or on the Core2) <code>help &lt;command&gt;</code> prints the usage line and the summary that are built into the firmware.</p>
 <p>Try it: <code>jbang tools/Shell.java S3</code> opens an interactive shell on the board, <code>jbang tools/Serial.java S3 "help"</code> sends one command.</p>
 <table>
-<tr><th>Command</th><th>Usage</th><th>What it does</th></tr>
+<thead><tr><th scope="col">Command</th><th scope="col">Usage</th><th scope="col">What it does</th></tr></thead>
+<tbody>
 <tr><td><a href="#cmd-help"><code>help</code></a></td><td><code>help [&lt;command&gt;]</code></td><td>List the commands, or explain one.</td></tr>
 <tr><td><a href="#cmd-ping"><code>ping</code></a></td><td><code>ping</code></td><td>Check that the board answers.</td></tr>
 <tr><td><a href="#cmd-info"><code>info</code></a></td><td><code>info</code></td><td>Board, name, firmware build time, screen size, number of pages.</td></tr>
@@ -72,17 +73,20 @@
 <tr><td><a href="#cmd-prefer"><code>prefer</code></a></td><td><code>prefer [usb|ble|both]</code></td><td>Which link carries the keys when both are connected.</td></tr>
 <tr><td><a href="#cmd-only"><code>only</code></a></td><td><code>only &lt;usb|ble&gt;</code></td><td>Never use the other link, even if the chosen one is down.</td></tr>
 <tr><td><a href="#cmd-sd"><code>sd</code></a></td><td><code>sd</code></td><td>Is there an SD card, which type, how big, how much is used.</td></tr>
+</tbody>
 </table>
 <h2 id="demo-commands">Demo commands</h2>
 <p class="notice"><b>Demos.</b> These commands belong to the demos (the lamps, the file transfer, the telemetry and the effects). The sources of the demos are not publicly available; the macro pad and the clicker do not need these commands.</p>
 <table>
-<tr><th>Command</th><th>Usage</th><th>What it does</th></tr>
+<thead><tr><th scope="col">Command</th><th scope="col">Usage</th><th scope="col">What it does</th></tr></thead>
+<tbody>
 <tr><td><a href="#cmd-lamps"><code>lamps</code></a></td><td><code>lamps [reset | grid &lt;cols&gt; &lt;rows&gt; | get &lt;id&gt; | bright &lt;n&gt; | worker &lt;on|off&gt;]</code></td><td>The LampArray: counters, the lamp grid, one lamp, the bar brightness, the bar worker task.</td></tr>
 <tr><td><a href="#cmd-disk"><code>disk</code></a></td><td><code>disk [reset | dir | sound &lt;on|off&gt;]</code></td><td>The Disk demo: the state of the transfer, forget it, list the SD card, mute the modem sounds.</td></tr>
 <tr><td><a href="#cmd-mic"><code>mic</code></a></td><td><code>mic [on|off]</code></td><td>Switch the microphone on or off, or show what it hears.</td></tr>
 <tr><td><a href="#cmd-wave"><code>wave</code></a></td><td><code>wave</code></td><td>The last microphone buffer: 512 samples of 16 bits as hex (for tests).</td></tr>
 <tr><td><a href="#cmd-bar"><code>bar</code></a></td><td><code>bar</code></td><td>The colours of the ten bar LEDs as hex (for tests).</td></tr>
 <tr><td><a href="#cmd-telem"><code>telem</code></a></td><td><code>telem [bar|wave|both|off]</code></td><td>Send the bar colours and/or the microphone waveform to the PC as game pad reports.</td></tr>
+</tbody>
 </table>
 <h2 id="cmd-help">help</h2>
 <p><code>help [&lt;command&gt;]</code></p>

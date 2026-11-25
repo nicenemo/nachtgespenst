@@ -2,7 +2,11 @@
 
 The public site of Nachtgespenst, a Bluetooth LE and USB HID macro pad for the M5Stack Core2 and CoreS3. It is served at https://hanskruse.eu/nachtgespenst/ from the branch `gh-pages`, which the workflow in `.github/workflows/pages.yml` fills from `main`.
 
-The site is plain HTML, CSS and a little JavaScript, with no build step. The shell manual page (`shell.html`) is generated from the project's shell documentation by a tool of the main project and committed here.
+The site is plain HTML and CSS plus a small demo script. Generated and committed here: the shell manual (`shell.html`) and the keymap of the web demo (`keymap.js`), both made by `jbang tools/Site.java` of the main project.
+
+- `npm ci` once, then `npm run check`: ESLint (JavaScript), Stylelint (CSS), html-validate (pages), `tsc` (types from JSDoc, no `.ts` sources), `node --test test/` (logic and the demo in jsdom) and the build.
+- `npm run build` bundles `src/` into one minified `dist/mock.js`, minifies the CSS, the pages and the data, and copies the rest into `dist/`; the workflow publishes `dist/`. `npm run serve` serves it at http://localhost:8080/.
+- The demos: `device.html` (the CoreS3 with its LED bars and a log of the HID reports) and `clicker.html` (the Core2). Nothing is sent; the log shows what the board would send.
 
 - Licence: MIT, see [LICENSE](LICENSE); third-party components: [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
 - Secret scanning: `git config core.hooksPath .githooks` (trufflehog, see the hooks).

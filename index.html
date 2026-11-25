@@ -38,8 +38,10 @@
 <p class="tag">A night ghost for your keyboard: a Bluetooth LE and USB macro pad on the M5Stack CoreS3, and a presentation clicker with an air mouse on the Core2. Tap a tile on the touchscreen and the matching key, chord or media command arrives on your computer.</p>
 <p class="btns"><a class="alt" href="setup.html">Set it up</a></p>
 </div></header>
-<div class="wrap hero-demo">
-<a href="device.html#26"><img src="img/lvgl/s3-26-101.png" width="320" height="240" alt="The Locks page of Nachtgespenst on the CoreS3, with Caps and Scroll Lock on. Tap to try it in your browser."><span>Tap a tile: try it in your browser</span></a>
+<div class="wrap hero-demos">
+<a class="hero-pad" href="device.html#26"><span class="stage"><span class="bar" aria-hidden="true"><span class="led" style="background:rgb(255,160,255);box-shadow:0 0 10px 2px rgba(255,160,255,.55)"></span><span class="led" style="background:rgb(255,160,255);box-shadow:0 0 10px 2px rgba(255,160,255,.55)"></span><span class="led" style="background:rgb(255,160,255);box-shadow:0 0 10px 2px rgba(255,160,255,.55)"></span><span class="led" style="background:rgb(255,160,255);box-shadow:0 0 10px 2px rgba(255,160,255,.55)"></span><span class="led" style="background:rgb(255,160,255);box-shadow:0 0 10px 2px rgba(255,160,255,.55)"></span></span><img src="img/lvgl/s3-26-101.png" width="320" height="240" alt="The Locks page of Nachtgespenst on the CoreS3, with Caps and Scroll Lock on, between its two LED bars. Tap to try it in your browser."><span class="bar" aria-hidden="true"><span class="led" style="background:rgb(255,160,255);box-shadow:0 0 10px 2px rgba(255,160,255,.55)"></span><span class="led" style="background:rgb(255,160,255);box-shadow:0 0 10px 2px rgba(255,160,255,.55)"></span><span class="led" style="background:rgb(255,160,255);box-shadow:0 0 10px 2px rgba(255,160,255,.55)"></span><span class="led" style="background:rgb(255,160,255);box-shadow:0 0 10px 2px rgba(255,160,255,.55)"></span><span class="led" style="background:rgb(255,160,255);box-shadow:0 0 10px 2px rgba(255,160,255,.55)"></span></span></span><span class="go">Macro pad: try it in your browser</span></a>
+<figure class="hero-real"><img src="img/cores3-photo.jpg" width="881" height="900" alt="The CoreS3 on a desk, showing the Locks page with Num Lock on and the green LED bar lit at its side."><figcaption>The CoreS3: Num Lock on, and its LED bar shows it.</figcaption></figure>
+<a class="hero-clicker" href="clicker.html"><span class="stage"><img src="img/clicker/clicker.png" width="320" height="240" alt="The clicker page of the Core2. Tap to try it in your browser."></span><span class="go">Clicker: try it in your browser</span></a>
 </div>
 <main class="wrap">
 <section id="what"><h2>What it does</h2>
@@ -57,15 +59,17 @@
 
 <section id="devices"><h2>The two devices</h2>
 <table>
-<tr><th></th><th>Core2</th><th>CoreS3</th></tr>
-<tr><th>Role</th><td>Presentation clicker and air mouse: one page</td><td>Macro pad: 26 layers and the Locks page</td></tr>
+<thead><tr><th scope="col"></th><th scope="col">Core2</th><th scope="col">CoreS3</th></tr></thead>
+<tbody>
+<tr><th scope="row">Role</th><td>Presentation clicker and air mouse: one page</td><td>Macro pad: 26 layers and the Locks page</td></tr>
 <tr>
-<th>PlatformIO environment</th><td><code>core2</code></td><td><code>cores3</code></td></tr>
-<tr><th>Host transports</th><td>BLE</td><td>BLE and USB (TinyUSB)</td></tr>
-<tr><th>Paging</th><td>Three capacitive buttons under the screen: A previous slide, B pointer mode, C next slide</td><td>On-screen bottom bar: previous, Locks (tap the title), next</td></tr>
-<tr><th>LED bar</th><td>M5GO base, ten LEDs on GPIO25</td><td>M5GO base, ten LEDs on GPIO5</td></tr>
-<tr><th>Flashing</th><td>CP2104 serial bridge, resets automatically</td><td>Native USB; needs a 1200-baud touch to enter the ROM bootloader</td></tr>
-<tr><th>Screen</th><td colspan="2">320 × 240, touch</td></tr>
+<th scope="row">PlatformIO environment</th><td><code>core2</code></td><td><code>cores3</code></td></tr>
+<tr><th scope="row">Host transports</th><td>BLE</td><td>BLE and USB (TinyUSB)</td></tr>
+<tr><th scope="row">Paging</th><td>Three capacitive buttons under the screen: A previous slide, B pointer mode, C next slide</td><td>On-screen bottom bar: previous, Locks (tap the title), next</td></tr>
+<tr><th scope="row">LED bar</th><td>M5GO base, ten LEDs on GPIO25</td><td>M5GO base, ten LEDs on GPIO5</td></tr>
+<tr><th scope="row">Flashing</th><td>CP2104 serial bridge, resets automatically</td><td>Native USB; needs a 1200-baud touch to enter the ROM bootloader</td></tr>
+<tr><th scope="row">Screen</th><td colspan="2">320 × 240, touch</td></tr>
+</tbody>
 </table></section>
 
 <section id="explore"><h2>Explore</h2>

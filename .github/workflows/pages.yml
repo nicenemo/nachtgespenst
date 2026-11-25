@@ -25,6 +25,17 @@ jobs:
       - name: The private repository must not be named
         run: ./scripts/check-private-names.sh
 
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 26
+          cache: npm
+
+      - name: Install, lint, test and build (the site is published from dist/)
+        run: |
+          npm ci
+          npm run check
+
       - name: Check out the gh-pages branch (or start it)
         run: |
           if git ls-remote --exit-code --heads origin gh-pages >/dev/null; then
@@ -37,7 +48,7 @@ jobs:
       - name: Copy the site
         run: |
           find pages -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
-          rsync -a --exclude=.git --exclude=.github --exclude=.githooks --exclude=scripts --exclude=README.md --exclude=.gitignore ./ pages/
+          rsync -a dist/ pages/
           touch pages/.nojekyll
 
       - name: Commit and push

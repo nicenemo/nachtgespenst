@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Clicker · Nachtgespenst</title>
 <meta name="description" content="The Core2 as a presentation clicker and air mouse over Bluetooth LE: the page, the keys it types and how the pointer moves.">
-<link rel="canonical" href="https://hanskruse.eu/nachtgespenst/camera.html">
+<link rel="canonical" href="https://hanskruse.eu/nachtgespenst/clicker.html">
 <meta name="theme-color" content="#0b0e14" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f6f7fb" media="(prefers-color-scheme: light)">
 <!-- icons: the ICO for old browsers and tools, the SVG for modern ones, PNGs for iOS, Android and Windows tiles -->
@@ -18,9 +18,9 @@
 <meta name="msapplication-TileColor" content="#0b0e14">
 <!-- link previews -->
 <meta property="og:type" content="website">
-<meta property="og:title" content="Camera tests · Nachtgespenst">
-<meta property="og:description" content="How a laptop webcam and a small JBang tool find the LED bar pin and check the colour of every layer.">
-<meta property="og:url" content="https://hanskruse.eu/nachtgespenst/camera.html">
+<meta property="og:title" content="Clicker · Nachtgespenst">
+<meta property="og:description" content="The Core2 as a presentation clicker and air mouse: tap the tiles and read the keys it would type.">
+<meta property="og:url" content="https://hanskruse.eu/nachtgespenst/clicker.html">
 <meta property="og:image" content="https://hanskruse.eu/nachtgespenst/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -31,6 +31,7 @@
 <link rel="next" href="lamps.html">
 <link rel="index" href="index.html">
 <script src="menu.js" defer></script>
+<script src="mock.js" defer></script>
 </head>
 <body>
 <nav class="sitenav" aria-label="Site"><div class="wrap"><a class="brand" href="index.html"><img src="favicon.svg" width="28" height="28" alt="">Nachtgespenst</a><a class="key" href="device.html">Try it</a><a class="key" href="setup.html">Set-up</a><details class="menu"><summary aria-label="Menu"><span class="burger" aria-hidden="true"></span><span class="label">Menu</span></summary><div class="panel"><div class="col"><h2>Project</h2><ul><li><a href="index.html">Home</a></li><li><a href="device.html">Try it</a></li><li><a href="clicker.html" aria-current="page">Clicker</a></li><li><a href="shell.html">Shell manual</a></li><li><a href="setup.html">Set it up</a></li><li><a href="story.html">The story</a></li><li><a href="repositories.html">Repositories</a></li></ul></div><div class="col"><h2>Demos</h2><ul><li><a href="demos.html">About the demos</a></li><li><a href="lamps.html">LampArray bench</a></li><li><a href="camera.html">Camera tests</a></li></ul></div><div class="col"><h2>History</h2><ul><li><a href="interfaces.html">Two interfaces</a></li><li><a href="classic.html">The classic interface</a></li><li><a href="classic-work.html">Classic: Work and editing</a></li><li><a href="classic-function.html">Classic: Function keys</a></li><li><a href="classic-typing.html">Classic: Typing and layout</a></li><li><a href="classic-media.html">Classic: Media and applications</a></li></ul></div></div></details></div></nav>
@@ -41,14 +42,29 @@
 <main class="wrap">
 <section id="clicker">
 <p>The Core2 runs the clicker build of the firmware. It has one page and talks to the computer over Bluetooth LE only (the Core2 has no USB data connection). It types the keys of a clicker, and it moves the mouse pointer when you turn it, like an air mouse. It works with any Bluetooth host and with PowerPoint, LibreOffice Impress and the browser slide tools that use the usual keys.</p>
-<div class="shots">
-<figure><img src="img/clicker/clicker.png" width="320" height="240" alt="Core2 screenshot of the clicker page"><figcaption>The clicker page</figcaption></figure>
-<figure><img src="img/clicker/pointer.png" width="320" height="240" alt="Core2 screenshot of the pointer page"><figcaption>With the air mouse on</figcaption></figure>
+<div class="demo-grid">
+<div class="demo-left">
+<div class="mock" id="mock">
+<div class="stage single">
+<div class="screen" id="clicker-screen">
+<img id="clicker-img" src="img/clicker/clicker.png" width="320" height="240" alt="Core2 screenshot of the clicker page">
 </div>
+</div>
+<div class="abc" role="group" aria-label="The three buttons under the screen"><button type="button" data-button="A">A</button><button type="button" data-button="B">B</button><button type="button" data-button="C">C</button></div>
+</div>
+<p class="mock-status" id="mockstatus" role="status" aria-live="polite"></p>
+</div>
+<aside class="keylog" aria-labelledby="keylog-title">
+<div class="keylog-head"><h2 id="keylog-title">What the clicker would send</h2><button type="button" id="keylog-clear">Clear</button></div>
+<div class="keylog-body" id="keylog" role="log" aria-live="polite" tabindex="0"><p class="keylog-empty">Tap a tile or a button. The HID report that the board would send appears here; nothing is really sent.</p></div>
+</aside>
+</div>
+<noscript><p class="notice">This page needs JavaScript. Without it you see the clicker page only.</p></noscript>
 <h2>The page</h2>
 <p>The header shows the title, whether a host is connected (<code>BLE</code> or <code>no BLE</code>) and three indicators A, B and C that light up while the physical buttons are held. A tile you hold turns amber.</p>
 <table>
-<tr><th>Tile</th><th>Key it types</th><th>Button</th></tr>
+<thead><tr><th scope="col">Tile</th><th scope="col">Key it types</th><th scope="col">Button</th></tr></thead>
+<tbody>
 <tr><td>Previous</td><td>Page Up</td><td>A</td></tr>
 <tr><td>Next</td><td>Page Down</td><td>C</td></tr>
 <tr><td>Start</td><td>F5 (start the slide show)</td><td></td></tr>
@@ -57,8 +73,9 @@
 <tr><td>Pointer</td><td>switches the air mouse on and off</td><td>B</td></tr>
 <tr><td>Laser</td><td>Ctrl+L (the laser pointer of PowerPoint)</td><td></td></tr>
 <tr><td>Click</td><td>left mouse button</td><td></td></tr>
+</tbody>
 </table>
-<p>With the air mouse on, the page changes to the second screenshot: Click, Laser and a tile to go back to the clicker (Clicker mode), with Previous and Next below.</p>
+<p>Tap the Pointer tile (or button B) above to switch to the second page. With the air mouse on, the page changes: Click, Laser and a tile to go back to the clicker (Clicker mode), with Previous and Next below.</p>
 <h2>The air mouse</h2>
 <ul>
 <li>The pointer is off until you switch it on (the tile or button B); the setting is remembered.</li>

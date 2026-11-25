@@ -52,21 +52,25 @@
 <h2>Results</h2>
 <p>Every functional check passes on all three links: CoreS3 over USB, CoreS3 over Bluetooth and Core2 over Bluetooth. Every sampled lamp on the screen matches its colour at every grid size.</p>
 <table>
-<tr><th></th><th>CoreS3, USB</th><th>CoreS3, Bluetooth</th><th>Core2, Bluetooth</th></tr>
-<tr><th>Reports per second</th><td>1,000</td><td>16 (multi), 30 (range)</td><td>29</td></tr>
-<tr><th>Lamps per second</th><td>8,000</td><td>126 to 300</td><td>231 to 288</td></tr>
-<tr><th>Enumerating a lamp</th><td>0.4 ms</td><td>61 ms</td><td>63 ms</td></tr>
-<tr><th>Draw a changed screen</th><td>about 45 ms</td><td>about 48 ms</td><td>about 80 ms</td></tr>
+<thead><tr><th scope="col"></th><th scope="col">CoreS3, USB</th><th scope="col">CoreS3, Bluetooth</th><th scope="col">Core2, Bluetooth</th></tr></thead>
+<tbody>
+<tr><th scope="row">Reports per second</th><td>1,000</td><td>16 (multi), 30 (range)</td><td>29</td></tr>
+<tr><th scope="row">Lamps per second</th><td>8,000</td><td>126 to 300</td><td>231 to 288</td></tr>
+<tr><th scope="row">Enumerating a lamp</th><td>0.4 ms</td><td>61 ms</td><td>63 ms</td></tr>
+<tr><th scope="row">Draw a changed screen</th><td>about 45 ms</td><td>about 48 ms</td><td>about 80 ms</td></tr>
+</tbody>
 </table>
 <p>What a frame rate of the whole screen looks like (every lamp changes in every frame):</p>
 <table>
-<tr><th>Grid</th><th>Lamps</th><th>USB</th><th>Bluetooth, CoreS3</th><th>Bluetooth, Core2</th></tr>
+<thead><tr><th scope="col">Grid</th><th scope="col">Lamps</th><th scope="col">USB</th><th scope="col">Bluetooth, CoreS3</th><th scope="col">Bluetooth, Core2</th></tr></thead>
+<tbody>
 <tr><td>8 &times; 6</td><td>48</td><td>166 fps</td><td>2.7 fps</td><td>4.7 fps</td></tr>
 <tr><td>16 &times; 12</td><td>192</td><td>42 fps</td><td>0.7 fps</td><td>1.2 fps</td></tr>
 <tr><td>32 &times; 24</td><td>768</td><td>10 fps</td><td>0.2 fps</td><td>0.3 fps</td></tr>
 <tr><td>64 &times; 48</td><td>3,072</td><td>2.6 fps</td><td>0.04 fps</td><td>0.1 fps</td></tr>
 <tr><td>128 &times; 96</td><td>12,288</td><td>0.7 fps</td><td>0.01 fps</td><td>&ndash;</td></tr>
 <tr><td>320 &times; 190, one lamp per pixel</td><td>60,800</td><td>0.1 fps</td><td>&ndash;</td><td>&ndash;</td></tr>
+</tbody>
 </table>
 <h2>What it means</h2>
 <ul>

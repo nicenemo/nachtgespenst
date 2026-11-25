@@ -50,14 +50,16 @@
 <h3>How they compare</h3>
 <p>Both interfaces were built from the same keymap and tested with the same serial test suite, then measured on the boards. A page is "drawn" when it is on the display: LVGL answers <code>LAYER</code> before it renders, so the time is <code>LAYER</code> plus <code>SHOT</code> minus the plain <code>SHOT</code> read-out.</p>
 <table>
-<tr><th></th><th>LVGL</th><th>Classic</th></tr>
-<tr><th>Flash used (CoreS3)</th><td>2.33 MB (35.5 %)</td><td>1.65 MB (25.2 %)</td></tr>
-<tr><th>RAM used (CoreS3)</th><td>105 kB (32.0 %)</td><td>73 kB (22.4 %)</td></tr>
-<tr><th>Time to draw a page, CoreS3</th><td>about 360 ms (260 to 480 ms)</td><td>about 92 ms</td></tr>
-<tr><th>Time to draw a page, Core2</th><td>about 450 to 630 ms</td><td>about 100 ms</td></tr>
-<tr><th>Source</th><td>429-line <code>ui.cpp</code>, icon table, 40 kB icon font, LVGL configuration</td><td>378-line <code>ui.cpp</code>, no icon font</td></tr>
-<tr><th>Look</th><td>Icons, anti-aliased text, rounded tiles, pressed-state animation</td><td>Text labels, arrow shapes, flat tiles</td></tr>
-<tr><th>Tests</th><td colspan="2">Both pass the serial test suite on both boards; the classic interface needed no change to the protocol or the tests.</td></tr>
+<thead><tr><th scope="col"></th><th scope="col">LVGL</th><th scope="col">Classic</th></tr></thead>
+<tbody>
+<tr><th scope="row">Flash used (CoreS3)</th><td>2.33 MB (35.5 %)</td><td>1.65 MB (25.2 %)</td></tr>
+<tr><th scope="row">RAM used (CoreS3)</th><td>105 kB (32.0 %)</td><td>73 kB (22.4 %)</td></tr>
+<tr><th scope="row">Time to draw a page, CoreS3</th><td>about 360 ms (260 to 480 ms)</td><td>about 92 ms</td></tr>
+<tr><th scope="row">Time to draw a page, Core2</th><td>about 450 to 630 ms</td><td>about 100 ms</td></tr>
+<tr><th scope="row">Source</th><td>429-line <code>ui.cpp</code>, icon table, 40 kB icon font, LVGL configuration</td><td>378-line <code>ui.cpp</code>, no icon font</td></tr>
+<tr><th scope="row">Look</th><td>Icons, anti-aliased text, rounded tiles, pressed-state animation</td><td>Text labels, arrow shapes, flat tiles</td></tr>
+<tr><th scope="row">Tests</th><td colspan="2">Both pass the serial test suite on both boards; the classic interface needed no change to the protocol or the tests.</td></tr>
+</tbody>
 </table>
 <p>The classic interface is clearly faster to switch pages and uses about a third less memory; LVGL looks richer and leaves room for more widgets. The slow part of LVGL is building a page (creating up to 24 buttons and rasterising icon glyphs at run time), which can be improved with pre-rendered bitmap fonts and reusable tile widgets; that work is on the to-do list.</p>
 </section>

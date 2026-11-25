@@ -42,13 +42,15 @@
 <section id="zmk"><h2>Inspiration: ZMK and the Cornish ZEN keymap</h2>
 <p>The keymap style comes from the owner's ZMK keyboard firmware work, in particular the configuration for the 42-key Corne-ish Zen (<a href="https://github.com/nicenemo/franken-cornish-zen">franken-cornish-zen</a>: 31 layers, home-row mods, combos, Unicode, APL and Greek layers), and the header generator follows <a href="https://github.com/nicenemo/zmk_unicode_headers">zmk_unicode_headers</a>, which turns the Unicode database into named C macros the way <code>GenerateHeaders.jsh</code> turns the USB HID Usage Tables into <code>kp_A</code> and <code>cp_MUTE</code>.</p>
 <table>
-<tr><th>ZMK configuration</th><th>Nachtgespenst</th></tr>
+<thead><tr><th scope="col">ZMK configuration</th><th scope="col">Nachtgespenst</th></tr></thead>
+<tbody>
 <tr><td>FUN layer: F7 F8 F9 / F4 F5 F6 / F1 F2 F3, F10 on a thumb</td><td>The <code>F1-F10</code> page has the same rows; F11 to F24 follow the same arrangement</td></tr>
 <tr><td>Plain, Hyper (<code>LH</code>) and Meh (<code>LM</code>) function layers</td><td>The same three families as pages (<code>... HYP</code>, <code>... MEH</code>), written with <code>lhyp()</code> and <code>lmeh()</code></td></tr>
 <tr><td>KEYPAD, SYM1/SYM2, NAV, VOLUME/CONSUMER, APPL</td><td><code>Numpad Full</code>, <code>Symbol Pad</code>, <code>Edit/Nav</code>, <code>Media</code>, <code>App Launch</code></td></tr>
 <tr><td>Home-row mods, combos, mouse, APL, logic, Greek and punctuation layers (Unicode)</td><td>Not carried over: a touch macro pad has no typing layer and HID has no Unicode</td></tr>
 <tr><td>Fixed keycap colours and printed legends</td><td>The macro pad draws keycap colour and legend per tile and per page: colour by kind of key and by modifier, icons, captions and modifier badges</td></tr>
 <tr><td>No application layers</td><td>New: Maven, Office, Teams, Outlook, PowerPoint, browser and debugger pages, and the Locks page</td></tr>
+</tbody>
 </table>
 </section>
 
