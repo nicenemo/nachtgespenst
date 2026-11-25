@@ -22,6 +22,7 @@ import { LOCKS, LOCK_NAMES, PAGES, SCREEN_H, SCREEN_W, barColours, bytes, descri
  * @property {number[][]} lockColors
  * @property {() => Date} [now]
  * @property {import('./shell.js').Help[]} [help] the manual of the shell; without it the page has no shell
+ * @property {((command: string, args: string[]) => string[] | null) | undefined} [extra] the commands of optional components that this page has
  */
 
 const MAX_LOG_LINES = 200;
@@ -31,7 +32,7 @@ const SWIPE_PX = 50;
 /**
  * Puts the demo on the page.
  * @param {Environment} env
- * @returns {{go: (page: number) => void, state: () => {page: number, mask: number}} | null} null when the page has no demo
+ * @returns {{go: (page: number) => void, state: () => {page: number, mask: number}, bar: (rgb: number[] | null) => void, pages: number} | null} null when the page has no demo
  */
 export function start(env) {
   const { document, window, keymap, lockKeys, lockColors } = env;
@@ -74,6 +75,8 @@ export function start(env) {
   let presses = 0;
   let last = '';
   let ledMode = 'on';
+  /** @type {number[] | null} colours of the ten lamps that a demo sets; null shows the colour of the page */
+  let barOverride = null;
   let back = 0;
   let mask = 0;
   /** @type {HTMLElement[]} */
@@ -96,7 +99,7 @@ export function start(env) {
 
   function drawBar() {
     const dark = ledMode === 'off' || (ledMode === 'locks' && page < LOCKS);
-    const colours = dark ? Array.from({ length: 10 }, () => [0, 0, 0]) : barColours(page, mask, keymap[page]?.color ?? '#000000', lockColors);
+    const colours = barOverride ? barOverride.map((rgb) => [(rgb >> 16) & 255, (rgb >> 8) & 255, rgb & 255]) : dark ? Array.from({ length: 10 }, () => [0, 0, 0]) : barColours(page, mask, keymap[page]?.color ?? '#000000', lockColors);
     colours.forEach((c, lamp) => {
       const led = leds[String(lamp)];
       if (!led) return;
@@ -336,6 +339,7 @@ export function start(env) {
         tap: tapAt,
         press: pressTile,
         leds: (mode) => { ledMode = mode; drawBar(); },
+        extra: env.extra,
       },
     });
     attachShell(document, shell);
@@ -344,5 +348,11 @@ export function start(env) {
   const fromHash = parseInt(window.location.hash.replace('#', ''), 10);
   if (fromHash >= 0 && fromHash < PAGES) page = fromHash;
   render();
-  return { go, state: () => ({ page, mask }) };
+  return {
+    go,
+    state: () => ({ page, mask }),
+    /** A demo sets the ten lamps of the bar; null gives the bar back to the page. */
+    bar: (/** @type {number[] | null} */ rgb) => { barOverride = rgb; drawBar(); },
+    pages: PAGES,
+  };
 }

@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nachtgespenst · Try it</title>
+<meta name="description" content="The demo app of the desktop in your browser: the talk, the LED bar effects, raster bars and sine scroller, the file transfer over the lamps and the microphone demos, on a fake board.">
+<link rel="canonical" href="https://hanskruse.eu/nachtgespenst/demo-app.html">
+<meta name="theme-color" content="#0b0e14" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f6f7fb" media="(prefers-color-scheme: light)">
+<!-- icons: the ICO for old browsers and tools, the SVG for modern ones, PNGs for iOS, Android and Windows tiles -->
+<link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" href="favicon.svg" type="image/svg+xml" sizes="any">
+<link rel="apple-touch-icon" href="apple-touch-icon.png" sizes="180x180">
+<link rel="mask-icon" href="safari-pinned-tab.svg" color="#8ea2ff">
+<link rel="manifest" href="site.webmanifest">
+<meta name="msapplication-config" content="browserconfig.xml">
+<meta name="msapplication-TileColor" content="#0b0e14">
+<!-- link previews -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Nachtgespenst · Try it">
+<meta property="og:description" content="The demo app of the desktop in your browser: the talk, the lamp effects, the file transfer and the microphone demos on a fake board.">
+<meta property="og:url" content="https://hanskruse.eu/nachtgespenst/demo-app.html">
+<meta property="og:image" content="https://hanskruse.eu/nachtgespenst/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="A ghost with its hands on its cheeks, screaming under a crescent moon">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="style.css">
+<link rel="prev" href="clicker.html">
+<link rel="next" href="shell.html">
+<link rel="index" href="index.html">
+<script src="menu.js" defer></script>
+<script src="keymap.js" defer></script>
+<script src="shellhelp-full.js" defer></script>
+<script src="slides.js" defer></script>
+<script src="mock.js" defer></script>
+</head>
+<body>
+<nav class="sitenav" aria-label="Site"><div class="wrap"><a class="brand" href="index.html"><img src="favicon.svg" width="28" height="28" alt="">Nachtgespenst</a><a class="key active" href="device.html" aria-current="page">Try it</a><a class="key" href="setup.html">Set-up</a><details class="menu"><summary aria-label="Menu"><span class="burger" aria-hidden="true"></span><span class="label">Menu</span></summary><div class="panel"><div class="col"><h2>Project</h2><ul><li><a href="index.html">Home</a></li><li><a href="device.html">Try it</a></li><li><a href="clicker.html">Clicker</a></li><li><a href="shell.html">Shell manual</a></li><li><a href="setup.html">Set it up</a></li><li><a href="story.html">The story</a></li><li><a href="repositories.html">Repositories</a></li></ul></div><div class="col"><h2>Demos</h2><ul><li><a href="demos.html">About the demos</a></li><li><a href="demo-app.html" aria-current="page">Demo app in your browser</a></li><li><a href="lamps.html">LampArray bench</a></li><li><a href="camera.html">Camera tests</a></li></ul></div><div class="col"><h2>History</h2><ul><li><a href="interfaces.html">Two interfaces</a></li><li><a href="classic.html">The classic interface</a></li><li><a href="classic-work.html">Classic: Work and editing</a></li><li><a href="classic-function.html">Classic: Function keys</a></li><li><a href="classic-typing.html">Classic: Typing and layout</a></li><li><a href="classic-media.html">Classic: Media and applications</a></li></ul></div></div></details></div></nav>
+
+<header class="hero compact"><div class="wrap">
+<h1><img class="logo" src="favicon.svg" width="56" height="56" alt="">Demo app</h1>
+<p class="tag">The demos of the desktop app, in your browser: the talk, the lamp effects, the file transfer and the microphone, on a fake board.</p>
+</div></header>
+<main class="wrap">
+<section id="demo-page">
+<div class="appbar" role="toolbar" aria-label="The talk and the demos">
+<button type="button" id="talk-start" title="Start the talk (F5)">&#9654; Start the talk</button>
+<button type="button" id="talk-pause" title="Pause or resume (P)">&#10074;&#10074; Pause</button>
+<button type="button" id="talk-prev" title="Previous slide">&larr;</button>
+<button type="button" id="talk-next" title="Next slide">&rarr;</button>
+<button type="button" id="talk-stop" title="Stop the talk (Esc)">&#9632; Stop the talk</button>
+<span class="sep" aria-hidden="true"></span>
+<button type="button" id="demo-open" class="primary">Demos&hellip;</button>
+<button type="button" id="demo-stop" disabled>Stop the demo</button>
+<span id="demo-status" class="appstatus" role="status" aria-live="polite">Ready</span>
+</div>
+<div class="app-grid">
+<div class="app-left">
+<section class="slidepanel" aria-label="The talk">
+<h2 id="slide-title">The talk</h2>
+<ul id="slide-bullets"></ul>
+<img id="slide-image" src="favicon.svg" hidden alt="" width="640" height="480">
+<div class="slidefoot"><span id="slide-count"></span><progress id="slide-progress" max="1" value="0" aria-label="This slide"></progress><progress id="talk-progress" max="1" value="0" aria-label="The whole talk"></progress></div>
+</section>
+<aside class="keylog" aria-labelledby="demolog-title">
+<div class="keylog-head"><h2 id="demolog-title">What is happening</h2><button type="button" id="demolog-clear">Clear</button></div>
+<div class="keylog-body" id="demolog" role="log" aria-live="polite" tabindex="0"></div>
+</aside>
+</div>
+<div class="app-right">
+<div class="demo-left">
+<div class="mock" id="mock">
+<div class="stage">
+<div class="bar" aria-hidden="true"><span class="led" data-lamp="9"></span><span class="led" data-lamp="8"></span><span class="led" data-lamp="7"></span><span class="led" data-lamp="6"></span><span class="led" data-lamp="5"></span></div>
+<div class="screen">
+<img id="mockimg" src="img/lvgl/s3-00.png" width="320" height="240" alt="CoreS3 screenshot of the page Maven Tools">
+<canvas id="board-lamps" class="lampcanvas" width="320" height="240" hidden aria-hidden="true"></canvas>
+<button type="button" class="hit" data-act="prev" data-x="0" data-y="202" data-w="51" data-h="38" aria-label="Previous page"></button>
+<button type="button" class="hit" data-act="title" data-x="51" data-y="202" data-w="218" data-h="38" aria-label="Open or close the Locks page"></button>
+<button type="button" class="hit" data-act="next" data-x="269" data-y="202" data-w="51" data-h="38" aria-label="Next page"></button>
+<button type="button" class="hit tile" hidden data-lock="0" data-x="3" data-y="3" data-w="102" data-h="96" aria-label="Caps Lock"></button>
+<button type="button" class="hit tile" hidden data-lock="1" data-x="108" data-y="3" data-w="102" data-h="96" aria-label="Num Lock"></button>
+<button type="button" class="hit tile" hidden data-lock="2" data-x="213" data-y="3" data-w="102" data-h="96" aria-label="Scroll Lock"></button>
+<button type="button" class="hit tile" hidden data-lock="3" data-x="3" data-y="102" data-w="155" data-h="96" aria-label="Compose"></button>
+<button type="button" class="hit tile" hidden data-lock="4" data-x="161" data-y="102" data-w="155" data-h="96" aria-label="Kana"></button>
+</div>
+<div class="bar" aria-hidden="true"><span class="led" data-lamp="0"></span><span class="led" data-lamp="1"></span><span class="led" data-lamp="2"></span><span class="led" data-lamp="3"></span><span class="led" data-lamp="4"></span></div>
+</div>
+</div>
+<p class="mock-status" id="mockstatus" role="status" aria-live="polite"></p>
+</div>
+<section class="pcpanel" aria-label="Lamps on the PC"><h2>Lamps on the PC</h2><canvas id="pc-lamps" width="960" height="595" role="img" aria-label="The lamps as the PC works them out: the ten lamps of the bar and the lamp grid"></canvas></section>
+</div>
+</div>
+<section class="shell" aria-labelledby="shell-title">
+<div class="keylog-head"><h2 id="shell-title">The shell of the CoreS3, with the lamp commands</h2><button type="button" id="shell-clear">Clear</button></div>
+<div class="shell-out" id="shell-out" role="log" aria-live="polite" tabindex="0"></div>
+<form id="shell-form" class="shell-form" autocomplete="off"><label for="shell-in" id="shell-prompt">NG&gt; </label><input id="shell-in" type="text" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Shell command"><button type="submit">Run</button></form>
+<p class="caption-note">The commands of the serial shell (<a href="shell.html">manual</a>), answered by this page: <code>help</code>, <code>state</code>, <code>layer 26</code>, <code>tiles</code>, <code>tap 160 120</code>, <code>key 26 2</code>, <code>prefer ble</code>, <code>set effect rainbow</code>, <code>lamps</code>, <code>bar</code>, <code>wave</code>. Values that need a real board (memory, SD card) are made up. Nothing is sent to a computer.</p>
+</section>
+<dialog id="demos-dialog" aria-labelledby="demos-title">
+<h2 id="demos-title">Demos</h2>
+<div class="demo-top">
+<button type="button" id="demo-cycle" class="primary">Start the cycle</button>
+<label><input type="checkbox" id="opt-fast"> Include the fast disk run</label>
+<label class="opt-audio"><input type="checkbox" id="opt-mic"> Include the microphone parts</label>
+<label>Seconds per effect <input type="number" id="opt-seconds" min="2" max="60" value="8"></label>
+</div>
+<div class="demo-columns" id="demo-columns"></div>
+<fieldset class="opt-audio"><legend>Sound</legend>
+<label><input type="checkbox" id="opt-mic-real"> Listen to the microphone of this computer (the browser asks first)</label>
+<label><input type="checkbox" id="opt-speakers"> Play the test tones through the speakers (loud)</label>
+</fieldset>
+<form method="dialog"><button type="submit" id="demo-close">Close</button></form>
+</dialog>
+<noscript><p class="notice">This page needs JavaScript.</p></noscript>
+<h2>What this is</h2>
+<p>This is the demo window of the desktop app (the Java program that drives the boards over USB), rebuilt for the browser and pointed at a pretend board. The talk, the effects and the file transfer are the same ones; here they run in your browser and draw on the lamps of a fake CoreS3 and in the &ldquo;lamps on the PC&rdquo; panel.</p>
+<ul>
+<li><b>The lamps.</b> The fake board keeps the state of its lamps: the ten lamps of the LED bar and, on the lamp page, a grid. The screen of the board shows the grid with hard pixel edges, as the device draws it; the PC panel scales the same grid up smoothly (the browser interpolates, as the Java app does with a bicubic filter) and shows the bar as two columns of five lamps, 0 to 4 running down the right side and 5 to 9 up the left side.</li>
+<li><b>The file transfer.</b> A stand-in file is compressed with deflate, cut into blocks with a CRC-32, sent in windows that the pretend board acknowledges with F13 to F20 (or F21 to ask for a resend), and loaded back in game pad reports of 48 bytes. The CRC-32 and the SHA-256 are real; the HID reports are not, and the file is made here instead of the book of the real demo.</li>
+<li><b>The microphone.</b> The page plays the test tones itself and the oscilloscope, the vu meter and the check read them back, silently by default. You can switch on the speakers, or let it listen to the real microphone of your computer (the browser asks first).</li>
+<li><b>The pictures.</b> The dissolve between five pictures uses scenes that are drawn here, not the five photographs of the desktop app.</li>
+<li><b>The shell.</b> The shell under the board has the commands of the standard firmware and the lamp commands (<code>lamps</code>, <code>bar</code>, <code>wave</code>, <code>mic</code>, <code>telem</code>, <code>disk</code>), answered from this page.</li>
+</ul>
+<p class="caption-note">Keys: F5 starts the talk, the arrow keys, Page Up, Page Down and space move through it, P pauses and Esc stops. The sources of the Java app are not public; the browser version is the source of this page.</p>
+</section>
+<nav class="pager" aria-label="Previous and next page"><a class="prev" href="clicker.html"><small>&larr; Previous</small><br>Clicker</a><a class="next" href="shell.html"><small>Next &rarr;</small><br>Shell manual</a></nav>
+</main>
+<footer><div class="wrap">
+<p>MIT licence. Third-party components are listed in the <a href="https://github.com/nicenemo/nachtgespenst/blob/main/THIRD-PARTY-NOTICES.md">third-party notices</a>.</p>
+<p class="copyright">&copy; 2026 <a href="https://hanskruse.eu">Hans Kruse</a></p>
+</div></footer>
+</body>
+</html>

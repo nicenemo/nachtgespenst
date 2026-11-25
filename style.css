@@ -208,3 +208,40 @@ nav.sitenav .panel li a[aria-current="page"] { background: var(--accent); color:
 .shell-form:focus-within { outline: 2px solid var(--accent); outline-offset: -2px; }
 .shell .caption-note { margin: 8px 12px; }
 .shell-form button { border: 1px solid var(--line); border-radius: 8px; background: var(--code); color: var(--text); font: inherit; padding: 2px 10px; cursor: pointer; }
+
+/* The demo app page (demopage.js): the talk, the fake board and the lamps on the PC */
+.appbar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 12px 0; }
+.appbar button, .demo-top button, #demos-dialog form button { border: 1px solid var(--line); border-radius: 8px; background: var(--panel); color: var(--text); font: inherit; padding: 6px 12px; cursor: pointer; }
+.appbar button.primary, .demo-top button.primary { background: var(--accent); color: #0b0e14; border-color: var(--accent); font-weight: 600; }
+.appbar button:disabled, .demo-top button:disabled { opacity: .45; cursor: default; }
+.appbar .sep { width: 12px; }
+.appstatus { flex: 1 1 12em; min-width: 0; overflow: hidden; text-align: right; text-overflow: ellipsis; white-space: nowrap; color: var(--muted); font-size: .95em; }
+.app-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
+
+@media (width >= 1000px) { .app-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; } }
+.slidepanel { border: 1px solid var(--line); border-radius: 12px; background: #0b0e14; color: #ecedf6; padding: 14px 18px; min-height: 14em; }
+.slidepanel h2 { margin: 0 0 8px; color: #b8b8ff; font-size: 1.3em; }
+.slidepanel ul { margin: 0; padding-left: 1.2em; }
+.slidepanel li { margin: .25em 0; }
+.slidepanel li::marker { color: #f90; }
+.slidepanel img[hidden] { display: none; }
+.slidepanel img { display: block; max-width: 100%; max-height: 260px; width: auto; height: auto; margin: 10px auto 0; border-radius: 8px; }
+.slidefoot { display: flex; align-items: center; gap: 10px; margin-top: 12px; font-size: .85em; color: #b4b4cc; }
+.slidefoot progress { flex: 1; height: 8px; }
+.app-right .demo-left { width: auto; max-width: none; }
+.lampcanvas { position: absolute; inset: 0; width: 100%; height: 100%; border-radius: 5px; image-rendering: pixelated; }
+.lampcanvas[hidden] { display: none; }
+.pcpanel { margin-top: 12px; border: 1px solid var(--line); border-radius: 12px; background: #000; padding: 6px 10px 10px; }
+.pcpanel h2 { margin: 0 0 4px; font-size: .95em; color: #f90; }
+.pcpanel canvas { display: block; width: 100%; height: auto; }
+#demos-dialog { max-width: min(960px, 94vw); border: 1px solid var(--line); border-radius: 14px; background: var(--bg, #0b0e14); color: var(--text); padding: 16px 20px; }
+#demos-dialog::backdrop { background: rgb(0 0 0 / 60%); }
+.demo-top { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 10px; }
+.demo-columns { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; }
+.demo-group { display: flex; flex-direction: column; gap: 6px; }
+.demo-group h3 { margin: 4px 0; font-size: .9em; color: var(--accent); }
+.demo-group button { text-align: left; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); color: var(--text); font: inherit; padding: 6px 10px; cursor: pointer; }
+.demo-group button:disabled { opacity: .45; cursor: default; }
+#demos-dialog fieldset { margin: 12px 0; border: 1px solid var(--line); border-radius: 8px; }
+#demos-dialog fieldset label { display: block; margin: 4px 0; }
+#demos-dialog input[type="number"] { width: 4.5em; }

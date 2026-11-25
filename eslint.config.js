@@ -23,7 +23,7 @@ export default [
   { files: ['menu.js'], languageOptions: { sourceType: 'script', globals: { ...globals.browser } } },
   {
     // keymap.js is generated data: top-level variables are the globals that the page script reads
-    files: ['keymap.js', 'shellhelp.js'],
+    files: ['keymap.js', 'shellhelp.js', 'shellhelp-full.js', 'slides.js'],
     languageOptions: { sourceType: 'script' },
     rules: { 'no-var': 'off', 'no-unused-vars': 'off', 'no-implicit-globals': 'off' },
   },

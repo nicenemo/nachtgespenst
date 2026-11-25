@@ -6,7 +6,7 @@ import { join } from 'node:path';
 
 const root = new URL('..', import.meta.url).pathname;
 const dist = join(root, 'dist');
-const skip = new Set(['node_modules', 'dist', 'src', 'test', 'scripts', '.git', '.github', 'package.json', 'package-lock.json', 'tsconfig.json', 'eslint.config.js', 'stylelint.config.js', '.htmlvalidate.json', '.gitignore', 'README.md', 'keymap.js', 'menu.js', 'style.css', 'shellhelp.js']);
+const skip = new Set(['node_modules', 'dist', 'src', 'test', 'scripts', '.git', '.github', 'package.json', 'package-lock.json', 'tsconfig.json', 'eslint.config.js', 'stylelint.config.js', '.htmlvalidate.json', '.gitignore', 'README.md', 'keymap.js', 'menu.js', 'style.css', 'shellhelp.js', 'shellhelp-full.js', 'slides.js']);
 /** @type {string[]} */
 const sizes = [];
 
@@ -34,7 +34,7 @@ const minCss = (await transform(css, { loader: 'css', minify: true })).code;
 await writeFile(join(dist, 'style.css'), minCss);
 note('style.css', css.length, minCss.length);
 
-for (const file of ['menu.js', 'keymap.js', 'shellhelp.js']) {
+for (const file of ['menu.js', 'keymap.js', 'shellhelp.js', 'shellhelp-full.js', 'slides.js']) {
   const code = await readFile(join(root, file), 'utf8');
   const out = (await transform(code, { minify: true, target: 'es2022' })).code;
   await writeFile(join(dist, file), out);

@@ -21,6 +21,7 @@
  * @property {() => boolean} [pointerOn] whether the air mouse is on
  * @property {(buttons: number, dx: number, dy: number, wheel: number) => void} [mouse] writes a mouse report
  * @property {(mods: number) => void} [mods] writes the report of the held modifiers
+ * @property {((command: string, args: string[]) => string[] | null) | undefined} [extra] the commands of optional components that the page has; null when the command is not one of them
  */
 
 /** @typedef {{index: number, x: number, y: number, w: number, h: number, name: string}} Rect */
@@ -286,6 +287,8 @@ export function createShell({ board, help, api }) {
       }
       default: break;
     }
+    const more = api.extra?.(command, a);
+    if (more) return more;
     if (!presenter) return ['ERR unknown'];
     switch (command) {
       case 'clicker': {
