@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nachtgespenst</title>
+<meta name="description" content="A Bluetooth LE and USB HID macro pad for the M5Stack Core2 and CoreS3, with screenshots of every page, camera tests of the LED bars and the project history.">
+<link rel="canonical" href="https://hanskruse.eu/nachtgespenst/">
+<meta name="theme-color" content="#0b0e14" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f6f7fb" media="(prefers-color-scheme: light)">
+<!-- icons: the ICO for old browsers and tools, the SVG for modern ones, PNGs for iOS, Android and Windows tiles -->
+<link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" href="favicon.svg" type="image/svg+xml" sizes="any">
+<link rel="apple-touch-icon" href="apple-touch-icon.png" sizes="180x180">
+<link rel="mask-icon" href="safari-pinned-tab.svg" color="#8ea2ff">
+<link rel="manifest" href="site.webmanifest">
+<meta name="msapplication-config" content="browserconfig.xml">
+<meta name="msapplication-TileColor" content="#0b0e14">
+<!-- link previews -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Nachtgespenst">
+<meta property="og:description" content="A Bluetooth LE and USB HID macro pad for the M5Stack Core2 and CoreS3, with screenshots of every page, camera tests of the LED bars and the project history.">
+<meta property="og:url" content="https://hanskruse.eu/nachtgespenst/">
+<meta property="og:image" content="https://hanskruse.eu/nachtgespenst/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="A ghost with its hands on its cheeks, screaming under a crescent moon">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="style.css">
+<link rel="next" href="pages.html">
+<link rel="index" href="index.html">
+<script src="menu.js" defer></script>
+</head>
+<body>
+<nav class="sitenav" aria-label="Site"><div class="wrap"><a class="brand" href="index.html" aria-current="page"><img src="favicon.svg" width="28" height="28" alt="">Nachtgespenst</a><a class="key" href="pages.html">Pages</a><a class="key" href="setup.html">Set-up</a><details class="menu"><summary aria-label="Menu"><span class="burger" aria-hidden="true"></span><span class="label">Menu</span></summary><div class="panel"><div class="col"><h2>Pages</h2><ul><li><a href="pages.html">Overview</a></li><li><a href="pages-work.html">Work and editing</a></li><li><a href="pages-function.html">Function keys</a></li><li><a href="pages-typing.html">Typing and layout</a></li><li><a href="pages-media.html">Media and applications</a></li></ul></div><div class="col"><h2>Interfaces</h2><ul><li><a href="interfaces.html">LVGL or classic</a></li><li><a href="classic.html">Classic overview</a></li><li><a href="classic-work.html">Classic: Work and editing</a></li><li><a href="classic-function.html">Classic: Function keys</a></li><li><a href="classic-typing.html">Classic: Typing and layout</a></li><li><a href="classic-media.html">Classic: Media and applications</a></li></ul></div><div class="col"><h2>Project</h2><ul><li><a href="index.html" aria-current="page">Home</a></li><li><a href="shell.html">Shell manual</a></li><li><a href="setup.html">Set it up</a></li><li><a href="story.html">The story</a></li><li><a href="repositories.html">Repositories</a></li></ul></div><div class="col"><h2>Demos</h2><ul><li><a href="demos.html">About the demos</a></li><li><a href="lamps.html">LampArray bench</a></li><li><a href="camera.html">Camera tests</a></li></ul></div></div></details></div></nav>
+<header class="hero"><div class="wrap">
+<h1><img class="logo" src="favicon.svg" width="56" height="56" alt="">Nachtgespenst</h1>
+<p class="tag">A night ghost for your keyboard: a Bluetooth LE and USB macro pad built on the M5Stack Core2 and CoreS3. Tap a tile on the touchscreen and the matching key, chord or media command arrives on your computer.</p>
+<p class="btns"><a class="alt" href="setup.html">Set it up</a></p>
+</div></header>
+<div class="wrap hero-photo">
+<img src="img/camera/both-boards.jpg" width="1280" height="720" alt="The Core2 on the left and the CoreS3 on the right in a dark room, both with their LED bars lit blue">
+</div>
+<main class="wrap">
+<section id="what"><h2>What it does</h2>
+<p>Nachtgespenst turns an M5Stack touchscreen into a programmable HID device. The screen shows one grid of tiles per <em>layer</em>; tapping a tile sends the matching HID report to the host computer. There are 26 layers and a Locks page, shown on both devices.</p>
+<ul>
+<li><b>Keys, chords and media.</b> Keyboard and consumer-control bindings, including Ctrl/Shift/Alt/Win chords and the Meh and Hyper modifier sets.</li>
+<li><b>Bluetooth LE and USB.</b> Both boards speak BLE HID (NimBLE). The CoreS3 also enumerates as a USB keyboard and can route keys over USB, BLE, or both.</li>
+<li><b>Host feedback.</b> The Locks page shows Caps, Num and Scroll Lock as the host reports them, and the LED bar mirrors them.</li>
+<li><b>Colour-coded keys.</b> Keycap colour and legend are drawn in software, so they can differ on every page: tiles are coloured by kind of key and by modifier (Ctrl olive, Alt purple, Win teal), shifted legends are yellow, and each key can show an icon, a caption or a modifier badge. Physical keycaps and their printed legends cannot do that.</li>
+<li><b>LED bar.</b> Ten LEDs in the M5GO base show the colour of the current layer.</li>
+<li><b>Keymaps as code.</b> Layers are written in C++ in the style of ZMK, using HID shortcut macros generated from the USB HID Usage Tables (<code>kp_A</code>, <code>cp_MUTE</code>, <code>lcs(...)</code>, <code>lhyp(...)</code>).</li>
+<li><b>Scriptable.</b> A line-based serial protocol lets a test tool switch pages, tap and press tiles, read the state and take screenshots. Every screenshot on this page came from it.</li>
+</ul></section>
+
+<section id="devices"><h2>The two devices</h2>
+<table>
+<tr><th></th><th>Core2</th><th>CoreS3</th></tr>
+<tr><th>PlatformIO environment</th><td><code>core2</code></td><td><code>cores3</code></td></tr>
+<tr><th>Host transports</th><td>BLE</td><td>BLE and USB (TinyUSB)</td></tr>
+<tr><th>Paging</th><td>Three capacitive buttons under the screen: A previous, B Locks page, C next</td><td>On-screen bottom bar: previous, Locks (tap the title), next</td></tr>
+<tr><th>LED bar</th><td>M5GO base, ten LEDs on GPIO25</td><td>M5GO base, ten LEDs on GPIO5 (found with the camera test below)</td></tr>
+<tr><th>Flashing</th><td>CP2104 serial bridge, resets automatically</td><td>Native USB; needs a 1200-baud touch to enter the ROM bootloader</td></tr>
+<tr><th>Screen</th><td colspan="2">320 × 240, touch</td></tr>
+</table></section>
+
+<section id="explore"><h2>Explore</h2>
+<div class="explore">
+<a class="card" href="pages.html"><h3>Every page</h3><p>The 26 layers and the Locks page, as the Core2 and the CoreS3 draw them.</p><img src="img/lvgl/s3-00.png" width="320" height="240" loading="lazy" alt="CoreS3 screenshot of the Maven Tools page"></a>
+<a class="card" href="interfaces.html"><h3>Two interfaces</h3><p>LVGL or the classic direct-drawing interface: the look, the memory and the speed.</p><img src="img/classic/s3-00.png" width="320" height="240" loading="lazy" alt="CoreS3 screenshot of the Maven Tools page, classic interface"></a>
+<a class="card" href="shell.html"><h3>Shell manual</h3><p>The commands of the boards, lower case, with help for every command; the commands of the demos are part of it.</p></a>
+<a class="card" href="demos.html"><h3>Demos</h3><p>The LampArray bench and the camera tests of the LED bars. The sources of the demos are not public.</p></a>
+<a class="card" href="setup.html"><h3>Set it up</h3><p>What you need, how to pair the boards, and how the firmware fits together.</p></a>
+<a class="card" href="repositories.html"><h3>Repositories</h3><p>Where the public code lives, and the repositories that are planned.</p></a>
+<a class="card" href="story.html"><h3>The story</h3><p>The ZMK keymap behind the pages, and the history of the project.</p></a>
+</div></section>
+</main>
+<footer><div class="wrap">
+<p><b>The name.</b> Nachtgespenst is inspired by Ben Aaronovitch's <em>Rivers of London</em> series, in particular the novella <em>The October Man</em>, which is set in Germany. The German word for a night ghost suits a small device that sits quietly beside the keyboard and does its work on command.</p>
+<p>MIT licence. Third-party components are listed in the <a href="https://github.com/nicenemo/nachtgespenst/blob/main/THIRD-PARTY-NOTICES.md">third-party notices</a>.</p>
+<p class="copyright">&copy; 2026 <a href="https://hanskruse.eu">Hans Kruse</a></p>
+</div></footer>
+</body>
+</html>

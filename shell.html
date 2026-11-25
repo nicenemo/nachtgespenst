@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shell manual</title>
+<meta name="description" content="Shell manual: A HID LampArray test bench: the LED bar and the screen as lamps a computer can set, measured over USB and Bluetooth.">
+<link rel="canonical" href="https://hanskruse.eu/nachtgespenst/lamps.html">
+<meta name="theme-color" content="#0b0e14" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f6f7fb" media="(prefers-color-scheme: light)">
+<!-- icons: the ICO for old browsers and tools, the SVG for modern ones, PNGs for iOS, Android and Windows tiles -->
+<link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" href="favicon.svg" type="image/svg+xml" sizes="any">
+<link rel="apple-touch-icon" href="apple-touch-icon.png" sizes="180x180">
+<link rel="mask-icon" href="safari-pinned-tab.svg" color="#8ea2ff">
+<link rel="manifest" href="site.webmanifest">
+<meta name="msapplication-config" content="browserconfig.xml">
+<meta name="msapplication-TileColor" content="#0b0e14">
+<!-- link previews -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="LampArray bench · Nachtgespenst">
+<meta property="og:description" content="A HID LampArray test bench: the LED bar and the screen as lamps a computer can set, measured over USB and Bluetooth.">
+<meta property="og:url" content="https://hanskruse.eu/nachtgespenst/lamps.html">
+<meta property="og:image" content="https://hanskruse.eu/nachtgespenst/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="A ghost with its hands on its cheeks, screaming under a crescent moon">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="style.css">
+<link rel="prev" href="camera.html">
+<link rel="next" href="setup.html">
+<link rel="index" href="index.html">
+<script src="menu.js" defer></script>
+</head>
+<body>
+<nav class="sitenav" aria-label="Site"><div class="wrap"><a class="brand" href="index.html"><img src="favicon.svg" width="28" height="28" alt="">Nachtgespenst</a><a class="key" href="pages.html">Pages</a><a class="key" href="setup.html">Set-up</a><details class="menu"><summary aria-label="Menu"><span class="burger" aria-hidden="true"></span><span class="label">Menu</span></summary><div class="panel"><div class="col"><h2>Pages</h2><ul><li><a href="pages.html">Overview</a></li><li><a href="pages-work.html">Work and editing</a></li><li><a href="pages-function.html">Function keys</a></li><li><a href="pages-typing.html">Typing and layout</a></li><li><a href="pages-media.html">Media and applications</a></li></ul></div><div class="col"><h2>Interfaces</h2><ul><li><a href="interfaces.html">LVGL or classic</a></li><li><a href="classic.html">Classic overview</a></li><li><a href="classic-work.html">Classic: Work and editing</a></li><li><a href="classic-function.html">Classic: Function keys</a></li><li><a href="classic-typing.html">Classic: Typing and layout</a></li><li><a href="classic-media.html">Classic: Media and applications</a></li></ul></div><div class="col"><h2>Project</h2><ul><li><a href="index.html">Home</a></li><li><a href="shell.html" aria-current="page">Shell manual</a></li><li><a href="setup.html">Set it up</a></li><li><a href="story.html">The story</a></li><li><a href="repositories.html">Repositories</a></li></ul></div><div class="col"><h2>Demos</h2><ul><li><a href="demos.html">About the demos</a></li><li><a href="lamps.html">LampArray bench</a></li><li><a href="camera.html">Camera tests</a></li></ul></div></div></details></div></nav>
+<header class="hero compact"><div class="wrap">
+<h1><img class="logo" src="favicon.svg" width="56" height="56" alt="">Shell manual</h1>
+<p class="tag">The commands of the boards, lower case, with help for every command.</p>
+</div></header>
+<main class="wrap">
+<section id="shell">
+<p>The serial port of both boards (USB, 115200 baud) is a small shell. Commands and arguments are lower case, <code>help</code> lists them and <code>help &lt;command&gt;</code> explains one. Every reply starts with <code>OK</code> or <code>ERR</code>; some commands print more lines after it. On the CoreS3 the long texts come from <code>help.txt</code> on the SD card; without the card (or on the Core2) <code>help &lt;command&gt;</code> prints the usage line and the summary that are built into the firmware.</p>
+<p>Try it: <code>jbang tools/Shell.java S3</code> opens an interactive shell on the board, <code>jbang tools/Serial.java S3 "help"</code> sends one command.</p>
+<table>
+<tr><th>Command</th><th>Usage</th><th>What it does</th></tr>
+<tr><td><a href="#cmd-help"><code>help</code></a></td><td><code>help [&lt;command&gt;]</code></td><td>List the commands, or explain one.</td></tr>
+<tr><td><a href="#cmd-ping"><code>ping</code></a></td><td><code>ping</code></td><td>Check that the board answers.</td></tr>
+<tr><td><a href="#cmd-info"><code>info</code></a></td><td><code>info</code></td><td>Board, name, firmware build time, screen size, number of pages.</td></tr>
+<tr><td><a href="#cmd-state"><code>state</code></a></td><td><code>state</code></td><td>The current page, the host lock LEDs, the last key, the connections.</td></tr>
+<tr><td><a href="#cmd-layer"><code>layer</code></a></td><td><code>layer &lt;n&gt;</code></td><td>Show page n (0 is the first key layer).</td></tr>
+<tr><td><a href="#cmd-key"><code>key</code></a></td><td><code>key &lt;layer&gt; &lt;tile&gt;</code></td><td>Press a tile as if it was touched. It really types on the host!</td></tr>
+<tr><td><a href="#cmd-tap"><code>tap</code></a></td><td><code>tap &lt;x&gt; &lt;y&gt;</code></td><td>Touch the screen at x, y (Locks page only).</td></tr>
+<tr><td><a href="#cmd-down"><code>down</code></a></td><td><code>down &lt;x&gt; &lt;y&gt;</code></td><td>Hold a touch at x, y until up (Locks page or the header bar only).</td></tr>
+<tr><td><a href="#cmd-up"><code>up</code></a></td><td><code>up</code></td><td>Release the touch that down is holding.</td></tr>
+<tr><td><a href="#cmd-btn"><code>btn</code></a></td><td><code>btn &lt;a|b|c&gt; &lt;down|up&gt;</code></td><td>Press or release a button of the Core2 (A previous page, B Locks, C next page).</td></tr>
+<tr><td><a href="#cmd-clicker"><code>clicker</code></a></td><td><code>clicker &lt;prev|next|start|blank|end|laser&gt;</code></td><td>Type the key of a presenter button (Core2 only). It really types on the host!</td></tr>
+<tr><td><a href="#cmd-pointer"><code>pointer</code></a></td><td><code>pointer [on|off|toggle|click [left|right|middle]|scroll &lt;n&gt;|&lt;setting&gt; &lt;value&gt;|feed &lt;yaw&gt; &lt;pitch&gt;]</code></td><td>The air mouse of the presenter (Core2 only): switch it, tune it, click.</td></tr>
+<tr><td><a href="#cmd-imu"><code>imu</code></a></td><td><code>imu &lt;x&gt; &lt;y&gt; &lt;z&gt;</code></td><td>Pretend the gyroscope turns around its three axes (degrees per second) for 0.6 s (Core2 only, for tests).</td></tr>
+<tr><td><a href="#cmd-mod"><code>mod</code></a></td><td><code>mod &lt;ctrl|shift|alt|win|cs|as|meh|hyper|off&gt;</code></td><td>Hold or release a sticky modifier of the mouse page (Core2 only).</td></tr>
+<tr><td><a href="#cmd-shot"><code>shot</code></a></td><td><code>shot</code></td><td>Screenshot of the screen, 24 bits per pixel.</td></tr>
+<tr><td><a href="#cmd-tiles"><code>tiles</code></a></td><td><code>tiles</code></td><td>List the tiles of the current page that can be pressed, with their place on the screen.</td></tr>
+<tr><td><a href="#cmd-heap"><code>heap</code></a></td><td><code>heap [check]</code></td><td>The free memory of the board, in bytes; heap check walks all heaps and looks for corruption.</td></tr>
+<tr><td><a href="#cmd-stack"><code>stack</code></a></td><td><code>stack</code></td><td>How much stack the tasks of the firmware still have free at their lowest point, in bytes.</td></tr>
+<tr><td><a href="#cmd-crash"><code>crash</code></a></td><td><code>crash</code></td><td>Why the board last restarted, and what it was doing.</td></tr>
+<tr><td><a href="#cmd-perf"><code>perf</code></a></td><td><code>perf</code></td><td>How long the last page took to build, render and flush.</td></tr>
+<tr><td><a href="#cmd-wake"><code>wake</code></a></td><td><code>wake</code></td><td>Restart the idle timers: screen and LED bar on again.</td></tr>
+<tr><td><a href="#cmd-bl"><code>bl</code></a></td><td><code>bl &lt;16..255|auto&gt;</code></td><td>Fixed backlight, or auto for the stored dim and off times.</td></tr>
+<tr><td><a href="#cmd-leds"><code>leds</code></a></td><td><code>leds [off|locks|on]</code></td><td>The LED bar: off (also cuts the 5 V rail of the base), only the host lock state, or the layer colours.</td></tr>
+<tr><td><a href="#cmd-set"><code>set</code></a></td><td><code>set [&lt;key&gt; &lt;value&gt;]</code></td><td>Show or change the stored settings.</td></tr>
+<tr><td><a href="#cmd-prefer"><code>prefer</code></a></td><td><code>prefer [usb|ble|both]</code></td><td>Which link carries the keys when both are connected.</td></tr>
+<tr><td><a href="#cmd-only"><code>only</code></a></td><td><code>only &lt;usb|ble&gt;</code></td><td>Never use the other link, even if the chosen one is down.</td></tr>
+<tr><td><a href="#cmd-sd"><code>sd</code></a></td><td><code>sd</code></td><td>Is there an SD card, which type, how big, how much is used.</td></tr>
+</table>
+<h2 id="demo-commands">Demo commands</h2>
+<p class="notice"><b>Demos.</b> These commands belong to the demos (the lamps, the file transfer, the telemetry and the effects). The sources of the demos are not publicly available; the macro pad and the clicker do not need these commands.</p>
+<table>
+<tr><th>Command</th><th>Usage</th><th>What it does</th></tr>
+<tr><td><a href="#cmd-lamps"><code>lamps</code></a></td><td><code>lamps [reset | grid &lt;cols&gt; &lt;rows&gt; | get &lt;id&gt; | bright &lt;n&gt; | worker &lt;on|off&gt;]</code></td><td>The LampArray: counters, the lamp grid, one lamp, the bar brightness, the bar worker task.</td></tr>
+<tr><td><a href="#cmd-disk"><code>disk</code></a></td><td><code>disk [reset | dir | sound &lt;on|off&gt;]</code></td><td>The Disk demo: the state of the transfer, forget it, list the SD card, mute the modem sounds.</td></tr>
+<tr><td><a href="#cmd-mic"><code>mic</code></a></td><td><code>mic [on|off]</code></td><td>Switch the microphone on or off, or show what it hears.</td></tr>
+<tr><td><a href="#cmd-wave"><code>wave</code></a></td><td><code>wave</code></td><td>The last microphone buffer: 512 samples of 16 bits as hex (for tests).</td></tr>
+<tr><td><a href="#cmd-bar"><code>bar</code></a></td><td><code>bar</code></td><td>The colours of the ten bar LEDs as hex (for tests).</td></tr>
+<tr><td><a href="#cmd-telem"><code>telem</code></a></td><td><code>telem [bar|wave|both|off]</code></td><td>Send the bar colours and/or the microphone waveform to the PC as game pad reports.</td></tr>
+</table>
+<h2 id="cmd-help">help</h2>
+<p><code>help [&lt;command&gt;]</code></p>
+<p>List the commands, or explain one.</p>
+<p>Without an argument the commands are listed with a one-line summary. With a command name the full text of that command is printed: from help.txt on the SD card when there is one, otherwise the usage line and the summary that are built into the firmware.</p>
+<p>Reply:</p><ul><li><code>OK HELP, then the lines | ERR help unknown</code></li></ul>
+<pre>help layer</pre>
+<h2 id="cmd-ping">ping</h2>
+<p><code>ping</code></p>
+<p>Check that the board answers.</p>
+<p>Reply:</p><ul><li><code>OK PONG</code></li></ul>
+<pre>ping</pre>
+<h2 id="cmd-info">info</h2>
+<p><code>info</code></p>
+<p>Board, name, firmware build time, screen size, number of pages.</p>
+<p>The firmware build time (fw=) is the first thing to check before trusting a test: it tells which build is on the board.</p>
+<p>Reply:</p><ul><li><code>OK INFO board=S3 name=NG-S3 fw=Nov 19 2026_17:30:28 w=320 h=240 pages=30 locks=26</code></li></ul>
+<pre>info</pre>
+<h2 id="cmd-state">state</h2>
+<p><code>state</code></p>
+<p>The current page, the host lock LEDs, the last key, the connections.</p>
+<p>Shows the page number and title, the Caps, Num and Scroll Lock state the host reports, the last key pressed, the number of presses, and whether USB and Bluetooth are connected (conn, usb, ble).</p>
+<p>Reply:</p><ul><li><code>OK STATE page=0/30 title=Maven Tools caps=0 num=0 scroll=1 last=- presses=0 conn=1 usb=1 ble=1</code></li></ul>
+<pre>state</pre>
+<h2 id="cmd-layer">layer</h2>
+<p><code>layer &lt;n&gt;</code></p>
+<p>Show page n (0 is the first key layer).</p>
+<p>The pages are the key layers, then the Locks page, the Disk page and the two lamp pages (the last two; the test tools count from the end). Changes in a burst are merged: only the last page is built.</p>
+<p>Reply:</p><ul><li><code>OK LAYER n | ERR range</code></li></ul>
+<pre>layer 26</pre>
+<h2 id="cmd-key">key</h2>
+<p><code>key &lt;layer&gt; &lt;tile&gt;</code></p>
+<p>Press a tile as if it was touched. It really types on the host!</p>
+<p>The tile is sent to the host like a touch would. Power Down and Sleep (tiles of the System and Media pages) are refused (ERR key). Only use it on the Locks page (Scroll Lock) and on the Wake Up tile of the Media page; never script a loop over a whole page.</p>
+<p>Reply:</p><ul><li><code>OK KEY | ERR key</code></li></ul>
+<pre>key 26 2</pre>
+<h2 id="cmd-tap">tap</h2>
+<p><code>tap &lt;x&gt; &lt;y&gt;</code></p>
+<p>Touch the screen at x, y (Locks page only).</p>
+<p>Refused outside the Locks page (ERR tap), so that a stray coordinate cannot press a key on another page.</p>
+<p>Reply:</p><ul><li><code>OK TAP | ERR tap</code></li></ul>
+<pre>tap 160 120</pre>
+<h2 id="cmd-down">down</h2>
+<p><code>down &lt;x&gt; &lt;y&gt;</code></p>
+<p>Hold a touch at x, y until up (Locks page or the header bar only).</p>
+<p>For tests of the pressed state: the control under the finger changes colour while the touch is held. Nothing is sent to the host: up first moves the touch off the control, so no click fires. state shows touch=1 while it is held.</p>
+<p>Reply:</p><ul><li><code>OK DOWN | ERR down</code></li></ul>
+<pre>down 100 120</pre>
+<h2 id="cmd-up">up</h2>
+<p><code>up</code></p>
+<p>Release the touch that down is holding.</p>
+<p>Reply:</p><ul><li><code>OK UP | ERR up</code></li></ul>
+<pre>up</pre>
+<h2 id="cmd-btn">btn</h2>
+<p><code>btn &lt;a|b|c&gt; &lt;down|up&gt;</code></p>
+<p>Press or release a button of the Core2 (A previous page, B Locks, C next page).</p>
+<p>down does what the button does and lights its indicator in the header; up puts the indicator out. state shows btn=&lt;bit mask&gt; while held. The CoreS3 has no buttons (ERR btn).</p>
+<p>Reply:</p><ul><li><code>OK BTN DOWN | OK BTN UP | ERR btn</code></li></ul>
+<pre>btn b down</pre>
+<h2 id="cmd-clicker">clicker</h2>
+<p><code>clicker &lt;prev|next|start|blank|end|laser&gt;</code></p>
+<p>Type the key of a presenter button (Core2 only). It really types on the host!</p>
+<p>prev is Page Up, next Page Down, start F5, blank B, end Esc and laser Ctrl+L: the keys of every presentation program and every third-party clicker. Needs a Bluetooth host.</p>
+<p>Reply:</p><ul><li><code>OK CLICKER | ERR clicker</code></li></ul>
+<pre>clicker next</pre>
+<h2 id="cmd-pointer">pointer</h2>
+<p><code>pointer [on|off|toggle|click [left|right|middle]|scroll &lt;n&gt;|&lt;setting&gt; &lt;value&gt;|feed &lt;yaw&gt; &lt;pitch&gt;]</code></p>
+<p>The air mouse of the presenter (Core2 only): switch it, tune it, click.</p>
+<p>Without arguments it prints the state. The pointer is off until it is switched on. While on, it moves the mouse pointer of the host when the board is turned, and falls asleep by itself after a few seconds of holding still, until it is moved again. Settings: gain 1 to 100 (pixels per degree), idle 0.5 to 30 (seconds still before it sleeps), upright on|off (hold the board upright instead of flat), flipx on|off, flipy on|off. feed pretends the board turns at yaw and pitch degrees per second for 0.6 s (for tests). click presses a mouse button (left by default). scroll turns the vertical wheel n ticks (positive up, negative down).</p>
+<p>Reply:</p><ul><li><code>OK PRESENTER pointer=off|still|moving gain=.. idle=.. | OK POINTER SET | ERR pointer</code></li></ul>
+<pre>pointer on</pre>
+<h2 id="cmd-imu">imu</h2>
+<p><code>imu &lt;x&gt; &lt;y&gt; &lt;z&gt;</code></p>
+<p>Pretend the gyroscope turns around its three axes (degrees per second) for 0.6 s (Core2 only, for tests).</p>
+<p>The pointer uses yaw (z when the board is held flat, y when upright) and pitch (x), so imu 0 0 60 is a turn to the side and imu 40 0 0 a tilt.</p>
+<p>Reply:</p><ul><li><code>OK IMU</code></li></ul>
+<pre>imu 40 0 60</pre>
+<h2 id="cmd-mod">mod</h2>
+<p><code>mod &lt;ctrl|shift|alt|win|cs|as|meh|hyper|off&gt;</code></p>
+<p>Hold or release a sticky modifier of the mouse page (Core2 only).</p>
+<p>The modifiers stay held until you switch them off, so Ctrl+click and Ctrl+scroll work with the mouse. cs is Ctrl+Shift, as Alt+Shift, meh Ctrl+Shift+Alt, hyper Ctrl+Shift+Alt+Win. The same combination again lets it go; off releases all. They are released when the host goes away.</p>
+<p>Reply:</p><ul><li><code>OK MOD &lt;bit mask&gt; | ERR mod</code></li></ul>
+<pre>mod ctrl</pre>
+<h2 id="cmd-shot">shot</h2>
+<p><code>shot</code></p>
+<p>Screenshot of the screen, 24 bits per pixel.</p>
+<p>Prints OK SHOT w h and then w * h * 3 bytes (RGB). The test tools save it as a PNG.</p>
+<p>Reply:</p><ul><li><code>OK SHOT 320 240, then the bytes</code></li></ul>
+<pre>shot</pre>
+<h2 id="cmd-tiles">tiles</h2>
+<p><code>tiles</code></p>
+<p>List the tiles of the current page that can be pressed, with their place on the screen.</p>
+<p>Prints OK TILES page=n count=k and then one line TILE slot x y w h name for each tile, in the same coordinates as tap. Empty and disabled tiles are left out and so are pages that have no tiles (the lamp pages). Spaces in a name become an underscore. The tests tap the middle of a tile from this list instead of assuming a layout.</p>
+<p>Reply:</p><ul><li><code>OK TILES page=n count=k, then k lines TILE slot x y w h name</code></li></ul>
+<pre>tiles</pre>
+<h2 id="cmd-heap">heap</h2>
+<p><code>heap [check]</code></p>
+<p>The free memory of the board, in bytes; heap check walks all heaps and looks for corruption.</p>
+<p>Prints free (all memory that 8-bit data can use, PSRAM included), min (the lowest that free has been), largest (the biggest single block that can still be allocated), internal (free internal RAM: the scarce kind, it carries the I2S buffers, the tasks and the Bluetooth stack) with internal_min (the lowest it has been: if it comes near zero the board is about to fail) and psram (free external RAM; 0 on a board without it). A page that is built over and over, or a transfer, can show a leak as a free that keeps falling. With check the board runs heap_caps_check_integrity_all over every heap (internal RAM and PSRAM): ok=1 when all block headers and free-list links are intact, ok=0 when a heap is corrupted (the details go to the log of the board). It takes a few milliseconds and stops the other tasks while it runs, so use it between tests, not inside a timing measurement.</p>
+<p>Reply:</p><ul><li><code>OK HEAP free=n min=n largest=n internal=n internal_min=n psram=n | OK HEAP CHECK ok=0|1</code></li></ul>
+<pre>heap check</pre>
+<h2 id="cmd-stack">stack</h2>
+<p><code>stack</code></p>
+<p>How much stack the tasks of the firmware still have free at their lowest point, in bytes.</p>
+<p>Prints one name=n pair for each task that exists: loop (the Arduino loop task), lamp-bar (the lamp worker), disk-tx (the Disk transmit task), bar-fx (the LED bar effects), and the Bluetooth host task when Bluetooth runs. The number is the high-water mark: the least stack that was ever free since the task started (uxTaskGetStackHighWaterMark). A number near zero means the task is about to overflow its stack and the board will restart.</p>
+<p>Reply:</p><ul><li><code>OK STACK name=n name=n ...</code></li></ul>
+<pre>stack</pre>
+<h2 id="cmd-crash">crash</h2>
+<p><code>crash</code></p>
+<p>Why the board last restarted, and what it was doing.</p>
+<p>Prints reason (poweron, software, panic, interrupt_watchdog, task_watchdog, watchdog, brownout, external ...), boots (restarts since the last power cycle), uptime_s, last (the last thing the previous run noted before it ended, for example ui:lvgl 27 for the display library while page 27 was shown, shot:render 27, cmd tiles, disk:dir; - when nothing was noted) and crumbs (how many notes that run made). After a crash the notes survive in RTC memory, a power cycle clears them.</p>
+<p>Reply:</p><ul><li><code>OK CRASH reason=name boots=n uptime_s=n last=text crumbs=n</code></li></ul>
+<pre>crash</pre>
+<h2 id="cmd-perf">perf</h2>
+<p><code>perf</code></p>
+<p>How long the last page took to build, render and flush.</p>
+<p>Reply:</p><ul><li><code>OK PERF build_us=... render_us=... flush_us=...</code></li></ul>
+<pre>perf</pre>
+<h2 id="cmd-wake">wake</h2>
+<p><code>wake</code></p>
+<p>Restart the idle timers: screen and LED bar on again.</p>
+<p>Reply:</p><ul><li><code>OK WAKE</code></li></ul>
+<pre>wake</pre>
+<h2 id="cmd-bl">bl</h2>
+<p><code>bl &lt;16..255|auto&gt;</code></p>
+<p>Fixed backlight, or auto for the stored dim and off times.</p>
+<p>Reply:</p><ul><li><code>OK BL n | OK BL AUTO | ERR bl</code></li></ul>
+<pre>bl 100</pre>
+<h2 id="cmd-leds">leds</h2>
+<p><code>leds [off|locks|on]</code></p>
+<p>The LED bar: off (also cuts the 5 V rail of the base), only the host lock state, or the layer colours.</p>
+<p>Stored in the settings. Without an argument the settings are shown.</p>
+<p>Reply:</p><ul><li><code>OK LEDS OFF | OK LEDS led=on bright=40 ...</code></li></ul>
+<pre>leds locks</pre>
+<h2 id="cmd-set">set</h2>
+<p><code>set [&lt;key&gt; &lt;value&gt;]</code></p>
+<p>Show or change the stored settings.</p>
+<p>Keys: led (off|locks|on), effect (none|nightrider|breath|rainbow|comet|sparkle|vu), bright 1..120, ledidle minutes, bl 16..255, dim seconds, off seconds, prefer (usb|ble|both), defaults (any value restores everything). A valid value is stored at once.</p>
+<p>Reply:</p><ul><li><code>OK SET led=on bright=40 ledidle=0 bl=128 dim=60 off=300 prefer=usb effect=none | ERR set</code></li></ul>
+<pre>set effect nightrider</pre>
+<h2 id="cmd-prefer">prefer</h2>
+<p><code>prefer [usb|ble|both]</code></p>
+<p>Which link carries the keys when both are connected.</p>
+<p>usb: while USB is mounted keys go over USB only (default). ble: while Bluetooth is connected keys go over Bluetooth only. both: to every connected link. Without an argument the choice and the connections are shown.</p>
+<p>Reply:</p><ul><li><code>OK PREFER USB | OK PREFER USB usb=1 ble=1</code></li></ul>
+<pre>prefer ble</pre>
+<h2 id="cmd-only">only</h2>
+<p><code>only &lt;usb|ble&gt;</code></p>
+<p>Never use the other link, even if the chosen one is down.</p>
+<p>Reply:</p><ul><li><code>OK ONLY USB | OK ONLY BLE | ERR only</code></li></ul>
+<pre>only usb</pre>
+<h2 id="cmd-sd">sd</h2>
+<p><code>sd</code></p>
+<p>Is there an SD card, which type, how big, how much is used.</p>
+<p>The CoreS3 only; the Core2 does not use its card.</p>
+<p>Reply:</p><ul><li><code>OK SD present=1 type=SDHC size_mb=30436 used_mb=1</code></li></ul>
+<pre>sd</pre>
+<h2 id="cmd-lamps">lamps</h2>
+<p><code>lamps [reset | grid &lt;cols&gt; &lt;rows&gt; | get &lt;id&gt; | bright &lt;n&gt; | worker &lt;on|off&gt;]</code></p>
+<p>The LampArray: counters, the lamp grid, one lamp, the bar brightness, the bar worker task.</p>
+<p>Without an argument: the counters (reports, lamps set, frames, drawing and latency of the bar and the screen). reset clears them and all lamps. grid sets the screen lamp grid (at most 60,800 lamps). get shows the colour of one lamp. bright overrides the bar brightness for a test. worker chooses whether the bar is shown by a task on the second core (default) or by the main loop.</p>
+<p>Reply:</p><ul><li><code>OK LAMPS mode=auto lamps=202 grid=16x12 ... | OK LAMPS GRID c r lamps=n max=n | OK LAMP id r g b i | ERR lamps</code></li></ul>
+<pre>lamps grid 160 95</pre>
+<h2 id="cmd-disk">disk</h2>
+<p><code>disk [reset | dir | sound &lt;on|off&gt;]</code></p>
+<p>The Disk demo: the state of the transfer, forget it, list the SD card, mute the modem sounds.</p>
+<p>Without an argument the state of the transfer is shown: blocks, speeds, the SHA-256 of the board and of the PC, whether the file was saved. See the manual of the Disk demo. The last fields count the way back (LOAD) from its start: lampreports (lamp reports that reached the board, any kind), frames (completed lamp frames handed to the Disk demo), dropped (frames it ignored), credits and resends (credit frames accepted), sendok and sendfail (game pad reports sent back and refused or timed out), sendmaxus (the slowest send, microseconds) and creditage (milliseconds since the last credit, -1 before the first). speaker=1 and mic=1 say whether the speaker and the microphone are running (not just present): the sounds need speaker=1 and mic=0 (they share the I2S port); the speaker starts with the Disk page or with the first sound.</p>
+<p>Reply:</p><ul><li><code>OK DISK state=done ok=74 ... speaker=1 mic=0 ... | OK DISK RESET | OK DIR, then the files | OK DISK SOUND ON</code></li></ul>
+<pre>disk dir</pre>
+<h2 id="cmd-mic">mic</h2>
+<p><code>mic [on|off]</code></p>
+<p>Switch the microphone on or off, or show what it hears.</p>
+<p>Without an argument: level and peak (0 to 32767), the dominant frequency in Hz from zero crossings, and the number of buffers. The speaker is off while the microphone listens (they share the I2S port). active=0 right after mic on means the start failed (not enough internal RAM for the I2S buffers, or the port was busy): failures counts such starts, the speaker is given back, and the next try is two seconds later. heap shows the internal RAM.</p>
+<p>Reply:</p><ul><li><code>OK MIC active=1 level=... peak=... freq=... buffers=... failures=0 | OK MIC ON</code></li></ul>
+<pre>mic on</pre>
+<h2 id="cmd-wave">wave</h2>
+<p><code>wave</code></p>
+<p>The last microphone buffer: 512 samples of 16 bits as hex (for tests).</p>
+<p>The demo window gets the waveform over the game pad (telem), not from here.</p>
+<p>Reply:</p><ul><li><code>OK WAVE &lt;2048 hex characters&gt;</code></li></ul>
+<pre>wave</pre>
+<h2 id="cmd-bar">bar</h2>
+<p><code>bar</code></p>
+<p>The colours of the ten bar LEDs as hex (for tests).</p>
+<p>The demo window gets them over the game pad (telem), not from here.</p>
+<p>Reply:</p><ul><li><code>OK BAR rrggbb rrggbb ... (ten values)</code></li></ul>
+<pre>bar</pre>
+<h2 id="cmd-telem">telem</h2>
+<p><code>telem [bar|wave|both|off]</code></p>
+<p>Send the bar colours and/or the microphone waveform to the PC as game pad reports.</p>
+<p>The PC reads them from the HID node (report 11, 48 bytes); this command only switches them on or off. The demo window uses it.</p>
+<p>Reply:</p><ul><li><code>OK TELEM BAR | ERR telem</code></li></ul>
+<pre>telem both</pre>
+</section>
+<nav class="pager" aria-label="Previous and next page"><a class="prev" href="lamps.html"><small>&larr; Previous</small><br>LampArray bench</a><a class="next" href="setup.html"><small>Next &rarr;</small><br>Set-up</a></nav>
+
+</main>
+<footer><div class="wrap">
+<p>MIT licence. Third-party components are listed in the <a href="https://github.com/nicenemo/nachtgespenst/blob/main/THIRD-PARTY-NOTICES.md">third-party notices</a>.</p>
+<p class="copyright">&copy; 2026 <a href="https://hanskruse.eu">Hans Kruse</a></p>
+</div></footer></body>
+</html>
