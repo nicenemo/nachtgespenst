@@ -10,5 +10,6 @@ start({
   keymap,
   lockKeys: globalThis.NG_LOCKKEYS ?? [],
   lockColors: globalThis.NG_LOCKCOLORS ?? [],
+  help: globalThis.NG_SHELLHELP ?? [],
 });
-startClicker({ document, window });
+startClicker({ document, window, help: globalThis.NG_SHELLHELP ?? [] });

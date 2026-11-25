@@ -2,6 +2,8 @@
 // board would send into a log; nothing is sent. The keys are those of src/Presenter.cpp; the keyboard reports come from the same
 // description as on the device page (keylog.js), the click is a mouse report (report ID 12: buttons, dx, dy, wheel).
 import { bytes, describe, hex } from './keylog.js';
+import { createShell } from './shell.js';
+import { attachShell } from './shellui.js';
 
 /**
  * @typedef {import('./keylog.js').Binding} Binding
@@ -27,7 +29,7 @@ export const PAGES = {
     { name: 'Start', rect: [3, 114, 76, 60], action: [7, 0x3e, 0, 'F5', null] },
     { name: 'Blank', rect: [82, 114, 76, 60], action: [7, 0x05, 0, 'B', null] },
     { name: 'End', rect: [3, 177, 76, 60], action: [7, 0x29, 0, 'ESCAPE', null] },
-    { name: 'Pointer', rect: [82, 177, 76, 60], action: 'mode' },
+    { name: 'Pointer mode', rect: [82, 177, 76, 60], action: 'mode' },
   ],
   pointer: [
     { name: 'Click', rect: [3, 27, 186, 88], action: 'click' },
@@ -39,7 +41,7 @@ export const PAGES = {
 };
 
 /** The three buttons under the screen: A is Previous, B switches the air mouse, C is Next. */
-export const BUTTONS = /** @type {const} */ ({ A: 'Previous', B: 'Pointer', C: 'Next' });
+export const BUTTONS = /** @type {const} */ ({ A: 'Previous', B: 'Pointer mode', C: 'Next' });
 
 /** The left mouse button as the board sends it: report ID 12 with the buttons, dx, dy and the wheel. @type {Description} */
 export const CLICK = {
@@ -52,7 +54,7 @@ const MAX_LOG_LINES = 200;
 
 /**
  * Puts the clicker demo on the page.
- * @param {{document: Document, window: Window & typeof globalThis, now?: () => Date}} env
+ * @param {{document: Document, window: Window & typeof globalThis, now?: () => Date, help?: import('./shell.js').Help[]}} env
  * @returns {{mode: () => string} | null} null when the page has no demo
  */
 export function start(env) {
@@ -65,6 +67,8 @@ export function start(env) {
   let mode = 'clicker';
   /** @type {HTMLElement[]} */
   let areas = [];
+  let presses = 0;
+  let last = '';
 
   /** @param {string} className @param {string[]} parts */
   function line(className, parts) {
@@ -79,8 +83,10 @@ export function start(env) {
     logEl.querySelector('.keylog-empty')?.remove();
     const t = now();
     const time = [t.getHours(), t.getMinutes(), t.getSeconds()].map((n) => String(n).padStart(2, '0')).join(':');
+    presses++;
+    last = d.text.replace(/\s+/gu, '_');
     logEl.append(line('down', [time, '▼', d.text, d.kind, `report ${hex(d.down[0], 2)}: ${bytes(d.down[1])}`, `(${d.detail})`]));
-    logEl.append(line('up', [time, '▲', 'release', d.kind, `report ${hex(d.up[0], 2)}: ${bytes(d.up[1])}`]));
+    if (d.up) logEl.append(line('up', [time, '▲', 'release', d.kind, `report ${hex(d.up[0], 2)}: ${bytes(d.up[1])}`]));
     while ((logEl.children.length ?? 0) > MAX_LOG_LINES) logEl.firstElementChild?.remove();
     logEl.scrollTop = logEl.scrollHeight;
   }
@@ -95,7 +101,12 @@ export function start(env) {
         : 'Air mouse off: back on the clicker page.';
       return;
     }
-    const d = action === 'click' ? CLICK : describe(action);
+    if (action === 'click') {
+      mouse(1, 0, 0, 0);
+      status.textContent = `${CLICK.text}: the report is in the log; nothing was sent.`;
+      return;
+    }
+    const d = describe(action);
     if (!d) return;
     log(d);
     status.textContent = `${d.text}: the report is in the log; nothing was sent.`;
@@ -129,11 +140,82 @@ export function start(env) {
   document.querySelectorAll('[data-button]').forEach((el) => {
     el.addEventListener('click', () => {
       const name = BUTTONS[/** @type {keyof typeof BUTTONS} */ (el.getAttribute('data-button'))];
-      const tile = PAGES[mode].find((t) => t.name === name || (name === 'Pointer' && t.action === 'mode'));
+      const tile = PAGES[mode].find((t) => t.name === name || (name === 'Pointer mode' && t.action === 'mode'));
       if (tile) press(tile.action);
     });
   });
   document.getElementById('keylog-clear')?.addEventListener('click', () => logEl.replaceChildren());
+
+  /** @param {boolean} on */
+  function setPointer(on) {
+    const wanted = on ? 'pointer' : 'clicker';
+    if (mode !== wanted) press('mode');
+  }
+
+  /**
+   * @param {number} x
+   * @param {number} y
+   * @param {boolean} touch
+   * @returns {'ok' | 'none'}
+   */
+  function tapAt(x, y, touch) {
+    const tile = PAGES[mode].find(({ rect: [rx, ry, rw, rh] }) => x >= rx && x < rx + rw && y >= ry && y < ry + rh);
+    if (!tile) return 'none';
+    if (touch) press(tile.action);
+    return 'ok';
+  }
+
+  /** The mouse report of the board: buttons, dx, dy and the wheel as signed bytes. @param {number} buttons @param {number} dx @param {number} dy @param {number} wheel */
+  function mouse(buttons, dx, dy, wheel) {
+    const moved = dx !== 0 || dy !== 0 || wheel !== 0;
+    const byte = (/** @type {number} */ v) => v & 255;
+    const text = buttons ? `${{ 1: 'Left', 2: 'Right', 4: 'Middle' }[buttons] ?? 'Mouse'} mouse button` : wheel ? `Mouse wheel ${wheel > 0 ? 'up' : 'down'}` : 'Mouse move';
+    log({
+      text, kind: 'mouse', down: [12, [buttons, byte(dx), byte(dy), byte(wheel)]], up: buttons || wheel ? [12, [0, 0, 0, 0]] : null,
+      detail: moved ? `buttons 0x${hex(buttons, 2)}, dx ${dx}, dy ${dy}, wheel ${wheel}` : `buttons 0x${hex(buttons, 2)}`, label: null,
+    });
+  }
+
+  /** @param {string} action @returns {boolean} */
+  function clicker(action) {
+    const binding = { prev: PAGE_UP, next: PAGE_DOWN, start: PAGES.clicker[2]?.action, blank: PAGES.clicker[3]?.action, end: PAGES.clicker[4]?.action, laser: PAGES.pointer[1]?.action }[action];
+    if (!binding || typeof binding === 'string') return false;
+    press(binding);
+    return true;
+  }
+
+  if (env.help) {
+    const shell = createShell({
+      board: 'C2',
+      help: env.help,
+      api: {
+        pages: 1,
+        page: () => 0,
+        title: () => 'Presenter',
+        go: () => undefined,
+        mask: () => 0,
+        stats: () => ({ presses, last }),
+        rects: () => PAGES[mode].map((t, index) => ({ index, x: t.rect[0], y: t.rect[1], w: t.rect[2], h: t.rect[3], name: t.name })),
+        tap: tapAt,
+        press: (layer, tile) => {
+          const t = layer === 0 ? PAGES[mode][tile] : undefined;
+          if (t) press(t.action);
+          return t !== undefined;
+        },
+        leds: () => undefined,
+        button: (index, down) => {
+          if (down) document.querySelector(`[data-button="${'ABC'[index]}"]`)?.dispatchEvent(new window.Event('click'));
+          return true;
+        },
+        clicker,
+        pointer: setPointer,
+        pointerOn: () => mode === 'pointer',
+        mouse,
+        mods: (mask) => log({ text: mask ? `Modifiers held: ${hex(mask, 2)}` : 'Modifiers released', kind: 'keyboard', down: [1, [mask, 0, 0, 0, 0, 0, 0, 0]], up: null, detail: `modifiers 0x${hex(mask, 2)}`, label: null }),
+      },
+    });
+    attachShell(document, shell);
+  }
 
   render();
   return { mode: () => mode };

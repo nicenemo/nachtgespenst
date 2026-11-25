@@ -31,6 +31,7 @@
 <link rel="next" href="lamps.html">
 <link rel="index" href="index.html">
 <script src="menu.js" defer></script>
+<script src="shellhelp.js" defer></script>
 <script src="mock.js" defer></script>
 </head>
 <body>
@@ -59,6 +60,12 @@
 <div class="keylog-body" id="keylog" role="log" aria-live="polite" tabindex="0"><p class="keylog-empty">Tap a tile or a button. The HID report that the board would send appears here; nothing is really sent.</p></div>
 </aside>
 </div>
+<section class="shell" aria-labelledby="shell-title">
+<div class="keylog-head"><h2 id="shell-title">The shell of the Core2 clicker</h2><button type="button" id="shell-clear">Clear</button></div>
+<div class="shell-out" id="shell-out" role="log" aria-live="polite" tabindex="0"></div>
+<form id="shell-form" class="shell-form" autocomplete="off"><label for="shell-in" id="shell-prompt">NG&gt; </label><input id="shell-in" type="text" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Shell command"><button type="submit">Run</button></form>
+<p class="caption-note">The commands of the serial shell (<a href="shell.html">manual</a>), answered by this page: <code>help</code>, <code>state</code>, <code>layer 26</code>, <code>tiles</code>, <code>tap 160 120</code>, <code>key 26 2</code>, <code>clicker next</code>, <code>pointer on</code>, <code>pointer click</code>, <code>mod ctrl</code>, <code>imu 0 0 60</code>. Values that need a real board (memory, SD card) are made up. Nothing is sent to a computer.</p>
+</section>
 <noscript><p class="notice">This page needs JavaScript. Without it you see the clicker page only.</p></noscript>
 <figure class="photo"><img src="img/core2-photo.jpg" width="900" height="810" alt="The Core2 in its orange case on a desk, showing the clicker page: Previous, Next, Start, Blank, End and Pointer mode, with the BLE indicator and the buttons A, B and C."><figcaption>The real Core2 with the clicker page.</figcaption></figure>
 <h2>The page</h2>

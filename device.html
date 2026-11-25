@@ -32,6 +32,7 @@
 <link rel="index" href="index.html">
 <script src="menu.js" defer></script>
 <script src="keymap.js" defer></script>
+<script src="shellhelp.js" defer></script>
 <script src="mock.js" defer></script>
 </head>
 <body>
@@ -69,6 +70,12 @@
 <div class="keylog-body" id="keylog" role="log" aria-live="polite" tabindex="0"><p class="keylog-empty">Tap a tile on a key page. The HID report that the device would send appears here: nothing is really sent, so the shutdown tiles are safe to try.</p></div>
 </aside>
 </div>
+<section class="shell" aria-labelledby="shell-title">
+<div class="keylog-head"><h2 id="shell-title">The shell of the CoreS3</h2><button type="button" id="shell-clear">Clear</button></div>
+<div class="shell-out" id="shell-out" role="log" aria-live="polite" tabindex="0"></div>
+<form id="shell-form" class="shell-form" autocomplete="off"><label for="shell-in" id="shell-prompt">NG&gt; </label><input id="shell-in" type="text" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Shell command"><button type="submit">Run</button></form>
+<p class="caption-note">The commands of the serial shell (<a href="shell.html">manual</a>), answered by this page: <code>help</code>, <code>state</code>, <code>layer 26</code>, <code>tiles</code>, <code>tap 160 120</code>, <code>key 26 2</code>, <code>prefer ble</code>, <code>set effect rainbow</code>. Values that need a real board (memory, SD card) are made up. Nothing is sent to a computer.</p>
+</section>
 <noscript><p class="notice">This page needs JavaScript. Without it you see the first screen only.</p></noscript>
 <h2>How it works</h2>
 <p>Tap the arrows at the bottom of the screen to page through the pages. Tap the title in the middle to open the Locks page, and tap it again to go back. On the Locks page, tap Caps, Num or Scroll to switch that lock on or off and watch the LED bars beside the screen. On a phone you can also swipe the screen.</p>

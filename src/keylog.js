@@ -23,7 +23,7 @@
  * @property {string} text the key as text, for example Ctrl+Shift+B
  * @property {'keyboard' | 'consumer' | 'system' | 'mouse'} kind
  * @property {[number, number[]]} down the report id and the bytes of the press
- * @property {[number, number[]]} up the report id and the bytes of the release
+ * @property {[number, number[]] | null} up the report id and the bytes of the release; null when there is no release (a held modifier)
  * @property {string} detail the numbers behind it, for the log
  * @property {string | null} label the caption of the tile
  * @property {boolean} [blocked] true for Power Down and Sleep: shown, never sent

@@ -20,7 +20,7 @@ test('Next types Page Down, Click is mouse report 12', () => {
   assert.ok(demo);
   tap(dom, 'Next');
   assert.match(lines(dom)[0] ?? '', /09:08:07.*Page Down.*report 01: 00 00 4E/u);
-  tap(dom, 'Pointer');
+  tap(dom, 'Pointer mode');
   assert.equal(demo.mode(), 'pointer');
   tap(dom, 'Click');
   assert.match(lines(dom)[2] ?? '', /Left mouse button.*report 0C: 01 00 00 00/u);

@@ -194,3 +194,17 @@ nav.sitenav .panel li a[aria-current="page"] { background: var(--accent); color:
 .photo { max-width: 420px; margin: 16px auto; text-align: center; }
 .photo img { display: block; width: 100%; height: auto; border-radius: 14px; }
 .photo figcaption { margin-top: 8px; color: var(--muted); font-size: .9em; }
+
+/* The fake shell under a demo (shell.js, shellui.js) */
+.shell { margin: 16px 0; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); overflow: hidden; }
+.shell .keylog-head h2 { margin: 0; font-size: 1em; }
+.shell-out { height: 16em; overflow-y: auto; padding: 8px 12px; font: 12px/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; background: #0b0e14; color: #c9d1e8; }
+.shell-out .sl { white-space: pre-wrap; overflow-wrap: anywhere; }
+.shell-out .sl.in { color: #ffd479; }
+.shell-out .sl.err { color: #ff8a8a; }
+.shell-out .sl.hint { color: #8da0c8; }
+.shell-form { display: flex; align-items: center; gap: 6px; padding: 6px 12px; background: #0b0e14; border-top: 1px solid var(--line); font: 12px/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: #ffd479; }
+.shell-form input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; color: #e6e9f0; font: inherit; }
+.shell-form:focus-within { outline: 2px solid var(--accent); outline-offset: -2px; }
+.shell .caption-note { margin: 8px 12px; }
+.shell-form button { border: 1px solid var(--line); border-radius: 8px; background: var(--code); color: var(--text); font: inherit; padding: 2px 10px; cursor: pointer; }

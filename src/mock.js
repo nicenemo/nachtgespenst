@@ -2,6 +2,8 @@
 // The arrows and the title (which opens and closes the Locks page) work as on the device; on the Locks page the Caps, Num and Scroll tiles switch
 // between eight real screenshots and the two LED bars follow the rule of the firmware; on every key page a tapped tile writes the HID report that
 // the device would send into a log. Nothing is sent and nothing here simulates the firmware: the reports come from the keymap it is built from.
+import { attachShell } from './shellui.js';
+import { createShell } from './shell.js';
 import { LOCKS, LOCK_NAMES, PAGES, SCREEN_H, SCREEN_W, barColours, bytes, describe, hex, lockText, pageImage, tileRects } from './keylog.js';
 
 /**
@@ -19,6 +21,7 @@ import { LOCKS, LOCK_NAMES, PAGES, SCREEN_H, SCREEN_W, barColours, bytes, descri
  * @property {Binding[]} lockKeys
  * @property {number[][]} lockColors
  * @property {() => Date} [now]
+ * @property {import('./shell.js').Help[]} [help] the manual of the shell; without it the page has no shell
  */
 
 const MAX_LOG_LINES = 200;
@@ -68,6 +71,9 @@ export function start(env) {
   const lockTiles = /** @type {HTMLElement[]} */ ([...mock.querySelectorAll('.hit.tile')]);
 
   let page = 0;
+  let presses = 0;
+  let last = '';
+  let ledMode = 'on';
   let back = 0;
   let mask = 0;
   /** @type {HTMLElement[]} */
@@ -89,7 +95,8 @@ export function start(env) {
   mock.querySelectorAll('.hit').forEach((el) => place(/** @type {HTMLElement} */ (el)));
 
   function drawBar() {
-    const colours = barColours(page, mask, keymap[page]?.color ?? '#000000', lockColors);
+    const dark = ledMode === 'off' || (ledMode === 'locks' && page < LOCKS);
+    const colours = dark ? Array.from({ length: 10 }, () => [0, 0, 0]) : barColours(page, mask, keymap[page]?.color ?? '#000000', lockColors);
     colours.forEach((c, lamp) => {
       const led = leds[String(lamp)];
       if (!led) return;
@@ -121,8 +128,10 @@ export function start(env) {
     if (d.blocked) {
       logEl.append(line('blocked', [time, '⛔', name, d.kind, d.detail, '— shown, never sent: on the device this tile powers down or suspends the computer']));
     } else {
+      presses++;
+      last = d.text.replace(/\s+/gu, '_');
       logEl.append(line('down', [time, '▼', name, d.kind, `report ${hex(d.down[0], 2)}: ${bytes(d.down[1])}`, `(${d.detail})`]));
-      logEl.append(line('up', [time, '▲', 'release', d.kind, `report ${hex(d.up[0], 2)}: ${bytes(d.up[1])}`]));
+      if (d.up) logEl.append(line('up', [time, '▲', 'release', d.kind, `report ${hex(d.up[0], 2)}: ${bytes(d.up[1])}`]));
     }
     while (logEl.children.length > MAX_LOG_LINES) logEl.firstElementChild?.remove();
     logEl.scrollTop = logEl.scrollHeight;
@@ -153,6 +162,7 @@ export function start(env) {
       button.setAttribute('data-w', String(rect.w));
       button.setAttribute('data-h', String(rect.h));
       button.setAttribute('aria-label', description.text);
+      if (description.blocked) button.setAttribute('data-blocked', 'true');
       place(button);
       button.addEventListener('click', () => {
         flash(button);
@@ -259,6 +269,77 @@ export function start(env) {
       if (dx < 0) next(); else prev();
     }
   }, { passive: true });
+
+  /**
+   * What a touch at a point of the screen does. A point on, or within 2 pixels of, a tile that powers the computer down is refused.
+   * @param {number} x
+   * @param {number} y
+   * @param {boolean} touch whether to touch; false only asks
+   * @returns {'ok' | 'refused' | 'none'}
+   */
+  function tapAt(x, y, touch) {
+    const candidates = page === LOCKS ? lockTiles : keyTiles;
+    /** @param {HTMLElement} el @param {number} margin */
+    const inside = (el, margin) => {
+      const n = (/** @type {string} */ name) => Number(el.getAttribute(name));
+      return x >= n('data-x') - margin && x < n('data-x') + n('data-w') + margin && y >= n('data-y') - margin && y < n('data-y') + n('data-h') + margin;
+    };
+    if (candidates.some((el) => el.getAttribute('data-blocked') === 'true' && inside(el, 2))) return 'refused';
+    const hit = candidates.find((el) => inside(el, 0));
+    if (!hit) return 'none';
+    if (touch) hit.click();
+    return 'ok';
+  }
+
+  /**
+   * Presses a tile as the shell command key does, without showing its page.
+   * @param {number} layer
+   * @param {number} tile
+   * @returns {boolean}
+   */
+  function pressTile(layer, tile) {
+    if (layer === LOCKS) {
+      const el = lockTiles[tile];
+      if (!el) return false;
+      el.click();
+      return true;
+    }
+    const binding = keymap[layer]?.tiles[tile];
+    const d = binding ? describe(binding) : null;
+    if (!d || d.blocked) return false;
+    log(d);
+    return true;
+  }
+
+  /** @returns {import('./shell.js').Rect[]} */
+  function rects() {
+    if (page === LOCKS) {
+      return lockTiles.map((el, index) => ({ index, x: Number(el.getAttribute('data-x')), y: Number(el.getAttribute('data-y')), w: Number(el.getAttribute('data-w')), h: Number(el.getAttribute('data-h')), name: el.getAttribute('aria-label') ?? '' }));
+    }
+    const layer = keymap[page];
+    if (!layer) return [];
+    return tileRects(layer).map((r) => ({ ...r, name: layer.tiles[r.index]?.[4]?.replace(/^\+/u, '') ?? layer.tiles[r.index]?.[3] ?? '' }));
+  }
+
+  if (env.help) {
+    const shell = createShell({
+      board: 'S3',
+      help: env.help,
+      api: {
+        pages: PAGES,
+        page: () => page,
+        title: () => (page < LOCKS ? keymap[page]?.title ?? '' : 'Locks'),
+        go,
+        mask: () => mask,
+        stats: () => ({ presses, last }),
+        rects,
+        tap: tapAt,
+        press: pressTile,
+        leds: (mode) => { ledMode = mode; drawBar(); },
+      },
+    });
+    attachShell(document, shell);
+  }
 
   const fromHash = parseInt(window.location.hash.replace('#', ''), 10);
   if (fromHash >= 0 && fromHash < PAGES) page = fromHash;
