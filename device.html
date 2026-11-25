@@ -117,26 +117,32 @@
 <label class="opt-audio"><input type="checkbox" id="opt-speakers"> Play the test tones through the speakers (loud)</label>
 <form method="dialog"><button type="submit" class="blockbtn peach">Close</button></form>
 </dialog>
-<dialog id="log-dialog" class="c-dialog wide" aria-labelledby="demolog-title">
-<div class="keylog-head"><h2 id="demolog-title">What is happening</h2><button type="button" id="demolog-clear" class="blockbtn lavender">Clear</button></div>
-<div class="keylog-body" id="demolog" role="log" aria-live="polite" tabindex="0"></div>
-<form method="dialog"><button type="submit" class="blockbtn peach">Close</button></form>
-</dialog>
-<dialog id="keys-dialog" class="c-dialog wide" aria-labelledby="keylog-title">
-<aside class="keylog" aria-labelledby="keylog-title">
-<div class="keylog-head"><h2 id="keylog-title">Keys the tiles would send</h2><button type="button" id="keylog-clear">Clear</button></div>
-<div class="keylog-body" id="keylog" role="log" aria-live="polite" tabindex="0"><p class="keylog-empty">Tap a tile on a key page. The HID report that the device would send appears here: nothing is really sent, so the shutdown tiles are safe to try.</p></div>
-</aside>
-<form method="dialog"><button type="submit" class="blockbtn peach">Close</button></form>
-</dialog>
+
+
 
 </section>
-<section id="shell-drawer" class="c-drawer" aria-label="The shell of the board" hidden>
+
+<section id="console-drawer" class="c-drawer" aria-label="Log, shell and keys" hidden>
+<div class="c-tabs">
+<div role="tablist" aria-label="Log, shell and keys">
+<button type="button" role="tab" id="tab-log" class="c-tab" aria-controls="panel-log" aria-selected="true" tabindex="0">What is happening</button>
+<button type="button" role="tab" id="tab-shell" class="c-tab" aria-controls="panel-shell" aria-selected="false" tabindex="-1">Shell</button>
+<button type="button" role="tab" id="tab-keys" class="c-tab" aria-controls="panel-keys" aria-selected="false" tabindex="-1">Keys the tiles would send</button>
+</div>
+<span class="keylog-buttons"><button type="button" id="drawer-clear">Clear</button><button type="button" id="drawer-close">Close</button></span>
+</div>
+<div role="tabpanel" id="panel-log" aria-labelledby="tab-log">
+<div class="keylog-body" id="demolog" role="log" aria-live="polite" tabindex="0"></div>
+</div>
+<div role="tabpanel" id="panel-shell" aria-labelledby="tab-shell" hidden>
 <div class="shell" role="group" aria-labelledby="shell-title">
-<div class="keylog-head"><h2 id="shell-title">The shell of the CoreS3</h2><span class="keylog-buttons"><button type="button" id="shell-clear">Clear</button><button type="button" id="shell-close">Close</button></span></div>
 <div class="shell-out" id="shell-out" role="log" aria-live="polite" tabindex="0"></div>
 <form id="shell-form" class="shell-form" autocomplete="off"><label for="shell-in" id="shell-prompt">NG&gt; </label><input id="shell-in" type="text" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Shell command"><button type="submit">Run</button></form>
 <p class="caption-note">The commands of the serial shell (<a href="shell.html">manual</a>), answered by this page: <code>help</code>, <code>state</code>, <code>layer 26</code>, <code>tiles</code>, <code>tap 160 120</code>, <code>key 26 2</code>, <code>prefer ble</code>, <code>set effect rainbow</code>, <code>lamps</code>, <code>bar</code>, <code>wave</code>. Values that need a real board (memory, SD card) are made up. Nothing is sent to a computer.</p>
+</div>
+</div>
+<div role="tabpanel" id="panel-keys" aria-labelledby="tab-keys" hidden>
+<div class="keylog-body" id="keylog" role="log" aria-live="polite" tabindex="0"><p class="keylog-empty">Tap a tile on a key page. The HID report that the device would send appears here: nothing is really sent, so the shutdown tiles are safe to try.</p></div>
 </div>
 </section>
 <section id="about">

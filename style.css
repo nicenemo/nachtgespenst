@@ -331,3 +331,13 @@ nav.sitenav .panel li a[aria-current="page"] { background: var(--accent); color:
 .c-drawer .shell-out { height: min(40vh, 20em); border-radius: 10px; }
 .c-drawer .shell-form { border-radius: 0 0 10px 10px; }
 .c-drawer .caption-note { color: #8d8da4; }
+
+.c-tabs { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+.c-tab { padding: 6px 16px 5px; border: 0; border-radius: 999px; background: color-mix(in srgb, var(--lavender) 22%, #000); color: var(--lavender); font: 700 13px Geist, system-ui, sans-serif; cursor: pointer; }
+.c-tab[aria-selected="true"] { background: var(--lavender); color: #000; }
+.c-tab:focus-visible { outline: 2px solid var(--peach); outline-offset: 2px; }
+.c-drawer [role="tabpanel"][hidden] { display: none; }
+.c-drawer .keylog-body { height: min(40vh, 20em); border-radius: 10px; }
+.c-drawer #keylog, .c-drawer #demolog { border-radius: 10px; }
+.c-tabs .keylog-buttons button { padding: 4px 14px; border: 0; border-radius: 12px; background: var(--lavender); color: #000; font: 700 13px Geist, system-ui, sans-serif; cursor: pointer; }
+.c-tabs .keylog-buttons button:hover { filter: brightness(1.15); }

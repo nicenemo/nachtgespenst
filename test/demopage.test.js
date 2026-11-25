@@ -113,19 +113,46 @@ test('the bar on the PC is the LED bar of the board: the colour of the page, the
   assert.ok(new Set(device.currentBar()).size > 1, 'a demo paints different colours');
 });
 
-test('the shell is a drawer under the console, not a popup', (t) => {
+test('the log, the shell and the keys are tabs of one drawer under the console, not popups', (t) => {
   const { document } = page(t);
-  const drawer = /** @type {HTMLElement} */ (document.getElementById('shell-drawer'));
-  const button = /** @type {HTMLElement} */ (document.getElementById('shell-open'));
+  const drawer = /** @type {HTMLElement} */ (document.getElementById('console-drawer'));
+  const $ = (/** @type {string} */ id) => /** @type {HTMLElement} */ (document.getElementById(id));
   assert.equal(drawer.hidden, true);
-  assert.equal(drawer.closest('dialog'), null, 'the shell is not inside a dialog');
-  button.click();
+  assert.equal(drawer.closest('dialog'), null, 'the drawer is not inside a dialog');
+  for (const id of ['demolog', 'shell-in', 'keylog']) assert.equal($(id).closest('dialog'), null, `${id} is not in a dialog`);
+  $('shell-open').click();
   assert.equal(drawer.hidden, false);
-  assert.equal(button.getAttribute('aria-expanded'), 'true');
-  assert.ok(button.classList.contains('active'));
-  /** @type {HTMLElement} */ (document.getElementById('shell-close')).click();
+  assert.equal($('tab-shell').getAttribute('aria-selected'), 'true');
+  assert.equal($('panel-shell').hidden, false);
+  assert.equal($('panel-log').hidden, true);
+  assert.ok($('shell-open').classList.contains('active'));
+  $('log-open').click();                                   // another button: the same drawer, another tab
+  assert.equal(drawer.hidden, false);
+  assert.equal($('panel-log').hidden, false);
+  assert.equal($('panel-shell').hidden, true);
+  assert.ok(!$('shell-open').classList.contains('active') && $('log-open').classList.contains('active'));
+  $('tab-keys').click();
+  assert.equal($('panel-keys').hidden, false);
+  assert.equal($('keys-open').getAttribute('aria-expanded'), 'true');
+  $('keys-open').click();                                  // the button of the open tab closes the drawer
   assert.equal(drawer.hidden, true);
-  assert.equal(button.getAttribute('aria-expanded'), 'false');
+  $('shell-open').click();
+  $('drawer-close').click();
+  assert.equal(drawer.hidden, true);
+  assert.equal($('shell-open').getAttribute('aria-expanded'), 'false');
+});
+
+test('Clear empties the tab that is open', async (t) => {
+  const { document } = page(t);
+  const $ = (/** @type {string} */ id) => /** @type {HTMLElement} */ (document.getElementById(id));
+  /** @type {HTMLElement} */ (document.querySelector('[data-demo="bar:comet"]')).click();
+  await wait(60);
+  $('demo-stop').click();
+  await wait(60);
+  $('log-open').click();
+  assert.ok($('demolog').children.length > 0);
+  $('drawer-clear').click();
+  assert.equal($('demolog').children.length, 0);
 });
 
 test('every command of the manual answers on the page, as on the board', (t) => {

@@ -166,26 +166,60 @@ export function startDemoPage(env) {
     dialog.close();
     if (!runner.startCycle({ fast: option('opt-fast').checked, mic: option('opt-mic').checked })) say('a demo is running: stop it first');
   });
-  for (const [button, id] of [['demo-open', 'demos-dialog'], ['keys-open', 'keys-dialog'], ['sound-open', 'sound-dialog'], ['log-open', 'log-dialog']]) {
+  for (const [button, id] of [['demo-open', 'demos-dialog'], ['sound-open', 'sound-dialog']]) {
     byId(button ?? '').addEventListener('click', () => /** @type {HTMLDialogElement} */ (byId(id ?? '')).showModal());
   }
-  // The shell is not a popup: it opens as a drawer under the console, so the board and the demos stay in view and in use.
-  const drawer = byId('shell-drawer');
-  const shellButton = byId('shell-open');
-  const setShell = (/** @type {boolean} */ open) => {
-    drawer.hidden = !open;
-    shellButton.setAttribute('aria-expanded', String(open));
-    shellButton.classList.toggle('active', open);
-    if (open) {
-      drawer.scrollIntoView?.({ block: 'nearest', behavior: 'smooth' });
-      /** @type {HTMLInputElement} */ (byId('shell-in')).focus();
+  // The log, the shell and the keys are not popups: they share one drawer under the console, in three tabs, so the board and the demos stay in view and in use.
+  const drawer = byId('console-drawer');
+  const TABS = /** @type {const} */ (['log', 'shell', 'keys']);
+  /** @type {Record<string, string>} */
+  const opener = { log: 'log-open', shell: 'shell-open', keys: 'keys-open' };
+  /** @type {string | null} */
+  let openTab = null;
+  /** Shows a tab, or closes the drawer (null). @param {string | null} tab @param {boolean} [focus] */
+  const showTab = (tab, focus = true) => {
+    openTab = tab;
+    drawer.hidden = tab === null;
+    for (const name of TABS) {
+      const selected = name === tab;
+      const button = byId(`tab-${name}`);
+      button.setAttribute('aria-selected', String(selected));
+      button.tabIndex = selected ? 0 : -1;
+      byId(`panel-${name}`).hidden = !selected;
+      const toolbar = byId(opener[name] ?? '');
+      toolbar.classList.toggle('active', selected);
+      toolbar.setAttribute('aria-expanded', String(selected));
     }
+    if (tab === null) return;
+    drawer.scrollIntoView?.({ block: 'nearest', behavior: 'smooth' });
+    if (focus && tab === 'shell') /** @type {HTMLInputElement} */ (byId('shell-in')).focus();
+    const log = byId(tab === 'log' ? 'demolog' : tab === 'keys' ? 'keylog' : 'shell-out');
+    log.scrollTop = log.scrollHeight;
   };
-  shellButton.addEventListener('click', () => setShell(drawer.hidden === true));
-  byId('shell-close').addEventListener('click', () => { setShell(false); shellButton.focus(); });
-  byId('shell-in').addEventListener('keydown', (e) => { if (/** @type {KeyboardEvent} */ (e).key === 'Escape') { setShell(false); shellButton.focus(); } });
+  for (const name of TABS) {
+    const toolbar = byId(opener[name] ?? '');
+    toolbar.setAttribute('aria-controls', 'console-drawer');
+    toolbar.addEventListener('click', () => showTab(openTab === name ? null : name));
+    byId(`tab-${name}`).addEventListener('click', () => showTab(name));
+    byId(`tab-${name}`).addEventListener('keydown', (e) => {
+      const key = /** @type {KeyboardEvent} */ (e).key;
+      const at = TABS.indexOf(name);
+      const next = key === 'ArrowRight' ? TABS[(at + 1) % TABS.length] : key === 'ArrowLeft' ? TABS[(at + TABS.length - 1) % TABS.length] : undefined;
+      if (next) {
+        e.preventDefault();
+        showTab(next, false);
+        byId(`tab-${next}`).focus();
+      }
+    });
+  }
+  byId('drawer-close').addEventListener('click', () => { const was = openTab; showTab(null); if (was) byId(opener[was] ?? '').focus(); });
+  byId('drawer-clear').addEventListener('click', () => {
+    if (openTab === 'log') logEl.replaceChildren();
+    else if (openTab === 'shell') byId('shell-out').replaceChildren();
+    else if (openTab === 'keys') byId('keylog').replaceChildren();
+  });
+  byId('shell-in').addEventListener('keydown', (e) => { if (/** @type {KeyboardEvent} */ (e).key === 'Escape') { showTab(null); byId('shell-open').focus(); } });
   byId('demo-stop').addEventListener('click', () => runner.stop());
-  byId('demolog-clear').addEventListener('click', () => logEl.replaceChildren());
   if (audio) {
     option('opt-mic-real').addEventListener('change', async (e) => {
       const input = /** @type {HTMLInputElement} */ (e.target);
