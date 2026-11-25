@@ -16,7 +16,9 @@
 
   var img = document.getElementById('mockimg');
   var status = document.getElementById('mockstatus');
-  var leds = mock.querySelectorAll('.bar .led');
+  var leds = {};
+  var ledEls = mock.querySelectorAll('.bar .led');
+  for (var li = 0; li < ledEls.length; li++) leds[ledEls[li].getAttribute('data-lamp')] = ledEls[li];
   var page = 0, back = 0, mask = 0;   // mask: Caps 1, Num 2, Scroll 4
   var started = false;
 
@@ -34,7 +36,7 @@
   for (var i = 0; i < hits.length; i++) place(hits[i]);
   var tiles = mock.querySelectorAll('.hit.tile');
 
-  // The LED bar as the firmware lights it: the colour of the layer on a key page; on the Locks page one active lock fills its segment of two LEDs,
+  // The LED bar as the firmware lights it: the colour of the layer on a key page; on the Locks page one active lock fills its segment of two LEDs (lamps 0 and 1 for Caps, 2 and 3 for Num, 4 and 5 for Scroll),
   // several active locks add up over the whole bar, and with none the bar is dark.
   function barColours() {
     var out = [], i, j;
@@ -59,10 +61,10 @@
 
   function drawBar() {
     var c = barColours();
-    for (var i = 0; i < leds.length; i++) {
+    for (var i = 0; i < 10; i++) {
       var lit = c[i][0] + c[i][1] + c[i][2] > 0;
       leds[i].style.background = lit ? 'rgb(' + c[i].join(',') + ')' : '';
-      leds[i].style.boxShadow = lit ? '0 0 12px 3px rgba(' + c[i].join(',') + ',.55)' : '';
+      leds[i].style.boxShadow = lit ? '0 0 10px 2px rgba(' + c[i].join(',') + ',.55)' : '';
     }
   }
 
