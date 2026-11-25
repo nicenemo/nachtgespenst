@@ -14,7 +14,7 @@ const data = vm.runInNewContext(`${read('keymap.js')}; ${read('shellhelp-full.js
 
 /** The demo page in jsdom (no canvas, no dialog: both are stubbed). */
 function page(/** @type {import('node:test').TestContext} */ t) {
-  const dom = new JSDOM(read('demo-app.html'), { url: 'http://localhost/demo-app.html', virtualConsole: new VirtualConsole() });
+  const dom = new JSDOM(read('device.html'), { url: 'http://localhost/device.html', virtualConsole: new VirtualConsole() });
   const { document } = dom.window;
   const window = /** @type {any} */ (dom.window);
   const dialog = /** @type {any} */ (document.getElementById('demos-dialog'));

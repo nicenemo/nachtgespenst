@@ -3,6 +3,7 @@
 
 import { DEMOS, createRunner, demoById } from './demos.js';
 import { drawBoard, drawPc } from './lampviews.js';
+import { loadPhotos } from './photos.js';
 import { createTalk } from './talk.js';
 
 /**
@@ -86,6 +87,7 @@ export function startDemoPage(env) {
     seconds: Math.max(2, Number(seconds.value) || 8),
     device: { go: device.go, pages: device.pages },
     audio: audio ?? undefined,
+    photos: (cols, rows) => loadPhotos(document, window, cols, rows),
     progress: (text) => showStatus(`Running: ${text}`),
   }), {
     onStart: (label) => {
@@ -196,7 +198,7 @@ export function startDemoPage(env) {
     else if (e.key === 'Escape') { talk.stop(); runner.stop(); }
   });
   showStatus(message || 'Ready');
-  // A link can start a demo: demo-app.html#demo=grid:raster%20bars (demos with sound wait for a click: the browser does not play before one)
+  // A link can start a demo: device.html#demo=grid:raster%20bars (demos with sound wait for a click: the browser does not play before one)
   const linked = env.link.match(/^#demo=(.+)$/u)?.[1];
   if (linked && demoById(linked) && !linked.match(/^(scope|vu|miccheck)$/u)) window.setTimeout(() => runner.start(linked), 300);
   return {

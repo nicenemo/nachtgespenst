@@ -4,6 +4,7 @@
 
 import { Scope, level, toneCheck, vu } from './audio.js';
 import { paintBytes, runDisk, standInBook } from './disk.js';
+import { PHOTOS } from './photos.js';
 import { BAR_EFFECTS, C64, dissolveOrder, nearestPrime, nextPrime, rasterBars, sineScroller, textMask } from './effects.js';
 
 /**
@@ -16,6 +17,7 @@ import { BAR_EFFECTS, C64, dissolveOrder, nearestPrime, nextPrime, rasterBars, s
  * @property {{go: (page: number) => void, pages: number}} device the pages of the fake board
  * @property {{tones: (list: number[], seconds: number) => Promise<void>, wave: () => number[], stop: () => void, source: () => string} | undefined} [audio] the sound, when the page has it
  * @property {(text: string) => void} [progress] a short status for the page
+ * @property {((cols: number, rows: number) => Promise<number[][] | null>) | undefined} [photos] the five photographs as grids of lamps; without them the demo draws its own scenes
  */
 
 /**
@@ -102,7 +104,10 @@ export function scenes(cols, rows) {
 
 /** @param {Context} ctx @param {number} cols @param {number} rows */
 async function photos(ctx, cols, rows) {
-  const pics = scenes(cols, rows);
+  const real = await ctx.photos?.(cols, rows);
+  const pics = real ?? scenes(cols, rows);
+  if (real) PHOTOS.forEach((p, i) => ctx.log(`photo ${i + 1}: ${p.title}, ${p.author}, ${p.licence}`));
+  else ctx.log('the photographs are not available here: five pictures that are drawn instead');
   const lamps = cols * rows;
   const m = nextPrime(lamps + 1);
   const primes = [7, 31, nearestPrime(Math.round(m * 0.618)), 97, 211];
@@ -124,7 +129,7 @@ async function photos(ctx, cols, rows) {
       await ctx.sleep(30);
     }
     const sec = (performance.now() - t0) / 1000;
-    ctx.log(`picture ${((i - 1) % pics.length) + 1} -> ${(i % pics.length) + 1}, p = ${p}: ${sec.toFixed(2)} s`);
+    ctx.log(`photo ${((i - 1) % pics.length) + 1} -> ${(i % pics.length) + 1}, p = ${p}: ${sec.toFixed(2)} s`);
     note.push(`p=${p}`);
     await ctx.sleep(900);
   }
@@ -260,7 +265,7 @@ export const DEMOS = [
   ...Object.keys(BAR_EFFECTS).map((name) => /** @type {Demo} */ ({ id: `board:${name}`, label: name.charAt(0).toUpperCase() + name.slice(1), group: 'board', run: (/** @type {Context} */ ctx) => boardEffect(ctx, name) })),
   { id: 'grid:raster bars', label: 'Raster bars', group: 'grid', run: (ctx) => gridEffect(ctx, 'raster bars') },
   { id: 'grid:sine scroller', label: 'Sine scroller', group: 'grid', run: (ctx) => gridEffect(ctx, 'sine scroller') },
-  { id: 'photos', label: 'Dissolve between five pictures', group: 'photos', run: (ctx) => photos(ctx, 160, 95) },
+  { id: 'photos', label: 'Slideshow of five photos', group: 'photos', run: (ctx) => photos(ctx, 160, 95) },
 ];
 
 /**

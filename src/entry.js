@@ -8,7 +8,7 @@ import { start } from './mock.js';
 
 /** @type {import('./keylog.js').Layer[]} */
 const keymap = globalThis.NG_KEYMAP ?? [];
-// the address names a demo to start (demo-app.html#demo=bar:comet); the page of the device rewrites the address, so it is read first
+// the address names a demo to start (device.html#demo=bar:comet); the page of the device rewrites the address, so it is read first
 const link = decodeURIComponent(window.location.hash);
 const lamps = createLamps();
 const onDemoPage = document.getElementById('demo-page') !== null;

@@ -31,3 +31,14 @@ downloaded packages under `.pio/`.
 
 Licenses are listed from the upstream projects' published terms. Check the
 versions pinned in `platformio.ini` before relying on this list for a release.
+
+## Photographs on the Try it page
+
+From Wikimedia Commons, shown at a reduced size and as a grid of lamps in the demo; each stays under its own licence.
+
+- *Eiffel Tower and the Pont des Invalides, Paris* by Pierre Blaché, CC0 1.0: https://commons.wikimedia.org/wiki/File:Pont_des_Invalides_and_the_Eiffel_Tower,_Paris_31_August_2019.jpg
+- *Tower Bridge from Shad Thames* by Colin, CC BY-SA 4.0: https://commons.wikimedia.org/wiki/File:Tower_Bridge_from_Shad_Thames.jpg
+- *Brandenburger Tor abends* by Thomas Wolf (www.foto-tw.de), CC BY-SA 3.0: https://commons.wikimedia.org/wiki/File:Brandenburger_Tor_abends.jpg
+- *Matterhorn sunset 2016* by Sam Ferrara, CC0 1.0: https://commons.wikimedia.org/wiki/File:Matterhorn_sunset_2016_(Unsplash).jpg
+- *Deventer aan de IJssel 2024* by Smiley.toerist, CC BY-SA 4.0: https://commons.wikimedia.org/wiki/File:Deventer_aan_de_IJssel_2024.jpg
+
