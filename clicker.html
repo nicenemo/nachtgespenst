@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clicker · Nachtgespenst</title>
+<meta name="description" content="The Core2 as a presentation clicker and air mouse over Bluetooth LE: the page, the keys it types and how the pointer moves.">
+<link rel="canonical" href="https://hanskruse.eu/nachtgespenst/camera.html">
+<meta name="theme-color" content="#0b0e14" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f6f7fb" media="(prefers-color-scheme: light)">
+<!-- icons: the ICO for old browsers and tools, the SVG for modern ones, PNGs for iOS, Android and Windows tiles -->
+<link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" href="favicon.svg" type="image/svg+xml" sizes="any">
+<link rel="apple-touch-icon" href="apple-touch-icon.png" sizes="180x180">
+<link rel="mask-icon" href="safari-pinned-tab.svg" color="#8ea2ff">
+<link rel="manifest" href="site.webmanifest">
+<meta name="msapplication-config" content="browserconfig.xml">
+<meta name="msapplication-TileColor" content="#0b0e14">
+<!-- link previews -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Camera tests · Nachtgespenst">
+<meta property="og:description" content="How a laptop webcam and a small JBang tool find the LED bar pin and check the colour of every layer.">
+<meta property="og:url" content="https://hanskruse.eu/nachtgespenst/camera.html">
+<meta property="og:image" content="https://hanskruse.eu/nachtgespenst/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="A ghost with its hands on its cheeks, screaming under a crescent moon">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="style.css">
+<link rel="prev" href="interfaces.html">
+<link rel="next" href="lamps.html">
+<link rel="index" href="index.html">
+<script src="menu.js" defer></script>
+</head>
+<body>
+<nav class="sitenav" aria-label="Site"><div class="wrap"><a class="brand" href="index.html"><img src="favicon.svg" width="28" height="28" alt="">Nachtgespenst</a><a class="key" href="pages.html">Pages</a><a class="key" href="setup.html">Set-up</a><details class="menu"><summary aria-label="Menu"><span class="burger" aria-hidden="true"></span><span class="label">Menu</span></summary><div class="panel"><div class="col"><h2>Pages</h2><ul><li><a href="pages.html">Overview</a></li><li><a href="pages-work.html">Work and editing</a></li><li><a href="pages-function.html">Function keys</a></li><li><a href="pages-typing.html">Typing and layout</a></li><li><a href="pages-media.html">Media and applications</a></li></ul></div><div class="col"><h2>Interfaces</h2><ul><li><a href="interfaces.html">LVGL or classic</a></li><li><a href="classic.html">Classic overview</a></li><li><a href="classic-work.html">Classic: Work and editing</a></li><li><a href="classic-function.html">Classic: Function keys</a></li><li><a href="classic-typing.html">Classic: Typing and layout</a></li><li><a href="classic-media.html">Classic: Media and applications</a></li></ul></div><div class="col"><h2>Project</h2><ul><li><a href="index.html">Home</a></li><li><a href="clicker.html" aria-current="page">Clicker</a></li><li><a href="shell.html">Shell manual</a></li><li><a href="setup.html">Set it up</a></li><li><a href="story.html">The story</a></li><li><a href="repositories.html">Repositories</a></li></ul></div><div class="col"><h2>Demos</h2><ul><li><a href="demos.html">About the demos</a></li><li><a href="lamps.html">LampArray bench</a></li><li><a href="camera.html">Camera tests</a></li></ul></div></div></details></div></nav>
+<header class="hero compact"><div class="wrap">
+<h1><img class="logo" src="favicon.svg" width="56" height="56" alt="">Clicker</h1>
+<p class="tag">The Core2 as a presentation clicker and air mouse.</p>
+</div></header>
+<main class="wrap">
+<section id="clicker">
+<p>The Core2 runs the clicker build of the firmware. It has one page and talks to the computer over Bluetooth LE only (the Core2 has no USB data connection). It types the keys of a clicker, and it moves the mouse pointer when you turn it, like an air mouse. It works with any Bluetooth host and with PowerPoint, LibreOffice Impress and the browser slide tools that use the usual keys.</p>
+<div class="shots">
+<figure><img src="img/clicker/clicker.png" width="320" height="240" alt="Core2 screenshot of the clicker page"><figcaption>The clicker page</figcaption></figure>
+<figure><img src="img/clicker/pointer.png" width="320" height="240" alt="Core2 screenshot of the pointer page"><figcaption>With the air mouse on</figcaption></figure>
+</div>
+<h2>The page</h2>
+<p>The header shows the title, whether a host is connected (<code>BLE</code> or <code>no BLE</code>) and three indicators A, B and C that light up while the physical buttons are held. A tile you hold turns amber.</p>
+<table>
+<tr><th>Tile</th><th>Key it types</th><th>Button</th></tr>
+<tr><td>Previous</td><td>Page Up</td><td>A</td></tr>
+<tr><td>Next</td><td>Page Down</td><td>C</td></tr>
+<tr><td>Start</td><td>F5 (start the slide show)</td><td></td></tr>
+<tr><td>Blank</td><td>B (black screen, again to come back)</td><td></td></tr>
+<tr><td>End</td><td>Esc</td><td></td></tr>
+<tr><td>Pointer</td><td>switches the air mouse on and off</td><td>B</td></tr>
+<tr><td>Laser</td><td>Ctrl+L (the laser pointer of PowerPoint)</td><td></td></tr>
+<tr><td>Click</td><td>left mouse button</td><td></td></tr>
+</table>
+<p>With the air mouse on, the page changes to the second screenshot: Click, Laser and a tile to go back to the clicker (Clicker mode), with Previous and Next below.</p>
+<h2>The air mouse</h2>
+<ul>
+<li>The pointer is off until you switch it on (the tile or button B); the setting is remembered.</li>
+<li>While on, turning the board moves the pointer: turn left and it moves left, tilt the nose up and it moves up. Hold the board flat with the screen up, like a remote.</li>
+<li>Held still for a few seconds the pointer falls asleep: it sends nothing, so it cannot drift. A deliberate movement wakes it. Small bumps do not wake it.</li>
+<li>The gyroscope learns its own zero point while the board is held still.</li>
+<li>The speed, the idle time, an upright holding position and the direction of both axes can be tuned over the serial shell (see the <a href="shell.html">shell manual</a>).</li>
+</ul>
+<h2>Pairing</h2>
+<p>Pair the board from the host's Bluetooth settings; it advertises as <code>🌙👻-c2</code>. A host that knew the Core2 before the mouse was added has to forget it and pair again.</p>
+<h2>Tested</h2>
+<p>An automated test taps the tiles through the serial shell and reads the keys on the host: Next arrives as Page Down, Previous as Page Up and Blank as B, each as a press and a release; the air mouse is switched on and off through its tile and the page is rebuilt each time. The movement of the pointer itself is tested with a pretend rotation fed into the firmware.</p>
+<p>The firmware of the clicker is meant to be delivered on its own, on a shared library; see <a href="repositories.html">Repositories</a>.</p>
+</section>
+<nav class="pager" aria-label="Previous and next page"><a class="prev" href="pages.html"><small>&larr; Previous</small><br>Pages</a><a class="next" href="interfaces.html"><small>Next &rarr;</small><br>Interfaces</a></nav>
+
+</main>
+<footer><div class="wrap">
+<p>MIT licence. Third-party components are listed in the <a href="https://github.com/nicenemo/nachtgespenst/blob/main/THIRD-PARTY-NOTICES.md">third-party notices</a>.</p>
+<p class="copyright">&copy; 2026 <a href="https://hanskruse.eu">Hans Kruse</a></p>
+</div></footer>
+</body>
+</html>
