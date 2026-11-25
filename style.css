@@ -128,7 +128,11 @@ nav.sitenav .panel li a[aria-current="page"] { background: var(--accent); color:
 
 /* The device in the browser (mock.js): the screen between the two vertical LED bars of the M5GO base. Its size follows the height of the window,
    so that the whole demo fits on one screen. */
-.mock { --screen-w: clamp(240px, calc((100vh - 330px) * 4 / 3), 440px); max-width: calc(var(--screen-w) + 84px); margin: 12px auto; }
+.demo-grid, .mock { --screen-w: clamp(240px, calc((100vh - 330px) * 4 / 3), 440px); }
+.mock { max-width: calc(var(--screen-w) + 84px); margin: 12px auto; }
+
+/* A fixed width and a fixed status height: the length of a status text must never resize the screen or move the page. */
+.demo-left { width: calc(var(--screen-w) + 84px); max-width: 100%; margin: 0 auto; }
 .mock .stage { display: grid; grid-template-columns: 26px minmax(0, 1fr) 26px; gap: 10px; align-items: stretch; }
 .mock .screen { position: relative; border: 5px solid #0b0e14; border-radius: 12px; background: #000; line-height: 0; touch-action: pan-y; }
 .mock .screen img { display: block; width: 100%; height: auto; border-radius: 5px; user-select: none; -webkit-user-drag: none; }
@@ -139,7 +143,7 @@ nav.sitenav .panel li a[aria-current="page"] { background: var(--accent); color:
 .mock .hit[hidden] { display: none; }
 .mock .bar { display: flex; flex-direction: column; gap: 6px; padding: 6px 4px; border-radius: 8px; background: #0b0e14; }
 .mock .bar .led { flex: 1; border-radius: 6px; background: #1b1d26; transition: background .15s, box-shadow .15s; }
-.mock-status { min-height: 2.8em; margin: 8px auto 0; max-width: 560px; text-align: center; color: var(--muted); font-size: .95em; }
+.mock-status { height: 3.2em; overflow: hidden; margin: 8px auto 0; max-width: 100%; text-align: center; color: var(--muted); font-size: .95em; }
 .caption-note { color: var(--muted); font-size: .9em; }
 
 @media (width <= 700px) { .mock { max-width: 100%; } .mock .stage { grid-template-columns: 22px minmax(0, 1fr) 22px; gap: 6px; } }
